@@ -5,22 +5,28 @@ Starter kit for cross-domain apps (xApps).
 
 There are currently 3 starter contracts:
 - XDomainTransfer.sol
-- XDomainDeposit.sol 
-- XDomainVote.sol
+- XDomainDeposit.sol
+- [TODO] XDomainVote.sol
 
 ## XDomainTransfer
 
 Simple transfer from Sending Chain to Receiving Chain.
+
+Does not use calldata.
 
 ![XDomainTransfer](documentation/assets/XDomainTransfer.png)
 ## XDomainDeposit
 
 Deposit funds from Sending Chain into an Aave V3 Pool on the Receiving Chain.
 
+Non-permissioned call on the receiving side.
+
 ![XDomainDeposit](documentation/assets/XDomainDeposit.png)
 ## XDomainVote
 
-TODO
+[TODO]
+
+Permissioned call on the receiving side.
 
 
 # Development
@@ -42,7 +48,9 @@ lib
 ├─ nxtp — https://github.com/connext/nxtp
 src
 ├─ tests
+│  └─ XDomainTransfer.t — "XDomainTransfer Tests"
 │  └─ XDomainDeposit.t — "XDomainDeposit Tests"
+└─ XDomainTransfer — "An XDomainTransfer Contract"
 └─ XDomainDeposit — "An XDomainDeposit Contract"
 ```
 ### Setup

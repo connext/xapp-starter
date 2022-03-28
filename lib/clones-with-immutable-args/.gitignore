@@ -1,8 +1,0 @@
-# Node
-node_modules
-
-# Forge
-out/
-cache/
-
-.env

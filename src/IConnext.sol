@@ -1,4 +1,4 @@
-pragma solidity ^0.8.10;
+pragma solidity 0.8.11;
 
 interface IConnext {
 
@@ -17,8 +17,6 @@ interface IConnext {
     bytes callData;
     uint32 originDomain;
     uint32 destinationDomain;
-    // uint256 fee;
-    // address callback;
   }
 
   struct XCallArgs {
