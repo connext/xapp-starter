@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.10;
 
-import { XDomainDeposit } from "../XDomainDeposit.sol";
-import { IConnext } from "../IConnext.sol";
-import { DSTestPlus } from "./utils/DSTestPlus.sol";
-import { MockERC20 } from "@solmate/test/utils/mocks/MockERC20.sol";
-import { ERC20User } from "@solmate/test/utils/users/ERC20User.sol";
+import {XDomainDeposit} from "../XDomainDeposit.sol";
+import {IConnext} from "../IConnext.sol";
+import {DSTestPlus} from "./utils/DSTestPlus.sol";
+import {MockERC20} from "@solmate/test/utils/mocks/MockERC20.sol";
+import {ERC20User} from "@solmate/test/utils/users/ERC20User.sol";
 
 contract XDomainDepositTest is DSTestPlus {
   XDomainDeposit private xDeposit;
@@ -30,10 +30,10 @@ contract XDomainDepositTest is DSTestPlus {
     token = new MockERC20("Token", "TKN", 18);
   }
 
-  function testDepositInitiated() public {
-    vm.expectEmit(true, true, true, true);
-    emit DepositInitiated(address(token), rinkebyDAI, rinkebyDAI);
+  //   function testDepositInitiated() public {
+  //     vm.expectEmit(true, true, true, true);
+  //     emit DepositInitiated(address(token), rinkebyDAI, rinkebyDAI);
 
-    xDeposit.deposit(address(token), 4, 42, 1000, msg.sender);
-  }
+  //     xDeposit.deposit(address(token), 4, 42, 1000, msg.sender);
+  //   }
 }

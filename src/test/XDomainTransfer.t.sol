@@ -1,39 +1,98 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.10;
 
-import { XDomainTransfer } from "../XDomainTransfer.sol";
-import { IConnext } from "../IConnext.sol";
-import { DSTestPlus } from "./utils/DSTestPlus.sol";
-import { MockERC20 } from "@solmate/test/utils/mocks/MockERC20.sol";
-import { ERC20User } from "@solmate/test/utils/users/ERC20User.sol";
+import {XDomainTransfer} from "../XDomainTransfer.sol";
+import {IConnext} from "nxtp/interfaces/IConnext.sol";
+import {Connext} from "nxtp/Connext.sol";
+import {DSTestPlus} from "./utils/DSTestPlus.sol";
+import {MockERC20} from "@solmate/test/utils/mocks/MockERC20.sol";
+import {ERC20User} from "@solmate/test/utils/users/ERC20User.sol";
+import "@std/stdlib.sol";
 
 contract XDomainTransferTest is DSTestPlus {
-  XDomainTransfer private xTransfer;
-  MockERC20 token;
+  using stdStorage for StdStorage;
+  StdStorage public stdstore;
 
   event TransferInitiated(address asset, address from, address to);
 
-  // Connext contracts
-  address public rinkebyConnext = 0xd6d9d8E6304C460b40022e467d8A8748962Eb0B0;
-  address public kovanConnext = 0x9F929643db56eaf747131CB4FA1126612b30Eb7F;
+  XDomainTransfer private xTransfer;
+  Connext private connext;
+  MockERC20 private token;
 
-  // DAI contracts
-  address public rinkebyDAI = 0x6A9865aDE2B6207dAAC49f8bCba9705dEB0B0e6D;
-  address public kovanDAI = 0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa;
+  // Nomad Domain IDs
+  uint32 private mainnetDomainId = 6648936;
+  uint32 private rinkebyDomainId = 2000;
+  uint32 private kovanDomainId = 3000;
 
-  uint32[] public domains = [4, 42];
-  address[] public pools = [rinkebyDAI, kovanDAI];
+  // Connext helper functions
+  function setApprovedRouter(address _router, bool _approved) internal {
+    uint256 writeVal = _approved ? 1 : 0;
+    stdstore
+      .target(address(connext))
+      .sig(connext.approvedRouters.selector)
+      .with_key(_router)
+      .checked_write(writeVal);
+  }
+
+  function setApprovedAsset(address _asset, bool _approved) internal {
+    uint256 writeVal = _approved ? 1 : 0;
+    stdstore
+      .target(address(connext))
+      .sig(connext.approvedAssets.selector)
+      .with_key(_asset)
+      .checked_write(writeVal);
+  }
 
   function setUp() public {
-    xTransfer = new XDomainTransfer(IConnext(rinkebyConnext));
+    token = new MockERC20("TestToken", "TT", 18);
+    connext = new Connext();
+    xTransfer = new XDomainTransfer(IConnext(address(connext)));
 
-    token = new MockERC20("Token", "TKN", 18);
+    // Connext setup
+    address bridgeRouter = address(1);
+    address tokenRegistry = address(2);
+    address wrapper = address(3);
+
+    connext.initialize(
+      mainnetDomainId,
+      payable(bridgeRouter),
+      tokenRegistry,
+      wrapper
+    );
+    setApprovedRouter(bridgeRouter, true);
+    setApprovedAsset(address(token), true);
+
+    vm.label(address(connext), "Connext");
+    vm.label(address(xTransfer), "XDomainTransfer");
+    vm.label(address(token), "TestToken");
+    vm.label(address(this), "TestContract");
   }
 
   function testTransferInitiated() public {
-    vm.expectEmit(true, true, true, true);
-    emit TransferInitiated(address(token), rinkebyDAI, rinkebyDAI);
+    ERC20User userChainA = new ERC20User(token);
+    ERC20User userChainB = new ERC20User(token);
+    vm.label(address(userChainA), "userChainA");
+    vm.label(address(userChainB), "userChainB");
 
-    xTransfer.transfer(address(0xBEEF), address(token), 4, 42, 1000);
+    token.mint(address(userChainA), 10_000);
+    console.log(
+      "userChainA TestToken balance",
+      token.balanceOf(address(userChainA))
+    );
+
+    userChainA.approve(address(this), 10_000);
+
+    vm.expectEmit(true, true, true, true);
+    emit TransferInitiated(address(token), address(this), address(userChainB));
+
+    startHoax(address(userChainA));
+    xTransfer.transfer(
+      address(userChainB),
+      address(token),
+      kovanDomainId,
+      rinkebyDomainId,
+      10_000
+    );
+    vm.stopPrank();
   }
 }

@@ -2,19 +2,19 @@
 pragma solidity ^0.8.10;
 
 // import { IPool } from "@aave/contracts/interfaces/IPool.sol";
-import { IPool } from "./IPool.sol";
-import { ERC20 } from "@solmate/tokens/ERC20.sol";
+import {IPool} from "./IPool.sol";
+import {ERC20} from "@solmate/tokens/ERC20.sol";
 
 /**
-  * @title XDomainDepositMiddleware
-  * @notice Middleware contract for calling Aave V3 Pool on receiving chain.
-  */
+ * @title XDomainDepositMiddleware
+ * @notice Middleware contract for calling Aave V3 Pool on receiving chain.
+ */
 contract XDomainDepositMiddleware {
   event DepositCompleted(address asset, address pool, address to);
 
   function deposit(
-    address pool, 
-    address asset, 
+    address pool,
+    address asset,
     address onBehalfOf
   ) external {
     ERC20 token = ERC20(asset);

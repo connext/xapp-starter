@@ -1,7 +1,6 @@
 pragma solidity 0.8.11;
 
 interface IConnext {
-
   /**
    * @notice These are the call parameters that will remain constant between the
    * two chains. They are supplied on `xcall` and should be asserted on `execute`
@@ -25,7 +24,5 @@ interface IConnext {
     uint256 amount;
   }
 
-  function xcall(
-    XCallArgs calldata _args
-  ) external payable returns (bytes32);
+  function xcall(XCallArgs calldata _args) external payable returns (bytes32);
 }

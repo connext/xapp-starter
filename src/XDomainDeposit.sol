@@ -1,27 +1,31 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.10;
 
-import { IConnext } from "./IConnext.sol";
-import { ERC20 } from "@solmate/tokens/ERC20.sol";
+import {IConnext} from "./IConnext.sol";
+import {ERC20} from "@solmate/tokens/ERC20.sol";
 
 /**
-  * @title XDomainDeposit
-  * @notice Example of a cross-domain deposit into Aave V3 Pool.
-  */
+ * @title XDomainDeposit
+ * @notice Example of a cross-domain deposit into Aave V3 Pool.
+ */
 contract XDomainDeposit {
   event DepositInitiated(address asset, address pool, address to);
 
   IConnext public immutable connext;
-  mapping (uint32 => address) public pools;
+  mapping(uint32 => address) public pools;
 
   /**
-    * Set up the relevant data needed by the external target contract, if necessary.
-    */
-  constructor(IConnext _connext, uint32[] memory _domains, address[] memory _pools) {
+   * Set up the relevant data needed by the external target contract, if necessary.
+   */
+  constructor(
+    IConnext _connext,
+    uint32[] memory _domains,
+    address[] memory _pools
+  ) {
     connext = _connext;
 
     // The Aave Pool needs a mapping of domains to pools.
-    for (uint i = 0; i < _domains.length; i++) {
+    for (uint256 i = 0; i < _domains.length; i++) {
       pools[_domains[i]] = _pools[i];
     }
   }
@@ -41,8 +45,15 @@ contract XDomainDeposit {
     require(pool != address(0), "Pool does not exist");
 
     // Encode function of the target contract
-    bytes4 selector = bytes4(keccak256("deposit(address,uint256,address,uint16)"));
-    bytes memory callData = abi.encodeWithSelector(selector, asset, pool, msg.sender);
+    bytes4 selector = bytes4(
+      keccak256("deposit(address,uint256,address,uint16)")
+    );
+    bytes memory callData = abi.encodeWithSelector(
+      selector,
+      asset,
+      pool,
+      msg.sender
+    );
 
     IConnext.CallParams memory callParams = IConnext.CallParams({
       to: pool,
