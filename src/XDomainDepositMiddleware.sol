@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.10;
 
-import { IPool } from "@aave/contracts/interfaces/IPool.sol";
-import { IERC20 } from "@openzeppelin/contracts/interfaces/IERC20.sol";
+// import { IPool } from "@aave/contracts/interfaces/IPool.sol";
+import { IPool } from "./IPool.sol";
+import { ERC20 } from "@solmate/tokens/ERC20.sol";
 
 /**
   * @title XDomainDepositMiddleware
@@ -16,7 +17,7 @@ contract XDomainDepositMiddleware {
     address asset, 
     address onBehalfOf
   ) external {
-    IERC20 token = IERC20(asset);
+    ERC20 token = ERC20(asset);
 
     uint256 amount = token.balanceOf(msg.sender);
     token.transferFrom(msg.sender, address(this), amount);

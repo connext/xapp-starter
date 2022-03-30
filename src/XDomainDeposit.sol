@@ -2,7 +2,7 @@
 pragma solidity ^0.8.10;
 
 import { IConnext } from "./IConnext.sol";
-import { IERC20 } from "@openzeppelin/contracts/interfaces/IERC20.sol";
+import { ERC20 } from "@solmate/tokens/ERC20.sol";
 
 /**
   * @title XDomainDeposit
