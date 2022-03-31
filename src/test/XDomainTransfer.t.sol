@@ -5,7 +5,7 @@ import {XDomainTransfer} from "../XDomainTransfer.sol";
 import {IConnext} from "nxtp/interfaces/IConnext.sol";
 import {Connext} from "nxtp/Connext.sol";
 import {DSTestPlus} from "./utils/DSTestPlus.sol";
-import {MockERC20} from "@solmate/test/utils/mocks/MockERC20.sol";
+import {TestERC20} from "./TestERC20.sol";
 import {ERC20User} from "@solmate/test/utils/users/ERC20User.sol";
 import "@std/stdlib.sol";
 
@@ -17,7 +17,7 @@ contract XDomainTransferTest is DSTestPlus {
 
   XDomainTransfer private xTransfer;
   Connext private connext;
-  MockERC20 private token;
+  TestERC20 private token;
 
   // Nomad Domain IDs
   uint32 private mainnetDomainId = 6648936;
@@ -44,7 +44,7 @@ contract XDomainTransferTest is DSTestPlus {
   }
 
   function setUp() public {
-    token = new MockERC20("TestToken", "TT", 18);
+    token = new TestERC20();
     connext = new Connext();
     xTransfer = new XDomainTransfer(IConnext(address(connext)));
 
@@ -61,6 +61,10 @@ contract XDomainTransferTest is DSTestPlus {
     );
     setApprovedRouter(bridgeRouter, true);
     setApprovedAsset(address(token), true);
+    console.log(
+      "Token approved on Connext",
+      connext.approvedAssets(bytes32(uint256(uint160(address(token)))))
+    );
 
     vm.label(address(connext), "Connext");
     vm.label(address(xTransfer), "XDomainTransfer");

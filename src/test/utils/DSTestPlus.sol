@@ -3,10 +3,10 @@ pragma solidity ^0.8.10;
 
 import {XConsole} from "./Console.sol";
 
-import {DSTest} from "@ds/test.sol";
+import "@ds/test.sol";
 import {ERC20} from "@solmate/tokens/ERC20.sol";
 
-import {stdCheats, stdError} from "@std/stdlib.sol";
+import "@std/stdlib.sol";
 import {Vm} from "@std/Vm.sol";
 
 contract DSTestPlus is DSTest, stdCheats {

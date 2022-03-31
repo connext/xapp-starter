@@ -27,7 +27,7 @@ dappbuild :; dapp build
 scripts :; chmod +x ./scripts/*
 
 # Tests
-test   :; forge clean && forge test --optimize --optimize-runs 1000000 -vvv # --ffi # enable if you need the `ffi` cheat code on HEVM
+test   :; forge clean && forge test --optimize --optimize-runs 1000000 -vvvv # --ffi # enable if you need the `ffi` cheat code on HEVM
 test-transfer   :; forge clean && forge test --match-contract "XDomainTransfer" --optimize --optimize-runs 1000000 -vvv 
 test-deposit   :; forge clean && forge test --match-contract "XDomainDeposit" --optimize --optimize-runs 1000000 -vvv
 

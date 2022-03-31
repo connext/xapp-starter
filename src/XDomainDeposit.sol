@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.10;
 
-import {IConnext} from "./IConnext.sol";
-import {ERC20} from "@solmate/tokens/ERC20.sol";
+import {IConnext} from "nxtp/interfaces/IConnext.sol";
 
 /**
  * @title XDomainDeposit
@@ -31,9 +30,9 @@ contract XDomainDeposit {
   }
 
   /**
-    * Deposit funds from one chain to another.
-    @dev Initiates the Connext bridging flow with call data to be used on the target contract.
-    */
+  * Deposit funds from one chain to another.
+  @dev Initiates the Connext bridging flow with calldata to be used on the target contract.
+  */
   function deposit(
     address asset,
     uint32 originDomain,
