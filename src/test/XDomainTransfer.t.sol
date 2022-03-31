@@ -6,66 +6,32 @@ import {IConnext} from "nxtp/interfaces/IConnext.sol";
 import {Connext} from "nxtp/Connext.sol";
 import {DSTestPlus} from "./utils/DSTestPlus.sol";
 import {TestERC20} from "./TestERC20.sol";
+import {ConnextFixture} from "./utils/ConnextFixture.sol";
 import {ERC20User} from "@solmate/test/utils/users/ERC20User.sol";
 import "@std/stdlib.sol";
 
-contract XDomainTransferTest is DSTestPlus {
-  using stdStorage for StdStorage;
-  StdStorage public stdstore;
+contract XDomainTransferTest is ConnextFixture, DSTestPlus {
+  XDomainTransfer private xTransfer;
+  TestERC20 private token;
 
   event TransferInitiated(address asset, address from, address to);
 
-  XDomainTransfer private xTransfer;
-  Connext private connext;
-  TestERC20 private token;
-
-  // Nomad Domain IDs
-  uint32 private mainnetDomainId = 6648936;
-  uint32 private rinkebyDomainId = 2000;
-  uint32 private kovanDomainId = 3000;
-
-  // Connext helper functions
-  function setApprovedRouter(address _router, bool _approved) internal {
-    uint256 writeVal = _approved ? 1 : 0;
-    stdstore
-      .target(address(connext))
-      .sig(connext.approvedRouters.selector)
-      .with_key(_router)
-      .checked_write(writeVal);
-  }
-
-  function setApprovedAsset(address _asset, bool _approved) internal {
-    uint256 writeVal = _approved ? 1 : 0;
-    stdstore
-      .target(address(connext))
-      .sig(connext.approvedAssets.selector)
-      .with_key(_asset)
-      .checked_write(writeVal);
-  }
-
   function setUp() public {
-    token = new TestERC20();
-    connext = new Connext();
-    xTransfer = new XDomainTransfer(IConnext(address(connext)));
-
-    // Connext setup
+    // Set up Connext fixture
     address bridgeRouter = address(1);
     address tokenRegistry = address(2);
     address wrapper = address(3);
+    super.setUp(bridgeRouter, tokenRegistry, wrapper);
 
-    connext.initialize(
-      mainnetDomainId,
-      payable(bridgeRouter),
-      tokenRegistry,
-      wrapper
-    );
     setApprovedRouter(bridgeRouter, true);
+    token = new TestERC20();
     setApprovedAsset(address(token), true);
     console.log(
       "Token approved on Connext",
       connext.approvedAssets(bytes32(uint256(uint160(address(token)))))
     );
 
+    xTransfer = new XDomainTransfer(IConnext(address(connext)));
     vm.label(address(connext), "Connext");
     vm.label(address(xTransfer), "XDomainTransfer");
     vm.label(address(token), "TestToken");
