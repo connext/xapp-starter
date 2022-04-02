@@ -27,11 +27,11 @@ dappbuild :; dapp build
 scripts :; chmod +x ./scripts/*
 
 # Tests
-test   :; forge clean && forge test --optimize --optimize-runs 1000000 -vvvv # --ffi # enable if you need the `ffi` cheat code on HEVM
-test-unit   :; forge clean && forge test --match-test "test_" --optimize --optimize-runs 1000000 -vvvv 
-test-forked :; forge clean && forge test --match-test "testForked_" --fork-url ${TESTNET_RPC_URL} -vvvv
-test-transfer   :; forge clean && forge test --match-contract "XDomainTransfer" --optimize --optimize-runs 1000000 -vvv 
-test-deposit   :; forge clean && forge test --match-contract "XDomainDeposit" --optimize --optimize-runs 1000000 -vvv
+test-all-unit   :; forge clean && forge test --match-test "test_" --optimize --optimize-runs 1000000 -vvvv
+test-transfer-unit   :; forge clean && forge test --match-contract "XDomainTransfer" --match-test "test_" --optimize --optimize-runs 1000000 -vvvv 
+test-transfer-forked :; forge clean && forge test --match-contract "XDomainTransfer" --match-test "testForked_" --fork-url ${TESTNET_RPC_URL} -vvvv
+test-deposit-unit   :; forge clean && forge test --match-contract "XDomainDeposit" --match-test "test_" --optimize --optimize-runs 1000000 -vvvv 
+test-deposit-forked :; forge clean && forge test --match-contract "XDomainDeposit" --match-test "testForked_" --fork-url ${TESTNET_RPC_URL} -vvvv
 
 # Lints
 lint :; prettier --write src/**/*.sol && prettier --write src/*.sol

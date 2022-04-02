@@ -52,7 +52,6 @@ contract XDomainTransfer {
       amount: amount
     });
 
-    // This contract initiates xcall with Connext
     connext.xcall(xcallArgs);
 
     emit TransferInitiated(asset, msg.sender, to);
