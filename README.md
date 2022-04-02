@@ -3,33 +3,39 @@
 Starter kit for cross-domain apps (xApps).
 # Overview
 
-There are currently 3 starter contracts:
-- XDomainTransfer.sol
-- XDomainDeposit.sol
-- [TODO] XDomainVote.sol
+With Connext's upgraded protocol, there are generally three types of bridging transactions.
+- Simple transfers
+- Permissionless calls
+- Permissioned calls
+
+This starter repo contains contracts that demonstrate how to use each type of transaction.
 
 ## XDomainTransfer
 
-Simple transfer from Sending Chain to Receiving Chain.
+Simple transfer from Sending Chain to Receiving Chain. Does not use calldata.
 
-Does not use calldata.
+Contracts:
+- XDomainTransfer.sol
 
 ![XDomainTransfer](documentation/assets/XDomainTransfer.png)
 ## XDomainDeposit
 
-Deposit funds from Sending Chain into an Aave V3 Pool on the Receiving Chain.
+Deposit funds from Sending Chain into an Aave V3 Pool on the Receiving Chain. Uses permissionless call on the receiving side.
 
-Non-permissioned call on the receiving side.
+Contracts:
+- XDomainDeposit.sol
 
 ![XDomainDeposit](documentation/assets/XDomainDeposit.png)
-## XDomainVote
+## XDomainGovern
 
-[TODO]
+![TODO]()
 
 Permissioned call on the receiving side.
 
-
+Contracts:
+- XDomainGovern.sol
 # Development
+
 ## Getting Started
 
 This project uses Foundry for testing smart contracts and Hardhat for deploying them.
@@ -40,20 +46,18 @@ This project uses Foundry for testing smart contracts and Hardhat for deploying 
 ## Blueprint
 
 ```ml
-lib
-├─ ds-test — https://github.com/dapphub/ds-test
-├─ forge-std — https://github.com/brockelmore/forge-std
-├─ solmate — https://github.com/Rari-Capital/solmate
-├─ clones-with-immutable-args — https://github.com/wighawag/clones-with-immutable-args
-├─ nxtp — https://github.com/connext/nxtp
 src
 ├─ tests
-│  └─ XDomainTransfer.t — "XDomainTransfer Tests"
-│  └─ XDomainDeposit.t — "XDomainDeposit Tests"
-└─ XDomainTransfer — "An XDomainTransfer Contract"
-└─ XDomainDeposit — "An XDomainDeposit Contract"
+│  └─ unit 
+│     └─ XDomainTransfer.t.sol — "XDomainTransfer Unit Tests"
+│     └─ XDomainDeposit.t.sol — "XDomainDeposit Unit Tests"
+│  └─ integration
+|     └─ XDomainTransferForked.t.sol — "XDomainTransfer Integration Tests"
+|     └─ XDomainDepositForked.t.sol — "XDomainDeposit Integration Tests"
+└─ XDomainTransfer.sol — "An XDomainTransfer Contract"
+└─ XDomainDeposit.sol — "An XDomainDeposit Contract"
 ```
-### Setup
+## Setup
 ```bash
 make
 ```
@@ -67,21 +71,19 @@ make
 >
 > This GitHub issue [comment](https://github.com/NixOS/nixpkgs/issues/163374#issuecomment-1062480297) should help.
 
-### Building
+## Testing
+
+### Unit Tests
+
 ```bash
-make build
+make test-unit
 ```
 
-### Testing
+### Integration Tests
 
-Run unit tests
-```bash
-make test
+This uses forge's `--forked` mode. Make sure you have `TESTNET_RPC_URL` defined in your `.env` file.
 ```
-
-Run integration tests
-```
-TODO
+make test-forked
 ```
 
 ### Deployment & Verification

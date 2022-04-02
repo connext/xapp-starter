@@ -2,7 +2,7 @@
 pragma solidity ^0.8.10;
 
 import {IConnext} from "nxtp/interfaces/IConnext.sol";
-import {ERC20} from "@solmate/tokens/ERC20.sol";
+import {MockERC20} from "@solmate/test/utils/mocks/MockERC20.sol";
 
 /**
  * @title XDomainTransfer
@@ -29,7 +29,16 @@ contract XDomainTransfer {
     uint32 destinationDomain,
     uint256 amount
   ) external {
-    // empty callData because this is a simple transfer of funds
+    MockERC20 token = MockERC20(asset);
+    require(token.allowance(msg.sender, address(this)) >= amount, "User must approve amount");
+
+    // User sends funds to this contract
+    token.transferFrom(msg.sender, address(this), amount);
+
+    // This contract approves transfer to Connext
+    token.approve(address(connext), amount);
+
+    // Empty callData because this is a simple transfer of funds
     IConnext.CallParams memory callParams = IConnext.CallParams({
       to: to,
       callData: "",
@@ -43,6 +52,7 @@ contract XDomainTransfer {
       amount: amount
     });
 
+    // This contract initiates xcall with Connext
     connext.xcall(xcallArgs);
 
     emit TransferInitiated(asset, msg.sender, to);
