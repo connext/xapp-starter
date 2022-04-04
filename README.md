@@ -3,7 +3,7 @@
 Starter kit for cross-domain apps (xApps).
 # Overview
 
-With Connext's upgraded protocol, there are generally three types of bridging transactions.
+With Connext's upgraded protocol, there are generally three types of bridging transactions that can be executed fully through smart contract integration.
 - Simple transfers
 - Permissionless calls
 - Permissioned calls
@@ -12,28 +12,35 @@ This starter repo contains contracts that demonstrate how to use each type of tr
 
 ## XDomainTransfer
 
-Simple transfer from Sending Chain to Receiving Chain. Does not use calldata.
+Simple transfer from Sending Chain to Receiving Chain. Does not use calldata. 
+
+Example use cases:
+- Send funds across chains
 
 Contracts:
 - XDomainTransfer.sol
 
 ![XDomainTransfer](documentation/assets/XDomainTransfer.png)
-## XDomainDeposit
 
-Deposit funds from Sending Chain into an Aave V3 Pool on the Receiving Chain. Uses permissionless call on the receiving side.
+## XDomainPermissionless
 
-Contracts:
-- XDomainDeposit.sol
+Transfer funds and/or call a target contract with arbitrary calldata on the Receiving Chain. Assuming the receiving side is a permissionless call, this flow is essentially the same as a simple transfer except encoded calldata is included in the `xcall`.
 
-![XDomainDeposit](documentation/assets/XDomainDeposit.png)
-## XDomainGovern
-
-![TODO]()
-
-Permissioned call on the receiving side.
+Example use cases:
+- Deposit funds from Sending Chain into a liquidity pool on the Receiving Chain
 
 Contracts:
-- XDomainGovern.sol
+- XDomainPermissionless.sol
+
+![XDomainPermissionless](documentation/assets/XDomainPermissionless.png)
+
+## XDomainPermissioned
+
+Transfer funds and/or call a target contract with arbitrary calldata on the Receiving Chain. With permissioned calls, middleware contracts may be needed to run `msg.sender` checks. 
+
+Contracts:
+- [TODO]
+
 # Development
 
 ## Getting Started
