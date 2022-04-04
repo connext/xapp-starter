@@ -1,27 +1,30 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.10;
 
-import {XDomainTransfer} from "../../XDomainTransfer.sol";
+import {XDomainTransfer} from "../XDomainTransfer.sol";
 import {IConnext} from "nxtp/interfaces/IConnext.sol";
-import {DSTestPlus} from "../utils/DSTestPlus.sol";
+import {DSTestPlus} from "./utils/DSTestPlus.sol";
 import {ERC20User} from "@solmate/test/utils/users/ERC20User.sol";
 import {ERC20} from "@solmate/tokens/ERC20.sol";
 import {MockERC20} from "@solmate/test/utils/mocks/MockERC20.sol";
 
 /**
- * @title XDomainTransferTestForked
+ * @title XDomainTransferTest
  * @notice Tests for XDomainTransfer. Should be run with forked testnet (Kovan).
  */
-contract XDomainTransferTestForked is DSTestPlus {
-  XDomainTransfer private xTransfer;
-  MockERC20 private constant token = MockERC20(0xB5AabB55385bfBe31D627E2A717a7B189ddA4F8F);
-  address private connext = 0xA09C4Dd04fd656d2ED0ee1c95A1cB14B921296A8;
-  
+contract XDomainTransferTest is DSTestPlus {
   // Nomad Domain IDs
   uint32 public mainnetDomainId = 6648936;
   uint32 public rinkebyDomainId = 2000;
   uint32 public kovanDomainId = 3000;
 
+  // Testnet Addresses
+  address private connext = 0xA09C4Dd04fd656d2ED0ee1c95A1cB14B921296A8;
+  address private constant testToken = 0xB5AabB55385bfBe31D627E2A717a7B189ddA4F8F;
+
+  MockERC20 private constant token = MockERC20(0xB5AabB55385bfBe31D627E2A717a7B189ddA4F8F);
+  XDomainTransfer private xTransfer;
+  
   event TransferInitiated(address asset, address from, address to);
 
   function setUp() public {
@@ -33,7 +36,7 @@ contract XDomainTransferTestForked is DSTestPlus {
     vm.label(address(this), "TestContract");
   }
 
-  function testForked_transferEmitsTransferInitiated() public {
+  function testTransferEmitsTransferInitiated() public {
     ERC20User userChainA = new ERC20User(token);
     ERC20User userChainB = new ERC20User(token);
     vm.label(address(userChainA), "userChainA");

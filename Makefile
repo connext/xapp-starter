@@ -27,11 +27,8 @@ dappbuild :; dapp build
 scripts :; chmod +x ./scripts/*
 
 # Tests
-test-all-unit   :; forge clean && forge test --match-test "test_" --optimize --optimize-runs 1000000 -vvvv
-test-transfer-unit   :; forge clean && forge test --match-contract "XDomainTransfer" --match-test "test_" --optimize --optimize-runs 1000000 -vvvv 
-test-transfer-forked :; forge clean && forge test --match-contract "XDomainTransfer" --match-test "testForked_" --fork-url ${TESTNET_RPC_URL} -vvvv
-test-deposit-unit   :; forge clean && forge test --match-contract "XDomainDeposit" --match-test "test_" --optimize --optimize-runs 1000000 -vvvv 
-test-deposit-forked :; forge clean && forge test --match-contract "XDomainDeposit" --match-test "testForked_" --fork-url ${TESTNET_RPC_URL} -vvvv
+test :; forge clean && forge test --match-contract "XDomainTransfer" --fork-url ${TESTNET_RPC_URL} -vvvv
+test-permissionless:; forge clean && forge test --match-contract "XDomainPermissionless" --fork-url ${TESTNET_RPC_URL} -vvvv
 
 # Lints
 lint :; prettier --write src/**/*.sol && prettier --write src/*.sol
