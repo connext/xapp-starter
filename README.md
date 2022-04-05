@@ -57,12 +57,13 @@ src
 ├─ tests
 │  └─ unit 
 │     └─ XDomainTransfer.t.sol — "XDomainTransfer Unit Tests"
-│     └─ XDomainDeposit.t.sol — "XDomainDeposit Unit Tests"
+│     └─ XDomainPermissionless.t.sol — "XDomainPermissionless Unit Tests"
 │  └─ integration
 |     └─ XDomainTransferForked.t.sol — "XDomainTransfer Integration Tests"
-|     └─ XDomainDepositForked.t.sol — "XDomainDeposit Integration Tests"
+|     └─ XDomainPermissionlessForked.t.sol — "XDomainPermissionless Integration Tests"
+└─ Target.sol — "A contrived Target Contract"
 └─ XDomainTransfer.sol — "An XDomainTransfer Contract"
-└─ XDomainDeposit.sol — "An XDomainDeposit Contract"
+└─ XDomainPermissionless.sol — "An XDomainPermissionless Contract"
 ```
 ## Setup
 ```bash

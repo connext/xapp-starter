@@ -14,7 +14,7 @@ clean  :; forge clean
 remove :; rm -rf .gitmodules && rm -rf .git/modules/* && rm -rf lib && touch .gitmodules && git add . && git commit -m "modules"
 
 # Install the Modules
-install :; forge install # dapphub/ds-test && forge install rari-capital/solmate && forge install brockelmore/forge-std && forge install ZeframLou/clones-with-immutable-args
+install :; forge install dapphub/ds-test && forge install rari-capital/solmate && forge install brockelmore/forge-std && forge install ZeframLou/clones-with-immutable-args && forge install connext/nxtp@amarok
 
 # Update Dependencies
 update:; forge update
@@ -27,8 +27,11 @@ dappbuild :; dapp build
 scripts :; chmod +x ./scripts/*
 
 # Tests
-test :; forge clean && forge test --match-contract "XDomainTransfer" --fork-url ${TESTNET_RPC_URL} -vvvv
-test-permissionless:; forge clean && forge test --match-contract "XDomainPermissionless" --fork-url ${TESTNET_RPC_URL} -vvvv
+test-unit-all :; forge clean && forge test --match-contract "TestUnit" -vvvv
+test-unit-transfer:; forge clean && forge test --match-contract "XDomainTransferTestUnit" -vvvv
+test-forked-transfer :; forge clean && forge test --match-contract "XDomainTransferTestForked" --fork-url ${TESTNET_RPC_URL} -vvvv
+test-unit-permissionless:; forge clean && forge test --match-contract "XDomainPermissionlessTestUnit" -vvvv
+test-forked-permissionless :; forge clean && forge test --match-contract "XDomainPermissionlessTestForked" --fork-url ${TESTNET_RPC_URL} -vvvv
 
 # Lints
 lint :; prettier --write src/**/*.sol && prettier --write src/*.sol

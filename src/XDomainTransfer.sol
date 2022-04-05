@@ -2,7 +2,7 @@
 pragma solidity ^0.8.10;
 
 import {IConnext} from "nxtp/interfaces/IConnext.sol";
-import {MockERC20} from "@solmate/test/utils/mocks/MockERC20.sol";
+import {ERC20} from "@solmate/tokens/ERC20.sol";
 
 /**
  * @title XDomainTransfer
@@ -29,7 +29,7 @@ contract XDomainTransfer {
     uint32 destinationDomain,
     uint256 amount
   ) external {
-    MockERC20 token = MockERC20(asset);
+    ERC20 token = ERC20(asset);
     require(token.allowance(msg.sender, address(this)) >= amount, "User must approve amount");
 
     // User sends funds to this contract

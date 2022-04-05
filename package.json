@@ -19,7 +19,7 @@
     "scripts": {
         "setup": "make clean && make build",
         "sync": "make update",
-        "test": "make test",
+        "test": "make test-unit-all",
         "snapshot": "make snapshot",
         "lint": "make lint"
     }
