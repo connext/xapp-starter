@@ -84,24 +84,45 @@ make
 ### Unit Tests
 
 ```bash
-make test-unit
+make test-unit-all
+make test-unit-transfer
+make test-unit-permissionless
+make test-unit-permissioned
 ```
 
 ### Integration Tests
 
-This uses forge's `--forked` mode. Make sure you have `TESTNET_RPC_URL` defined in your `.env` file.
+This uses forge's `--forked` mode. Make sure you have `TESTNET_RPC_URL` defined in your `.env` file. Currently, the test cases are pointed at Connext's Kovan testnet deployments.
 ```
-make test-forked
+make test-forked-transfer
+make test-forked-permissionless
+make test-forked-permissioned
 ```
 
-### Deployment & Verification
+### Live Testnet Testing
 
-Inside the [`scripts/`](./scripts/) directory are a few preconfigured scripts that can be used to deploy and verify contracts.
+The core set of Connext + Nomad contracts have already been deployed to testnet. For the most up-to-date contracts, please reference the [Connext deployments](https://github.com/connext/nxtp/tree/amarok/packages/deployments/contracts/deployments).
 
-Scripts take inputs from the cli, using silent mode to hide any sensitive information.
+To deploy xapp contracts to testnet, see the Deployment section below.
 
-NOTE: These scripts are required to be _executable_ meaning they must be made executable by running `chmod +x ./scripts/*`.
+There is a set of Hardhat tasks available for executing transactions on deployed contracts.
 
-NOTE: For local deployment, make sure to run `yarn` or `npm install` before running the `deploy_local.sh` script. Otherwise, hardhat will error due to missing dependencies.
+For the Simple Transfer example:
 
-NOTE: these scripts will prompt you for the contract name and deployed addresses (when verifying). Also, they use the `-i` flag on `forge` to ask for your private key for deployment. This uses silent mode which keeps your private key from being printed to the console (and visible in logs).
+```
+yarn hardhat transfer --contract-address <XDomainTransfer> --token-address <TestERC20> --wallet-address <your-wallet> --wallet-private-key <your-private-key>
+```
+
+For the Permissionless Deposit example:
+
+```
+yarn hardhat permissionless --contract-address <XDomainPermissionless> --token-address <TestERC20> --wallet-address <your-wallet> --wallet-private-key <your-private-key>
+```
+
+### Deployment
+
+This command will allow you to deploy contracts in this repository using the RPC provider of your choice.
+
+```
+make deploy-testnet
+```

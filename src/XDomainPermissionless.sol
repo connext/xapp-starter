@@ -42,8 +42,12 @@ contract XDomainPermissionless {
     bytes4 selector = bytes4(
       keccak256("deposit(address,uint256,address)")
     );
+  
     bytes memory callData = abi.encodeWithSelector(
-      selector
+      selector,
+      asset,
+      amount,
+      msg.sender
     );
 
     IConnext.CallParams memory callParams = IConnext.CallParams({

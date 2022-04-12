@@ -12,9 +12,13 @@
         "url": "git+https://github.com/abigger87/xapp-with-femplate.git"
     },
     "devDependencies": {
+        "dotenv": "^16.0.0",
+        "ethers": "^5.6.2",
         "hardhat": "^2.7.0",
         "prettier": "^2.3.1",
-        "prettier-plugin-solidity": "^1.0.0-beta.13"
+        "prettier-plugin-solidity": "^1.0.0-beta.13",
+        "ts-node": "^10.7.0",
+        "typescript": "^4.6.3"
     },
     "scripts": {
         "setup": "make clean && make build",
