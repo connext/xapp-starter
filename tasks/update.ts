@@ -4,18 +4,19 @@ dotEnvConfig();
 
 import { ethers } from 'ethers';
 
-export default task("permissionless", "Execute a permissionless deposit")
-  .addParam("contractAddress", "The address of the XDomainTransfer contract")
+export default task("update", "Execute a permissioned update")
+  .addParam("contractAddress", "The address of the XDomainPermissioned contract")
+  .addParam("middlewareAddress", "The address of the Middleware contract")
   .addParam("tokenAddress", "The address of the TestERC20")
   .addParam("walletAddress", "The address of the signing wallet")
   .addParam("walletPrivateKey", "The private key of the signing wallet")
   .setAction(
     async (
-      { contractAddress, tokenAddress, walletAddress, walletPrivateKey }
+      { contractAddress, middlewareAddress, tokenAddress, walletAddress, walletPrivateKey }
     ) => {
       const contractABI = [
-        "event DepositInitiated(address asset, uint256 amount, address onBehalfOf)",
-        "function deposit(address to, address asset, uint32 originDomain, uint32 destinationDomain, uint256 amount)"
+        "event UpdateInitiated(address asset, uint256 amount, address onBehalfOf)",
+        "function update(address to, address asset, uint32 originDomain, uint32 destinationDomain, uint256 amount)"
       ];
       
       const tokenABI = [
@@ -25,7 +26,8 @@ export default task("permissionless", "Execute a permissionless deposit")
      
       const provider = new ethers.providers.JsonRpcProvider(process.env.RPC_URL_KOVAN);
       const wallet = new ethers.Wallet(walletPrivateKey, provider);
-      const xPermissionless = new ethers.Contract(contractAddress, contractABI, wallet);
+      const xPermissioned = new ethers.Contract(contractAddress, contractABI, wallet);
+      const middleware = new ethers.Contract(middlewareAddress, contractABI, wallet);
       const token = new ethers.Contract(tokenAddress, tokenABI, wallet);
 
       const amount = ethers.BigNumber.from("1000000000000000000");
@@ -50,9 +52,9 @@ export default task("permissionless", "Execute a permissionless deposit")
         return await txResponse.wait();
       }
                   
-      // 3) execute the permissionless deposit 
-      async function deposit() {
-        let unsignedTx = await xPermissionless.populateTransaction.deposit(
+      // 3) execute the permissionless update 
+      async function update() {
+        let unsignedTx = await xPermissioned.populateTransaction.update(
           walletAddress,
           tokenAddress,
           3000,
@@ -67,6 +69,6 @@ export default task("permissionless", "Execute a permissionless deposit")
       console.log(minted.status == 1 ? "Successful mint" : "Failed mint");
       let approved = await approve();
       console.log(approved.status == 1 ? "Successful approve" : "Failed approve");
-      let deposited = await deposit();
-      console.log(deposited.status == 1 ? "Successful deposit" : "Failed deposit"); 
+      let updated = await update();
+      console.log(updated.status == 1 ? "Successful update" : "Failed update"); 
     });
