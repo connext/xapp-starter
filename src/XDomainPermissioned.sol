@@ -8,7 +8,7 @@ import {IConnext} from "nxtp/interfaces/IConnext.sol";
  * @notice Example of a cross-domain permissioned call.
  */
 contract XDomainPermissioned {
-  event UpdateInitiated(address asset, uint256 amount, address onBehalfOf);
+  event UpdateInitiated(address asset, uint256 newValue, address onBehalfOf);
 
   IConnext public immutable connext;
 
@@ -25,7 +25,7 @@ contract XDomainPermissioned {
     address asset,
     uint32 originDomain,
     uint32 destinationDomain,
-    uint256 amount
+    uint256 newValue
   ) external payable {
     // Encode function of the target contract
     // In this case, the target function is an intermediate function in Middleware.sol
@@ -33,7 +33,8 @@ contract XDomainPermissioned {
       keccak256("updateValue(uint256)")
     );
     bytes memory callData = abi.encodeWithSelector(
-      selector
+      selector,
+      newValue
     );
 
     IConnext.CallParams memory callParams = IConnext.CallParams({
@@ -46,11 +47,11 @@ contract XDomainPermissioned {
     IConnext.XCallArgs memory xcallArgs = IConnext.XCallArgs({
       params: callParams,
       transactingAssetId: asset,
-      amount: 0
+      amount: 0 
     });
 
     connext.xcall(xcallArgs);
 
-    emit UpdateInitiated(asset, amount, msg.sender);
+    emit UpdateInitiated(asset, newValue, msg.sender);
   }
 }

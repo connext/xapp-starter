@@ -35,18 +35,7 @@ contract XDomainPermissionedTestUnit is DSTestPlus {
     ERC20User userChainA = new ERC20User(token);
     vm.label(address(userChainA), "userChainA");
 
-    // TODO: fuzz this
-    uint256 amount = 10_000;
-
-    // Grant the user some tokens
-    token.mint(address(userChainA), amount);
-    console.log(
-      "userChainA TestToken balance",
-      token.balanceOf(address(userChainA))
-    );
-
-    // User must approve transfer to xPermissioned
-    userChainA.approve(address(xPermissioned), amount);
+    uint256 newValue = 100;
 
     // Mock the xcall
     bytes memory mockxcall = abi.encodeWithSelector(connext.xcall.selector);
@@ -54,7 +43,7 @@ contract XDomainPermissionedTestUnit is DSTestPlus {
     
     // Check for an event emitted
     vm.expectEmit(true, true, true, true);
-    emit UpdateInitiated(address(token), amount, address(userChainA));
+    emit UpdateInitiated(address(token), newValue, address(userChainA));
 
     vm.prank(address(userChainA));
     xPermissioned.update(
@@ -62,7 +51,7 @@ contract XDomainPermissionedTestUnit is DSTestPlus {
       address(token),
       rinkebyChainId,
       kovanChainId,
-      10_000
+      newValue
     );
   }
 }
@@ -96,21 +85,10 @@ contract XDomainPermissionedTestForked is DSTestPlus {
     ERC20User userChainA = new ERC20User(token);
     vm.label(address(userChainA), "userChainA");
 
-    // TODO: fuzz this
-    uint256 amount = 10_000;
-
-    // Grant the user some tokens
-    token.mint(address(userChainA), amount);
-    console.log(
-      "userChainA TestToken balance",
-      token.balanceOf(address(userChainA))
-    );
-
-    // User must approve transfer to xPermissioned 
-    userChainA.approve(address(xPermissioned), amount);
+    uint256 newValue = 100;
 
     vm.expectEmit(true, true, true, true);
-    emit UpdateInitiated(testToken, amount, address(userChainA));
+    emit UpdateInitiated(testToken, newValue, address(userChainA));
 
     vm.prank(address(userChainA));
     xPermissioned.update(
@@ -118,7 +96,7 @@ contract XDomainPermissionedTestForked is DSTestPlus {
       address(token),
       rinkebyChainId,
       kovanChainId,
-      10_000
+      newValue
     );
   }
 }

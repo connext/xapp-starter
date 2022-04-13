@@ -121,7 +121,7 @@ yarn hardhat deposit --contract-address <XDomainPermissionless> --token-address 
 For the Permissioned Update example:
 
 ```
-yarn hardhat update --contract-address <XDomainPermissioned> --token-address <TestERC20> --wallet-address <your-wallet> --wallet-private-key <your-private-key>
+yarn hardhat update --contract-address <XDomainPermissioned> --middleware-address <Middleware> --token-address <TestERC20> --wallet-address <your-wallet> --wallet-private-key <your-private-key>
 ```
 ### Deployment
 

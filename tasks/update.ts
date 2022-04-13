@@ -30,45 +30,21 @@ export default task("update", "Execute a permissioned update")
       const middleware = new ethers.Contract(middlewareAddress, contractABI, wallet);
       const token = new ethers.Contract(tokenAddress, tokenABI, wallet);
 
-      const amount = ethers.BigNumber.from("1000000000000000000");
+      const value = 100;
 
-      // 1) mint some tokens 
-      async function mint() {
-        let unsignedTx = await token.populateTransaction.mint(
-          walletAddress,
-          amount
-        );
-        let txResponse = await wallet.sendTransaction(unsignedTx);
-        return await txResponse.wait();
-      }
-
-      // 2) approve the token transfer
-      async function approve() {
-        let unsignedTx = await token.populateTransaction.approve(
-          contractAddress,
-          amount
-        );
-        let txResponse = await wallet.sendTransaction(unsignedTx);
-        return await txResponse.wait();
-      }
-                  
-      // 3) execute the permissionless update 
+      // 1) execute the permissioned update 
       async function update() {
         let unsignedTx = await xPermissioned.populateTransaction.update(
           walletAddress,
           tokenAddress,
           3000,
           2000,
-          amount);
+          value);
         unsignedTx.gasLimit = ethers.BigNumber.from("30000000"); 
         let txResponse = await wallet.sendTransaction(unsignedTx);
         return await txResponse.wait();
       }
 
-      let minted = await mint();
-      console.log(minted.status == 1 ? "Successful mint" : "Failed mint");
-      let approved = await approve();
-      console.log(approved.status == 1 ? "Successful approve" : "Failed approve");
       let updated = await update();
       console.log(updated.status == 1 ? "Successful update" : "Failed update"); 
     });

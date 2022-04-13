@@ -25,7 +25,7 @@ contract Middleware {
    * Intermediate function for calling a target contract.
    @dev Checks that the originating call is from the correct domain and sender.
    */
-  function updateValue(IPermissionedTarget target, address asset, uint256 value) external returns (uint256) {
+  function updateValue(IPermissionedTarget target, uint256 newValue) external returns (uint256) {
     require(
       // origin domain of the source contract 
       IExecutor(msg.sender).origin() == originDomain,
@@ -37,6 +37,6 @@ contract Middleware {
       "Expected origin domain contract"
     );
 
-    target.updateValue(value);
+    target.updateValue(newValue);
   }
 }
