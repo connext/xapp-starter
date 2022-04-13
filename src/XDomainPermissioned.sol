@@ -2,7 +2,6 @@
 pragma solidity ^0.8.10;
 
 import {IConnext} from "nxtp/interfaces/IConnext.sol";
-import {ERC20} from "@solmate/tokens/ERC20.sol";
 
 /**
  * @title XDomainPermissioned
@@ -28,15 +27,6 @@ contract XDomainPermissioned {
     uint32 destinationDomain,
     uint256 amount
   ) external payable {
-    ERC20 token = ERC20(asset);
-    require(token.allowance(msg.sender, address(this)) >= amount, "User must approve amount");
-
-    // User sends funds to this contract
-    token.transferFrom(msg.sender, address(this), amount);
-
-    // This contract approves transfer to Connext
-    token.approve(address(connext), amount);
-
     // Encode function of the target contract
     // In this case, the target function is an intermediate function in Middleware.sol
     bytes4 selector = bytes4(
@@ -56,7 +46,7 @@ contract XDomainPermissioned {
     IConnext.XCallArgs memory xcallArgs = IConnext.XCallArgs({
       params: callParams,
       transactingAssetId: asset,
-      amount: amount
+      amount: 0
     });
 
     connext.xcall(xcallArgs);

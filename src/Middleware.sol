@@ -10,8 +10,6 @@ import {IPermissionedTarget} from "./PermissionedTarget.sol";
  * @notice A middleware contract to check permissioned functions.
  */
 contract Middleware {
-  mapping(address => mapping(address => uint256)) public balances;
-  
   // The address of xDomainPermissioned.sol
   address public originContract;
 
@@ -40,7 +38,5 @@ contract Middleware {
     );
 
     target.updateValue(value);
-
-    return balances[asset][msg.sender];
   }
 }
