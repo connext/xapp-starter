@@ -31,6 +31,7 @@ Example use cases:
 
 Contracts:
 - XDomainPermissionless.sol
+- Target.sol
 
 ![XDomainPermissionless](documentation/assets/XDomainPermissionless.png)
 
@@ -38,14 +39,21 @@ Contracts:
 
 Transfer funds and/or call a target contract with arbitrary calldata on the Receiving Chain. With permissioned calls, middleware contracts may be needed to run `msg.sender` checks. 
 
+Example use cases:
+- Hold a governance vote on Sending Chaina and execute the outcome of it on the Receiving Chain 
+
 Contracts:
-- [TODO]
+- XDomainPermissioned.sol
+- Middleware.sol
+- PermissionedTarget.sol
+
+![XDomainPermissioned](documentation/assets/XDomainPermissioned.png)
 
 # Development
 
 ## Getting Started
 
-This project uses Foundry for testing smart contracts and Hardhat for deploying them.
+This project uses Foundry for testing and deploying contracts. Hardhat tasks are used for interacting with deployed contracts.
 
 - See the official Foundry installation [instructions](https://github.com/gakonst/foundry/blob/master/README.md#installation).
 - [Forge template](https://github.com/abigger87/femplate) by abigger87.
@@ -55,29 +63,20 @@ This project uses Foundry for testing smart contracts and Hardhat for deploying 
 ```ml
 src
 ├─ tests
-│  └─ unit 
-│     └─ XDomainTransfer.t.sol — "XDomainTransfer Unit Tests"
-│     └─ XDomainPermissionless.t.sol — "XDomainPermissionless Unit Tests"
-│  └─ integration
-|     └─ XDomainTransferForked.t.sol — "XDomainTransfer Integration Tests"
-|     └─ XDomainPermissionlessForked.t.sol — "XDomainPermissionless Integration Tests"
-└─ Target.sol — "A contrived Target Contract"
+│  └─ XDomainTransfer.t.sol — "XDomainTransfer Unit Tests"
+│  └─ XDomainPermissionless.t.sol — "XDomainPermissionless Unit Tests"
+│  └─ XDomainPermissioned.t.sol — "XDomainPermissioned Unit Tests"
 └─ XDomainTransfer.sol — "An XDomainTransfer Contract"
 └─ XDomainPermissionless.sol — "An XDomainPermissionless Contract"
+└─ XDomainPermissioned.sol — "An XDomainPermissioned Contract"
+└─ Target.sol — "A contrived target contract for permissionless flow"
+└─ PermissionedTarget.sol — "A contrived target contract for permissioned flow"
+└─ Middleware.sol — "A middleware contract for permissioned flow"
 ```
 ## Setup
 ```bash
 make
 ```
-
-> If you are using an M1 mac, follow the instructions for installing Nix and dapptools [here](https://github.com/dapphub/dapptools). Double check that `/etc/nix/nix.conf` contains `system = x86_64-darwin`.
->
-> During `make`, you may run into this error message: 
-> ```
-> error: file 'REPEAT' was not found in the Nix search path (add it using $NIX_PATH or -I)
-> ```
->
-> This GitHub issue [comment](https://github.com/NixOS/nixpkgs/issues/163374#issuecomment-1062480297) should help.
 
 ## Testing
 
@@ -116,9 +115,14 @@ yarn hardhat transfer --contract-address <XDomainTransfer> --token-address <Test
 For the Permissionless Deposit example:
 
 ```
-yarn hardhat permissionless --contract-address <XDomainPermissionless> --token-address <TestERC20> --wallet-address <your-wallet> --wallet-private-key <your-private-key>
+yarn hardhat deposit --contract-address <XDomainPermissionless> --token-address <TestERC20> --wallet-address <your-wallet> --wallet-private-key <your-private-key>
 ```
 
+For the Permissioned Update example:
+
+```
+yarn hardhat update --contract-address <XDomainPermissioned> --token-address <TestERC20> --wallet-address <your-wallet> --wallet-private-key <your-private-key>
+```
 ### Deployment
 
 This command will allow you to deploy contracts in this repository using the RPC provider of your choice.
