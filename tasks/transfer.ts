@@ -69,4 +69,5 @@ export default task("transfer", "Execute a transfer")
       console.log(approved.status == 1 ? "Successful approve" : "Failed approve");
       let transferred = await transfer();
       console.log(transferred.status == 1 ? "Successful transfer" : "Failed transfer"); 
+      console.log(`Transaction hash: `, transferred.transactionHash); 
     });

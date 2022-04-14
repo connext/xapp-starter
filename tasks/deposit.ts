@@ -69,4 +69,5 @@ export default task("deposit", "Execute a permissionless deposit")
       console.log(approved.status == 1 ? "Successful approve" : "Failed approve");
       let deposited = await deposit();
       console.log(deposited.status == 1 ? "Successful deposit" : "Failed deposit"); 
+      console.log(`Transaction hash: `, deposited.transactionHash); 
     });

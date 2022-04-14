@@ -47,4 +47,5 @@ export default task("update", "Execute a permissioned update")
 
       let updated = await update();
       console.log(updated.status == 1 ? "Successful update" : "Failed update"); 
+      console.log(`Trasaction hash: `, updated.transactionHash); 
     });
