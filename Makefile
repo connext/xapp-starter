@@ -38,7 +38,7 @@ test-forked-permissioned :; forge clean && forge test --match-contract "XDomainP
 deploy-testnet :; ./scripts/deploy_testnet.sh
 
 # Lints
-lint :; prettier --write src/**/*.sol && prettier --write src/*.sol
+lint :; prettier --write src/**/*.sol && prettier --write src/**/*.sol
 
 # Generate Gas Snapshots
 snapshot :; forge clean && forge snapshot --optimize --optimize-runs 1000000
