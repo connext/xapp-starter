@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.10;
 
-import {XDomainPermissionless} from "../XDomainPermissionless.sol";
+import {XDomainPermissionless} from "../../permissionless/XDomainPermissionless.sol";
 import {IConnext} from "nxtp/interfaces/IConnext.sol";
 import {Connext} from "nxtp/Connext.sol";
-import {DSTestPlus} from "./utils/DSTestPlus.sol";
+import {DSTestPlus} from "../utils/DSTestPlus.sol";
 import {ERC20User} from "@solmate/test/utils/users/ERC20User.sol";
 import {MockERC20} from "@solmate/test/utils/mocks/MockERC20.sol";
 

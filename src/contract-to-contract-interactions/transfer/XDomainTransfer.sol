@@ -5,11 +5,11 @@ import {IConnext} from "nxtp/interfaces/IConnext.sol";
 import {ERC20} from "@solmate/tokens/ERC20.sol";
 
 /**
- * @title XDomainPermissionless
- * @notice Example of a cross-domain permissionless call.
+ * @title XDomainTransfer
+ * @notice Example of a cross-domain transfer.
  */
-contract XDomainPermissionless {
-  event DepositInitiated(address asset, uint256 amount, address onBehalfOf);
+contract XDomainTransfer {
+  event TransferInitiated(address asset, address from, address to);
 
   IConnext public immutable connext;
 
@@ -18,16 +18,19 @@ contract XDomainPermissionless {
   }
 
   /**
-   * Deposit funds from one chain to another.
-   @dev Initiates the Connext bridging flow with calldata to be used on the target contract.
-   */
-  function deposit(
+  * Simple transfer of funds.
+  * @notice This simple example is not terribly useful in practice but it demonstrates  
+  *         how to use `xcall` to transfer funds from a user on one chain to a receiving  
+  *         address on another.
+  * @dev For list of Nomad Domain IDs, see: https://docs.nomad.xyz/bridge/domains.html
+  */
+  function transfer(
     address to,
     address asset,
     uint32 originDomain,
     uint32 destinationDomain,
     uint256 amount
-  ) external payable {
+  ) external {
     ERC20 token = ERC20(asset);
     require(token.allowance(msg.sender, address(this)) >= amount, "User must approve amount");
 
@@ -37,22 +40,10 @@ contract XDomainPermissionless {
     // This contract approves transfer to Connext
     token.approve(address(connext), amount);
 
-    // Encode function of the target contract (from Target.sol)
-    // In this case: deposit(address asset, uint256 amount, address onBehalfOf)
-    bytes4 selector = bytes4(
-      keccak256("deposit(address,uint256,address)")
-    );
-  
-    bytes memory callData = abi.encodeWithSelector(
-      selector,
-      asset,
-      amount,
-      msg.sender
-    );
-
+    // Empty callData because this is a simple transfer of funds
     IConnext.CallParams memory callParams = IConnext.CallParams({
       to: to,
-      callData: callData,
+      callData: "",
       originDomain: originDomain,
       destinationDomain: destinationDomain
     });
@@ -65,6 +56,6 @@ contract XDomainPermissionless {
 
     connext.xcall(xcallArgs);
 
-    emit DepositInitiated(asset, amount, msg.sender);
+    emit TransferInitiated(asset, msg.sender, to);
   }
 }

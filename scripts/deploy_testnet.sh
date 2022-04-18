@@ -2,7 +2,7 @@
 
 # Read the Testnet RPC URL
 echo Enter Your Testnet RPC URL:
-echo Example: "https://eth-rinkeby.alchemyapi.io/v2/XXXXXXXXXX"
+echo Example: "https://eth-<network>.alchemyapi.io/v2/<key>"
 read -s rpc
 
 # Read the contract name
