@@ -10,6 +10,8 @@ With Connext's upgraded protocol, there are generally three types of bridging tr
 
 This starter repo contains contracts that demonstrate how to use each type of transaction.
 
+<img src="documentation/assets/xcall.png" alt="drawing" width="500"/>
+
 ## XDomainTransfer
 
 Simple transfer from Sending Chain to Receiving Chain. Does not use calldata. 
@@ -20,34 +22,35 @@ Example use cases:
 Contracts:
 - XDomainTransfer.sol
 
-![XDomainTransfer](documentation/assets/XDomainTransfer.png)
-
 ## XDomainPermissionless
 
-Transfer funds and/or call a target contract with arbitrary calldata on the Receiving Chain. Assuming the receiving side is a permissionless call, this flow is essentially the same as a simple transfer except encoded calldata is included in the `xcall`.
+Transfer funds and/or call a target contract with arbitrary calldata on the Receiving Chain. Assuming the receiving side is a permissionless call, this flow is essentially the same as a simple transfer except encoded calldata is included in the `xcall`. The call can simply use `amount: 0` if no transfer is required.
 
 Example use cases:
-- Deposit funds from Sending Chain into a liquidity pool on the Receiving Chain
+- Deposit funds into a liquidity pool on the Receiving Chain
+- Execute a token Swap on the Receiving Chain
 
 Contracts:
 - XDomainPermissionless.sol
-- Target.sol
-
-![XDomainPermissionless](documentation/assets/XDomainPermissionless.png)
+- PermissionlessTarget.sol
 
 ## XDomainPermissioned
 
-Transfer funds and/or call a target contract with arbitrary calldata on the Receiving Chain. With permissioned calls, middleware contracts may be needed to run `msg.sender` checks. 
+Like permissionless, call a target contract with arbitrary calldata on the Receiving Chain. Except, the target function is permissioned which means the contract owner must make sure to check the origin in order to uphold permissioning requirements.
 
 Example use cases:
-- Hold a governance vote on Sending Chaina and execute the outcome of it on the Receiving Chain 
+- Hold a governance vote on Sending Chain and execute the outcome of it on the Receiving Chain (and other DAO operations)
+- Lock-and-mint or burn-and-mint token bridging
+- Connecting DEX liquidity across chains in a single seamless transaction
+- Crosschain vault zaps and vault strategy management
+- Critical protocol operations such as replicating/syncing global constants (e.g. PCV) across chains
+- Bringing UniV3 TWAPs to every chain without introducing oracles
+- Chain-agnostic veToken governance
+- Metaverse-to-metaverse interoperability
 
 Contracts:
 - XDomainPermissioned.sol
-- Middleware.sol
 - PermissionedTarget.sol
-
-![XDomainPermissioned](documentation/assets/XDomainPermissioned.png)
 
 # Development
 
@@ -62,10 +65,19 @@ This project uses Foundry for testing and deploying contracts. Hardhat tasks are
 
 ```ml
 src
-├─ tests
-│  └─ XDomainTransfer.t.sol — "XDomainTransfer Unit Tests"
-│  └─ XDomainPermissionless.t.sol — "XDomainPermissionless Unit Tests"
-│  └─ XDomainPermissioned.t.sol — "XDomainPermissioned Unit Tests"
+├─ contract-to-contract-interactions
+|  └─ transfer
+|  └─ permissionless
+|  └─ permissioned
+|  └─ tests
+│    └─ transfer 
+│      └─ XDomainTransfer.t.sol — "XDomainTransfer Unit Tests"
+│    └─ permissionless 
+│      └─ XDomainPermissionless.t.sol — "XDomainPermissionless Unit Tests" 
+│    └─ permissioned 
+│      └─ XDomainPermissioned.t.sol — "XDomainPermissioned Unit Tests"
+├─ sdk-interactions
+
 └─ XDomainTransfer.sol — "An XDomainTransfer Contract"
 └─ XDomainPermissionless.sol — "An XDomainPermissionless Contract"
 └─ XDomainPermissioned.sol — "An XDomainPermissioned Contract"
@@ -130,3 +142,11 @@ This command will allow you to deploy contracts in this repository using the RPC
 ```
 make deploy-testnet
 ```
+
+Deployment order for permissioned:
+- XDomainPermissioned (requires Connext contract address), deploy to Kovan
+- Middleware, (requires XDomainPermissioned contract address and origin domain) deploy to Rinkeby
+- PermissionedTarget
+
+Deployed:
+- XDomainTransfer: 0x8421de5bc3fd8465444163e3862c49fafb0fed50
