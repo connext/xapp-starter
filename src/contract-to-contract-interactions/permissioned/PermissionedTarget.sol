@@ -25,9 +25,9 @@ contract PermissionedTarget is Ownable {
 
   // Permissioned function
   function updateValue(uint256 newValue) external onlyOwner {
-    // Note: This is an important security consideration. If your target contract
-    //       function is meant to be permissioned, it must check for the that the
-    //       originating call is from the correct domain and sender.
+    // Note: This is an important security consideration. If your target
+    //       contract function is meant to be permissioned, it must check 
+    //       that the originating call is from the correct domain and sender.
     require(
       // origin domain of the source contract
       IExecutor(msg.sender).origin() == originDomain,
