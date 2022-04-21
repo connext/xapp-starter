@@ -18,9 +18,9 @@ contract XDomainPermissionless {
   }
 
   /**
-   * Call a function on a target contract, permissionlessly. 
+   * Call a function on a target contract, permissionlessly.
    * @notice Uses calldata in an `xcall` to execute a function on a Target contract. This
-  *          contract assists with encoding function selector 
+   *          contract assists with encoding function selector
    * @dev Initiates the Connext bridging flow with calldata to be used on the target contract.
    */
   function deposit(
@@ -31,7 +31,10 @@ contract XDomainPermissionless {
     uint256 amount
   ) external payable {
     ERC20 token = ERC20(asset);
-    require(token.allowance(msg.sender, address(this)) >= amount, "User must approve amount");
+    require(
+      token.allowance(msg.sender, address(this)) >= amount,
+      "User must approve amount"
+    );
 
     // User sends funds to this contract
     token.transferFrom(msg.sender, address(this), amount);
@@ -39,12 +42,10 @@ contract XDomainPermissionless {
     // This contract approves transfer to Connext
     token.approve(address(connext), amount);
 
-    // Encode function of the target contract (from Target.sol)
+    // Encode function of the target contract (from PermissionlessTarget.sol)
     // In this case: deposit(address asset, uint256 amount, address onBehalfOf)
-    bytes4 selector = bytes4(
-      keccak256("deposit(address,uint256,address)")
-    );
-  
+    bytes4 selector = bytes4(keccak256("deposit(address,uint256,address)"));
+
     bytes memory callData = abi.encodeWithSelector(
       selector,
       asset,

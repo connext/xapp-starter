@@ -16,7 +16,7 @@ contract XDomainTransferTestUnit is DSTestPlus {
   MockERC20 private token;
   IConnext private connext;
   XDomainTransfer private xTransfer;
-  
+
   event TransferInitiated(address asset, address from, address to);
 
   function setUp() public {
@@ -46,7 +46,7 @@ contract XDomainTransferTestUnit is DSTestPlus {
       token.balanceOf(address(userChainA))
     );
 
-    // User must approve transfer to xTransfer 
+    // User must approve transfer to xTransfer
     userChainA.approve(address(xTransfer), amount);
 
     // Mock the xcall
@@ -55,7 +55,11 @@ contract XDomainTransferTestUnit is DSTestPlus {
 
     // Check for an event emitted
     vm.expectEmit(true, true, true, true);
-    emit TransferInitiated(address(token), address(userChainA), address(userChainB));
+    emit TransferInitiated(
+      address(token),
+      address(userChainA),
+      address(userChainB)
+    );
 
     vm.prank(address(userChainA));
     xTransfer.transfer(
@@ -75,11 +79,12 @@ contract XDomainTransferTestUnit is DSTestPlus {
 contract XDomainTransferTestForked is DSTestPlus {
   // Testnet Addresses
   address private connext = 0xA09C4Dd04fd656d2ED0ee1c95A1cB14B921296A8;
-  address private constant testToken = 0xB5AabB55385bfBe31D627E2A717a7B189ddA4F8F;
+  address private constant testToken =
+    0xB5AabB55385bfBe31D627E2A717a7B189ddA4F8F;
 
   XDomainTransfer private xTransfer;
   MockERC20 private token;
-  
+
   event TransferInitiated(address asset, address from, address to);
 
   function setUp() public {
@@ -108,11 +113,15 @@ contract XDomainTransferTestForked is DSTestPlus {
       token.balanceOf(address(userChainA))
     );
 
-    // User must approve transfer to xTransfer 
+    // User must approve transfer to xTransfer
     userChainA.approve(address(xTransfer), amount);
 
     vm.expectEmit(true, true, true, true);
-    emit TransferInitiated(address(token), address(userChainA), address(userChainB));
+    emit TransferInitiated(
+      address(token),
+      address(userChainA),
+      address(userChainB)
+    );
 
     vm.prank(address(userChainA));
     xTransfer.transfer(

@@ -18,12 +18,12 @@ contract XDomainTransfer {
   }
 
   /**
-  * Simple transfer of funds.
-  * @notice This simple example is not terribly useful in practice but it demonstrates  
-  *         how to use `xcall` to transfer funds from a user on one chain to a receiving  
-  *         address on another.
-  * @dev For list of Nomad Domain IDs, see: https://docs.nomad.xyz/bridge/domains.html
-  */
+   * Simple transfer of funds.
+   * @notice This simple example is not terribly useful in practice but it demonstrates
+   *         how to use `xcall` to transfer funds from a user on one chain to a receiving
+   *         address on another.
+   * @dev For list of Nomad Domain IDs, see: https://docs.nomad.xyz/bridge/domains.html
+   */
   function transfer(
     address to,
     address asset,
@@ -32,7 +32,10 @@ contract XDomainTransfer {
     uint256 amount
   ) external {
     ERC20 token = ERC20(asset);
-    require(token.allowance(msg.sender, address(this)) >= amount, "User must approve amount");
+    require(
+      token.allowance(msg.sender, address(this)) >= amount,
+      "User must approve amount"
+    );
 
     // User sends funds to this contract
     token.transferFrom(msg.sender, address(this), amount);

@@ -51,7 +51,7 @@ contract XDomainPermissionlessTestUnit is DSTestPlus {
     // Mock the xcall
     bytes memory mockxcall = abi.encodeWithSelector(connext.xcall.selector);
     vm.mockCall(address(connext), mockxcall, abi.encode(1));
-    
+
     // Check for an event emitted
     vm.expectEmit(true, true, true, true);
     emit DepositInitiated(address(token), amount, address(userChainA));
@@ -80,7 +80,11 @@ contract XDomainPermissionlessTestForked is DSTestPlus {
   XDomainPermissionless private xPermissionless;
   MockERC20 private token;
 
-  event PermissionlessInitiated(address asset, uint256 amount, address onBehalfOf);
+  event PermissionlessInitiated(
+    address asset,
+    uint256 amount,
+    address onBehalfOf
+  );
 
   function setUp() public {
     xPermissionless = new XDomainPermissionless(IConnext(connext));
@@ -106,7 +110,7 @@ contract XDomainPermissionlessTestForked is DSTestPlus {
       token.balanceOf(address(userChainA))
     );
 
-    // User must approve transfer to xPermissionless 
+    // User must approve transfer to xPermissionless
     userChainA.approve(address(xPermissionless), amount);
 
     vm.expectEmit(true, true, true, true);

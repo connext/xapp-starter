@@ -40,7 +40,7 @@ contract XDomainPermissionedTestUnit is DSTestPlus {
     // Mock the xcall
     bytes memory mockxcall = abi.encodeWithSelector(connext.xcall.selector);
     vm.mockCall(address(connext), mockxcall, abi.encode(1));
-    
+
     // Check for an event emitted
     vm.expectEmit(true, true, true, true);
     emit UpdateInitiated(address(token), newValue, address(userChainA));

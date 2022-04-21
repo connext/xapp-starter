@@ -1,9 +1,8 @@
 {
-    "name": "xapp-with-femplate",
-    "description": "Robust Template for Foundry Projects",
-    "author": "Andreas Bigger <andreas@nascent.xyz>",
-    "license": "AGPL-3.0-only",
-    "version": "1.5.0",
+    "name": "@connext/xapp-starter",
+    "description": "xApp Starter Kit",
+    "version": "0.1.0",
+    "private": true,
     "files": [
         "src/**/*.sol"
     ],

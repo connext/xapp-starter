@@ -11,9 +11,13 @@ contract Target {
   mapping(address => mapping(address => uint256)) public balances;
 
   // Permissionless function - anyone can deposit funds into any address
-  function deposit(address asset, uint256 amount, address onBehalfOf) public payable returns (uint256) {
+  function deposit(
+    address asset,
+    uint256 amount,
+    address onBehalfOf
+  ) public payable returns (uint256) {
     ERC20 token = ERC20(asset);
-    balances[asset][onBehalfOf] += amount;      
+    balances[asset][onBehalfOf] += amount;
     token.transferFrom(msg.sender, address(this), amount);
 
     return balances[asset][onBehalfOf];
@@ -29,7 +33,11 @@ contract Target {
     return balances[asset][msg.sender];
   }
 
-  function balance(address asset, address depositor) public view returns (uint256) {
+  function balance(address asset, address depositor)
+    public
+    view
+    returns (uint256)
+  {
     return balances[asset][depositor];
   }
 }

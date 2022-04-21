@@ -27,15 +27,10 @@ contract XDomainPermissioned {
     uint32 destinationDomain,
     uint256 newValue
   ) external payable {
-    // Encode function of the target contract
-    // In this case, the target function is an intermediate function in Middleware.sol
-    bytes4 selector = bytes4(
-      keccak256("updateValue(uint256)")
-    );
-    bytes memory callData = abi.encodeWithSelector(
-      selector,
-      newValue
-    );
+    // Encode function of the target contract (from PermissionedTarget.sol)
+    // In this case: updateValue(uint256 newValue)
+    bytes4 selector = bytes4(keccak256("updateValue(uint256)"));
+    bytes memory callData = abi.encodeWithSelector(selector, newValue);
 
     IConnext.CallParams memory callParams = IConnext.CallParams({
       to: to,
@@ -47,7 +42,7 @@ contract XDomainPermissioned {
     IConnext.XCallArgs memory xcallArgs = IConnext.XCallArgs({
       params: callParams,
       transactingAssetId: asset,
-      amount: 0 
+      amount: 0
     });
 
     connext.xcall(xcallArgs);
