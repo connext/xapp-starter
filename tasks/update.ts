@@ -37,8 +37,8 @@ export default task("update", "Execute a permissioned update")
         let unsignedTx = await xPermissioned.populateTransaction.update(
           walletAddress,
           tokenAddress,
-          3000,
-          2000,
+          2221,
+          1111,
           value);
         unsignedTx.gasLimit = ethers.BigNumber.from("30000000"); 
         let txResponse = await wallet.sendTransaction(unsignedTx);

@@ -55,8 +55,8 @@ export default task("deposit", "Execute a permissionless deposit")
         let unsignedTx = await xPermissionless.populateTransaction.deposit(
           walletAddress,
           tokenAddress,
-          3000,
-          2000,
+          2221,
+          1111,
           amount);
         unsignedTx.gasLimit = ethers.BigNumber.from("30000000"); 
         let txResponse = await wallet.sendTransaction(unsignedTx);

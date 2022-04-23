@@ -55,8 +55,8 @@ export default task("transfer", "Execute a transfer")
         let unsignedTx = await xTransfer.populateTransaction.transfer(
           walletAddress,
           tokenAddress,
-          3000,
-          2000,
+          2221,
+          1111,
           amount);
         unsignedTx.gasLimit = ethers.BigNumber.from("30000000"); 
         let txResponse = await wallet.sendTransaction(unsignedTx);
