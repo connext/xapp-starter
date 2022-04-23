@@ -81,7 +81,7 @@ src
 ```
 ## Setup
 ```bash
-make
+make install
 ```
 
 ## Testing
