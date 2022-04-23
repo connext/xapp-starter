@@ -67,23 +67,17 @@ This project uses Foundry for testing and deploying contracts. Hardhat tasks are
 src
 ├─ contract-to-contract-interactions
 |  └─ transfer
+│    └─ XDomainTransfer.sol — "XDomainTransfer Contract"
 |  └─ permissionless
+│    └─ XDomainPermissionless.sol — "XDomainPermissionless Contract"
+│    └─ PermissionlessTarget.sol — "Target Contract"
 |  └─ permissioned
+│    └─ XDomainPermissioned.sol — "XDomainPermissioned Contract"
+│    └─ PermissionedTarget.sol — "Target Contract"
 |  └─ tests
-│    └─ transfer 
-│      └─ XDomainTransfer.t.sol — "XDomainTransfer Unit Tests"
-│    └─ permissionless 
-│      └─ XDomainPermissionless.t.sol — "XDomainPermissionless Unit Tests" 
-│    └─ permissioned 
-│      └─ XDomainPermissioned.t.sol — "XDomainPermissioned Unit Tests"
+│    └─ ...
 ├─ sdk-interactions
-
-└─ XDomainTransfer.sol — "An XDomainTransfer Contract"
-└─ XDomainPermissionless.sol — "An XDomainPermissionless Contract"
-└─ XDomainPermissioned.sol — "An XDomainPermissioned Contract"
-└─ Target.sol — "A contrived target contract for permissionless flow"
-└─ PermissionedTarget.sol — "A contrived target contract for permissioned flow"
-└─ Middleware.sol — "A middleware contract for permissioned flow"
+│    └─ ...
 ```
 ## Setup
 ```bash
@@ -143,10 +137,13 @@ This command will allow you to deploy contracts in this repository using the RPC
 make deploy-testnet
 ```
 
+Deployment order for transfer:
+- XDomainTransfer (requires Connext contract address), deploy to Kovan 
+
+Deployment order for permissionless:
+- XDomainPermissionless (requires Connext contract address), deploy to Kovan
+- PermissionlessTarget, deploy to Rinkeby 
+
 Deployment order for permissioned:
 - XDomainPermissioned (requires Connext contract address), deploy to Kovan
-- Middleware, (requires XDomainPermissioned contract address and origin domain) deploy to Rinkeby
-- PermissionedTarget
-
-Deployed:
-- XDomainTransfer: 0x8421de5bc3fd8465444163e3862c49fafb0fed50
+- PermissionedTarget, deploy to Rinkeby
