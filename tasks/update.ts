@@ -8,11 +8,13 @@ export default task("update", "Execute a permissioned update")
   .addParam("contractAddress", "The address of the XDomainPermissioned contract")
   .addParam("middlewareAddress", "The address of the Middleware contract")
   .addParam("tokenAddress", "The address of the TestERC20")
+  .addParam("originDomain", "The domain ID of the sending chain")
+  .addParam("destinationDomain", "The domain ID of the receiving chain")
   .addParam("walletAddress", "The address of the signing wallet")
   .addParam("walletPrivateKey", "The private key of the signing wallet")
   .setAction(
     async (
-      { contractAddress, middlewareAddress, tokenAddress, walletAddress, walletPrivateKey }
+      { contractAddress, middlewareAddress, tokenAddress, originDomain, destinationDomain, walletAddress, walletPrivateKey }
     ) => {
       const contractABI = [
         "event UpdateInitiated(address asset, uint256 amount, address onBehalfOf)",
@@ -24,7 +26,7 @@ export default task("update", "Execute a permissioned update")
         "function approve(address spender, uint256 amount)"
       ]
      
-      const provider = new ethers.providers.JsonRpcProvider(process.env.RPC_URL_KOVAN);
+      const provider = new ethers.providers.JsonRpcProvider(process.env.TESTNET_ORIGIN_RPC_URL);
       const wallet = new ethers.Wallet(walletPrivateKey, provider);
       const xPermissioned = new ethers.Contract(contractAddress, contractABI, wallet);
       const middleware = new ethers.Contract(middlewareAddress, contractABI, wallet);
@@ -37,8 +39,8 @@ export default task("update", "Execute a permissioned update")
         let unsignedTx = await xPermissioned.populateTransaction.update(
           walletAddress,
           tokenAddress,
-          2221,
-          1111,
+          originDomain,
+          destinationDomain,
           value);
         unsignedTx.gasLimit = ethers.BigNumber.from("30000000"); 
         let txResponse = await wallet.sendTransaction(unsignedTx);
