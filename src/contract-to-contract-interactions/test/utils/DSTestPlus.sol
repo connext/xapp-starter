@@ -6,10 +6,9 @@ import {XConsole} from "./Console.sol";
 import "@ds/test.sol";
 import {ERC20} from "@solmate/tokens/ERC20.sol";
 
-import "@std/stdlib.sol";
 import {Vm} from "@std/Vm.sol";
 
-contract DSTestPlus is DSTest, stdCheats {
+contract DSTestPlus is DSTest {
     XConsole console = new XConsole();
 
     // Nomad Domain IDs

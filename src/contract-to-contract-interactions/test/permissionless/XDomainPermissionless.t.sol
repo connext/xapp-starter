@@ -2,10 +2,9 @@
 pragma solidity ^0.8.10;
 
 import {XDomainPermissionless} from "../../permissionless/XDomainPermissionless.sol";
-import {IConnext} from "nxtp/interfaces/IConnext.sol";
-import {Connext} from "nxtp/Connext.sol";
+import {IConnextHandler} from "nxtp/interfaces/IConnextHandler.sol";
+import {ConnextHandler} from "nxtp/nomad-xapps/contracts/connext/ConnextHandler.sol";
 import {DSTestPlus} from "../utils/DSTestPlus.sol";
-import {ERC20User} from "@solmate/test/utils/users/ERC20User.sol";
 import {MockERC20} from "@solmate/test/utils/mocks/MockERC20.sol";
 
 /**
@@ -14,16 +13,16 @@ import {MockERC20} from "@solmate/test/utils/mocks/MockERC20.sol";
  */
 contract XDomainPermissionlessTestUnit is DSTestPlus {
   MockERC20 private token;
-  IConnext private connext;
+  IConnextHandler private connext;
   XDomainPermissionless private xPermissionless;
   address private target = address(1);
 
   event DepositInitiated(address asset, uint256 amount, address onBehalfOf);
 
   function setUp() public {
-    connext = new Connext();
+    connext = new ConnextHandler();
     token = new MockERC20("TestToken", "TT", 18);
-    xPermissionless = new XDomainPermissionless(IConnext(connext));
+    xPermissionless = new XDomainPermissionless(IConnextHandler(connext));
 
     vm.label(address(this), "TestContract");
     vm.label(address(connext), "Connext");
@@ -32,7 +31,7 @@ contract XDomainPermissionlessTestUnit is DSTestPlus {
   }
 
   function testDepositEmitsDepositInitiated() public {
-    ERC20User userChainA = new ERC20User(token);
+    address userChainA = address(0xA);
     vm.label(address(userChainA), "userChainA");
 
     // TODO: fuzz this
@@ -46,7 +45,8 @@ contract XDomainPermissionlessTestUnit is DSTestPlus {
     );
 
     // User must approve transfer to xPermissionless
-    userChainA.approve(address(xPermissionless), amount);
+    vm.prank(userChainA);
+    token.approve(address(xPermissionless), amount);
 
     // Mock the xcall
     bytes memory mockxcall = abi.encodeWithSelector(connext.xcall.selector);
@@ -87,7 +87,7 @@ contract XDomainPermissionlessTestForked is DSTestPlus {
   );
 
   function setUp() public {
-    xPermissionless = new XDomainPermissionless(IConnext(connext));
+    xPermissionless = new XDomainPermissionless(IConnextHandler(connext));
     token = MockERC20(0xB5AabB55385bfBe31D627E2A717a7B189ddA4F8F);
 
     vm.label(connext, "Connext");
@@ -97,7 +97,7 @@ contract XDomainPermissionlessTestForked is DSTestPlus {
   }
 
   function testDepositEmitsPermissionlessInitiated() public {
-    ERC20User userChainA = new ERC20User(token);
+    address userChainA = address(0xA);
     vm.label(address(userChainA), "userChainA");
 
     // TODO: fuzz this
@@ -111,7 +111,8 @@ contract XDomainPermissionlessTestForked is DSTestPlus {
     );
 
     // User must approve transfer to xPermissionless
-    userChainA.approve(address(xPermissionless), amount);
+    vm.prank(userChainA);
+    token.approve(address(xPermissionless), amount);
 
     vm.expectEmit(true, true, true, true);
     emit PermissionlessInitiated(testToken, amount, address(userChainA));

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.10;
 
-import {IConnext} from "nxtp/interfaces/IConnext.sol";
+import {IConnextHandler} from "nxtp/interfaces/IConnextHandler.sol";
 import {ERC20} from "@solmate/tokens/ERC20.sol";
 
 /**
@@ -11,9 +11,9 @@ import {ERC20} from "@solmate/tokens/ERC20.sol";
 contract XDomainTransfer {
   event TransferInitiated(address asset, address from, address to);
 
-  IConnext public immutable connext;
+  IConnextHandler public immutable connext;
 
-  constructor(IConnext _connext) {
+  constructor(IConnextHandler _connext) {
     connext = _connext;
   }
 
@@ -44,17 +44,18 @@ contract XDomainTransfer {
     token.approve(address(connext), amount);
 
     // Empty callData because this is a simple transfer of funds
-    IConnext.CallParams memory callParams = IConnext.CallParams({
+    IConnextHandler.CallParams memory callParams = IConnextHandler.CallParams({
       to: to,
       callData: "",
       originDomain: originDomain,
       destinationDomain: destinationDomain
     });
 
-    IConnext.XCallArgs memory xcallArgs = IConnext.XCallArgs({
+    IConnextHandler.XCallArgs memory xcallArgs = IConnextHandler.XCallArgs({
       params: callParams,
       transactingAssetId: asset,
-      amount: amount
+      amount: amount,
+      relayerFee: 0
     });
 
     connext.xcall(xcallArgs);

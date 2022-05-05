@@ -104,46 +104,60 @@ make test-forked-permissionless
 make test-forked-permissioned
 ```
 
-### Live Testnet Testing
-
-The core set of Connext + Nomad contracts have already been deployed to testnet. For the most up-to-date contracts, please reference the [Connext deployments](https://github.com/connext/nxtp/tree/amarok/packages/deployments/contracts/deployments).
-
-To deploy xapp contracts to testnet, see the Deployment section below.
-
-There is a set of Hardhat tasks available for executing transactions on deployed contracts.
-
-For the Simple Transfer example:
-
-```
-yarn hardhat transfer --contract-address <XDomainTransfer> --token-address <TestERC20> --wallet-address <your-wallet> --wallet-private-key <your-private-key>
-```
-
-For the Permissionless Deposit example:
-
-```
-yarn hardhat deposit --contract-address <XDomainPermissionless> --token-address <TestERC20> --wallet-address <your-wallet> --wallet-private-key <your-private-key>
-```
-
-For the Permissioned Update example:
-
-```
-yarn hardhat update --contract-address <XDomainPermissioned> --middleware-address <Middleware> --token-address <TestERC20> --wallet-address <your-wallet> --wallet-private-key <your-private-key>
-```
 ### Deployment
 
 This command will allow you to deploy contracts in this repository using the RPC provider of your choice.
 
 ```
-make deploy-testnet
+forge create <path/to/contract:contractName> -i --rpc-url <rpc_url> --constructor-args <space separated args>
 ```
 
-Deployment order for transfer:
-- XDomainTransfer (requires Connext contract address), deploy to Kovan 
+- Deployment order for Simple Transfer 
 
-Deployment order for permissionless:
-- XDomainPermissionless (requires Connext contract address), deploy to Kovan
-- PermissionlessTarget, deploy to Rinkeby 
+    ```
+    forge create src/contract-to-contract-interactions/transfer/XDomainTransfer.sol:XDomainTransfer -i --rpc-url <source_chain_rpc> --constructor-args <address(ConnextHandler)>
+    ```
 
-Deployment order for permissioned:
-- XDomainPermissioned (requires Connext contract address), deploy to Kovan
-- PermissionedTarget, deploy to Rinkeby
+- Deployment order for Permissionless Deposit
+
+    ```
+    forge create src/contract-to-contract-interactions/permissionless/XDomainPermissionless.sol:XDomainPermissionless -i --rpc-url <source_chain_rpc> --constructor-args <address(ConnextHandler)>
+    ```
+
+    ``` 
+    forge create src/contract-to-contract-interactions/permissionless/PermissionlessTarget.sol:PermissionlessTarget -i --rpc-url <destination_chain_rpc>
+    ```
+
+- Deployment order for Permissioned Update
+
+    ```
+    forge create src/contract-to-contract-interactions/permissioned/XDomainPermissioned.sol:XDomainPermissioned -i --rpc-url <rpc_url> --constructor-args <address(ConnextHandler)>
+    ```
+    
+    ```
+    forge create src/contract-to-contract-interactions/permissioned/PermissionedTarget.sol:PermissionedTarget -i --rpc-url <rpc_url> --constructor-args <address(ConnextHandler)>
+    ```
+
+### Live Testnet Testing
+
+The core set of Connext + Nomad contracts have already been deployed to testnet. For the most up-to-date contracts, please reference the [Connext deployments](https://github.com/connext/nxtp/tree/amarok/packages/deployments/contracts/deployments).
+
+There is a set of Hardhat tasks available for executing transactions on deployed contracts.
+
+- Execute Simple Transfer
+
+  ```
+  yarn hardhat transfer --origin-domain <domainID> --destination-domain <domainID> --contract-address <XDomainTransfer> --token-address <TestERC20> --wallet-address <your-wallet> --wallet-private-key <your-private-key>
+  ```
+
+- Execute Permissionless Deposit
+
+  ```
+  yarn hardhat deposit --origin-domain <domainID> --destination-domain <domainID> --contract-address <XDomainPermissionless> --token-address <TestERC20> --wallet-address <your-wallet> --wallet-private-key <your-private-key>
+  ```
+
+- Execute Permissioned Update
+
+  ```
+  yarn hardhat update --origin-domain <domainID> --destination-domain <domainID> --contract-address <XDomainPermissioned> --middleware-address <Middleware> --token-address <TestERC20> --wallet-address <your-wallet> --wallet-private-key <your-private-key>
+  ```

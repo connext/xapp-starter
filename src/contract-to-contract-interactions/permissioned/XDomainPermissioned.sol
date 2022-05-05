@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.10;
 
-import {IConnext} from "nxtp/interfaces/IConnext.sol";
+import {IConnextHandler} from "nxtp/interfaces/IConnextHandler.sol";
 
 /**
  * @title XDomainPermissioned
@@ -10,9 +10,9 @@ import {IConnext} from "nxtp/interfaces/IConnext.sol";
 contract XDomainPermissioned {
   event UpdateInitiated(address asset, uint256 newValue, address onBehalfOf);
 
-  IConnext public immutable connext;
+  IConnextHandler public immutable connext;
 
-  constructor(IConnext _connext) {
+  constructor(IConnextHandler _connext) {
     connext = _connext;
   }
 
@@ -32,17 +32,18 @@ contract XDomainPermissioned {
     bytes4 selector = bytes4(keccak256("updateValue(uint256)"));
     bytes memory callData = abi.encodeWithSelector(selector, newValue);
 
-    IConnext.CallParams memory callParams = IConnext.CallParams({
+    IConnextHandler.CallParams memory callParams = IConnextHandler.CallParams({
       to: to,
       callData: callData,
       originDomain: originDomain,
       destinationDomain: destinationDomain
     });
 
-    IConnext.XCallArgs memory xcallArgs = IConnext.XCallArgs({
+    IConnextHandler.XCallArgs memory xcallArgs = IConnextHandler.XCallArgs({
       params: callParams,
       transactingAssetId: asset,
-      amount: 0
+      amount: 0,
+      relayerFee: 0
     });
 
     connext.xcall(xcallArgs);

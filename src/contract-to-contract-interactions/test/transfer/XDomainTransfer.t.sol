@@ -2,10 +2,9 @@
 pragma solidity ^0.8.10;
 
 import {XDomainTransfer} from "../../transfer/XDomainTransfer.sol";
-import {IConnext} from "nxtp/interfaces/IConnext.sol";
-import {Connext} from "nxtp/Connext.sol";
+import {IConnextHandler} from "nxtp/interfaces/IConnextHandler.sol";
+import {ConnextHandler} from "nxtp/nomad-xapps/contracts/connext/ConnextHandler.sol";
 import {DSTestPlus} from "../utils/DSTestPlus.sol";
-import {ERC20User} from "@solmate/test/utils/users/ERC20User.sol";
 import {MockERC20} from "@solmate/test/utils/mocks/MockERC20.sol";
 
 /**
@@ -14,15 +13,15 @@ import {MockERC20} from "@solmate/test/utils/mocks/MockERC20.sol";
  */
 contract XDomainTransferTestUnit is DSTestPlus {
   MockERC20 private token;
-  IConnext private connext;
+  IConnextHandler private connext;
   XDomainTransfer private xTransfer;
 
   event TransferInitiated(address asset, address from, address to);
 
   function setUp() public {
-    connext = new Connext();
+    connext = new ConnextHandler();
     token = new MockERC20("TestToken", "TT", 18);
-    xTransfer = new XDomainTransfer(IConnext(connext));
+    xTransfer = new XDomainTransfer(IConnextHandler(connext));
 
     vm.label(address(connext), "Connext");
     vm.label(address(xTransfer), "XDomainTransfer");
@@ -31,8 +30,8 @@ contract XDomainTransferTestUnit is DSTestPlus {
   }
 
   function testTransferEmitsTransferInitiated() public {
-    ERC20User userChainA = new ERC20User(token);
-    ERC20User userChainB = new ERC20User(token);
+    address userChainA = address(0xA);
+    address userChainB = address(0xB);
     vm.label(address(userChainA), "userChainA");
     vm.label(address(userChainB), "userChainB");
 
@@ -47,7 +46,8 @@ contract XDomainTransferTestUnit is DSTestPlus {
     );
 
     // User must approve transfer to xTransfer
-    userChainA.approve(address(xTransfer), amount);
+    vm.prank(userChainA);
+    token.approve(address(xTransfer), amount);
 
     // Mock the xcall
     bytes memory mockxcall = abi.encodeWithSelector(connext.xcall.selector);
@@ -88,7 +88,7 @@ contract XDomainTransferTestForked is DSTestPlus {
   event TransferInitiated(address asset, address from, address to);
 
   function setUp() public {
-    xTransfer = new XDomainTransfer(IConnext(connext));
+    xTransfer = new XDomainTransfer(IConnextHandler(connext));
     token = MockERC20(0xB5AabB55385bfBe31D627E2A717a7B189ddA4F8F);
 
     vm.label(connext, "Connext");
@@ -98,8 +98,8 @@ contract XDomainTransferTestForked is DSTestPlus {
   }
 
   function testTransferEmitsTransferInitiated() public {
-    ERC20User userChainA = new ERC20User(token);
-    ERC20User userChainB = new ERC20User(token);
+    address userChainA = address(0xA);
+    address userChainB = address(0xB);
     vm.label(address(userChainA), "userChainA");
     vm.label(address(userChainB), "userChainB");
 
@@ -114,7 +114,8 @@ contract XDomainTransferTestForked is DSTestPlus {
     );
 
     // User must approve transfer to xTransfer
-    userChainA.approve(address(xTransfer), amount);
+    vm.prank(userChainA);
+    token.approve(address(xTransfer), amount);
 
     vm.expectEmit(true, true, true, true);
     emit TransferInitiated(
