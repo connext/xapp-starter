@@ -121,7 +121,7 @@ forge create <path/to/contract:contractName> -i --rpc-url <rpc_url> --constructo
 - Deployment order for Permissionless Deposit
 
     ```
-    forge create src/contract-to-contract-interactions/permissionless/XDomainPermissionless.sol:XDomainPermissionless -i --rpc-url <source_chain_rpc> --constructor-args <address(ConnextHandler)>
+    forge create src/contract-to-contract-interactions/permissionless/XDomainPermissionless.sol:XDomainPermissionless -i --rpc-url <source_chain_rpc>
     ```
 
     ``` 
@@ -135,7 +135,7 @@ forge create <path/to/contract:contractName> -i --rpc-url <rpc_url> --constructo
     ```
     
     ```
-    forge create src/contract-to-contract-interactions/permissioned/PermissionedTarget.sol:PermissionedTarget -i --rpc-url <rpc_url> --constructor-args <address(ConnextHandler)>
+    forge create src/contract-to-contract-interactions/permissioned/PermissionedTarget.sol:PermissionedTarget -i --rpc-url <rpc_url> --constructor-args <address(XDomainPermissioned)> <origin_domainID>
     ```
 
 ### Live Testnet Testing
@@ -147,17 +147,17 @@ There is a set of Hardhat tasks available for executing transactions on deployed
 - Execute Simple Transfer
 
   ```
-  yarn hardhat transfer --origin-domain <domainID> --destination-domain <domainID> --contract-address <XDomainTransfer> --token-address <TestERC20> --wallet-address <your-wallet> --wallet-private-key <your-private-key>
+  yarn hardhat transfer --origin-domain <domainID> --destination-domain <domainID> --contract-address <XDomainTransfer> --token-address <address(origin_TestERC20)> --wallet-address <your_wallet_address> --wallet-private-key <your_private_key>
   ```
 
 - Execute Permissionless Deposit
 
   ```
-  yarn hardhat deposit --origin-domain <domainID> --destination-domain <domainID> --contract-address <XDomainPermissionless> --token-address <TestERC20> --wallet-address <your-wallet> --wallet-private-key <your-private-key>
+  yarn hardhat deposit --origin-domain <domainID> --destination-domain <domainID> --contract-address <address(XDomainPermissionless)> --token-address <address(origin_TestERC20)> --wallet-address <your_wallet_address> --wallet-private-key <your_private_key>
   ```
 
 - Execute Permissioned Update
 
   ```
-  yarn hardhat update --origin-domain <domainID> --destination-domain <domainID> --contract-address <XDomainPermissioned> --middleware-address <Middleware> --token-address <TestERC20> --wallet-address <your-wallet> --wallet-private-key <your-private-key>
+  yarn hardhat update --origin-domain <domainID> --destination-domain <domainID> --contract-address <address(XDomainPermissioned)> --middleware-address <address(PermissionedTarget)> --token-address <address(origin_TestERC20)> --wallet-address <your_wallet_address> --wallet-private-key <your_private_key>
   ```
