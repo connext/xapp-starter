@@ -4,8 +4,8 @@ dotEnvConfig();
 
 import { ethers } from 'ethers';
 
-export default task("deposit", "Execute a permissionless deposit")
-  .addParam("contractAddress", "The address of the XDomainPermissionless contract")
+export default task("deposit", "Execute a unpermissioned deposit")
+  .addParam("contractAddress", "The address of the XDomainUnpermissioned contract")
   .addParam("tokenAddress", "The address of the TestERC20")
   .addParam("originDomain", "The domain ID of the sending chain")
   .addParam("destinationDomain", "The domain ID of the receiving chain")
@@ -27,7 +27,7 @@ export default task("deposit", "Execute a permissionless deposit")
      
       const provider = new ethers.providers.JsonRpcProvider(process.env.TESTNET_ORIGIN_RPC_URL);
       const wallet = new ethers.Wallet(walletPrivateKey, provider);
-      const xPermissionless = new ethers.Contract(contractAddress, contractABI, wallet);
+      const xUnpermissioned = new ethers.Contract(contractAddress, contractABI, wallet);
       const token = new ethers.Contract(tokenAddress, tokenABI, wallet);
 
       const amount = ethers.BigNumber.from("1000000000000000000");
@@ -52,9 +52,9 @@ export default task("deposit", "Execute a permissionless deposit")
         return await txResponse.wait();
       }
                   
-      // 3) execute the permissionless deposit 
+      // 3) execute the unpermissioned deposit 
       async function deposit() {
-        let unsignedTx = await xPermissionless.populateTransaction.deposit(
+        let unsignedTx = await xUnpermissioned.populateTransaction.deposit(
           walletAddress,
           tokenAddress,
           originDomain,

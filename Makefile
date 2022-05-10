@@ -29,8 +29,8 @@ scripts :; chmod +x ./scripts/*
 test-unit-all :; forge clean && forge test --match-contract "TestUnit" -vvvv
 test-unit-transfer :; forge clean && forge test --match-contract "XDomainTransferTestUnit" -vvvv
 test-forked-transfer :; forge clean && forge test --match-contract "XDomainTransferTestForked" --fork-url ${TESTNET_ORIGIN_RPC_URL} -vvvv
-test-unit-permissionless :; forge clean && forge test --match-contract "XDomainPermissionlessTestUnit" -vvvv
-test-forked-permissionless :; forge clean && forge test --match-contract "XDomainPermissionlessTestForked" --fork-url ${TESTNET_ORIGIN_RPC_URL} -vvvv
+test-unit-unpermissioned :; forge clean && forge test --match-contract "XDomainUnpermissionedTestUnit" -vvvv
+test-forked-unpermissioned :; forge clean && forge test --match-contract "XDomainUnpermissionedTestForked" --fork-url ${TESTNET_ORIGIN_RPC_URL} -vvvv
 test-unit-permissioned :; forge clean && forge test --match-contract "XDomainPermissionedTestUnit" -vvvv
 test-forked-permissioned :; forge clean && forge test --match-contract "XDomainPermissionedTestForked" --fork-url ${TESTNET_ORIGIN_RPC_URL} -vvvv
 

@@ -10,7 +10,7 @@ import {ERC20} from "@solmate/tokens/ERC20.sol";
 contract Target {
   mapping(address => mapping(address => uint256)) public balances;
 
-  // Permissionless function - anyone can deposit funds into any address
+  // Unpermissioned function - anyone can deposit funds into any address
   function deposit(
     address asset,
     uint256 amount,

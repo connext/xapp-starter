@@ -1,20 +1,20 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.10;
 
-import {XDomainPermissionless} from "../../permissionless/XDomainPermissionless.sol";
+import {XDomainUnpermissioned} from "../../unpermissioned/XDomainUnpermissioned.sol";
 import {IConnextHandler} from "nxtp/interfaces/IConnextHandler.sol";
 import {ConnextHandler} from "nxtp/nomad-xapps/contracts/connext/ConnextHandler.sol";
 import {DSTestPlus} from "../utils/DSTestPlus.sol";
 import {MockERC20} from "@solmate/test/utils/mocks/MockERC20.sol";
 
 /**
- * @title XDomainPermissionlessTestUnit
- * @notice Unit tests for XDomainPermissionless.
+ * @title XDomainUnpermissionedTestUnit
+ * @notice Unit tests for XDomainUnpermissioned.
  */
-contract XDomainPermissionlessTestUnit is DSTestPlus {
+contract XDomainUnpermissionedTestUnit is DSTestPlus {
   MockERC20 private token;
   IConnextHandler private connext;
-  XDomainPermissionless private xPermissionless;
+  XDomainUnpermissioned private xUnpermissioned;
   address private target = address(1);
 
   event DepositInitiated(address asset, uint256 amount, address onBehalfOf);
@@ -22,12 +22,12 @@ contract XDomainPermissionlessTestUnit is DSTestPlus {
   function setUp() public {
     connext = new ConnextHandler();
     token = new MockERC20("TestToken", "TT", 18);
-    xPermissionless = new XDomainPermissionless(IConnextHandler(connext));
+    xUnpermissioned = new XDomainUnpermissioned(IConnextHandler(connext));
 
     vm.label(address(this), "TestContract");
     vm.label(address(connext), "Connext");
     vm.label(address(token), "TestToken");
-    vm.label(address(xPermissionless), "XDomainPermissionless");
+    vm.label(address(xUnpermissioned), "XDomainUnpermissioned");
   }
 
   function testDepositEmitsDepositInitiated() public {
@@ -44,9 +44,9 @@ contract XDomainPermissionlessTestUnit is DSTestPlus {
       token.balanceOf(address(userChainA))
     );
 
-    // User must approve transfer to xPermissionless
+    // User must approve transfer to xUnpermissioned
     vm.prank(userChainA);
-    token.approve(address(xPermissionless), amount);
+    token.approve(address(xUnpermissioned), amount);
 
     // Mock the xcall
     bytes memory mockxcall = abi.encodeWithSelector(connext.xcall.selector);
@@ -57,7 +57,7 @@ contract XDomainPermissionlessTestUnit is DSTestPlus {
     emit DepositInitiated(address(token), amount, address(userChainA));
 
     vm.prank(address(userChainA));
-    xPermissionless.deposit(
+    xUnpermissioned.deposit(
       target,
       address(token),
       rinkebyChainId,
@@ -68,35 +68,35 @@ contract XDomainPermissionlessTestUnit is DSTestPlus {
 }
 
 /**
- * @title XDomainPermissionlessTestForked
- * @notice Integration tests for XDomainPermissionless. Should be run with forked testnet (Kovan).
+ * @title XDomainUnpermissionedTestForked
+ * @notice Integration tests for XDomainUnpermissioned. Should be run with forked testnet (Kovan).
  */
-contract XDomainPermissionlessTestForked is DSTestPlus {
+contract XDomainUnpermissionedTestForked is DSTestPlus {
   // Testnet Addresses
   address private connext = 0xA09C4Dd04fd656d2ED0ee1c95A1cB14B921296A8;
   address private testToken = 0xB5AabB55385bfBe31D627E2A717a7B189ddA4F8F;
   address private target = address(1);
 
-  XDomainPermissionless private xPermissionless;
+  XDomainUnpermissioned private xUnpermissioned;
   MockERC20 private token;
 
-  event PermissionlessInitiated(
+  event UnpermissionedInitiated(
     address asset,
     uint256 amount,
     address onBehalfOf
   );
 
   function setUp() public {
-    xPermissionless = new XDomainPermissionless(IConnextHandler(connext));
+    xUnpermissioned = new XDomainUnpermissioned(IConnextHandler(connext));
     token = MockERC20(0xB5AabB55385bfBe31D627E2A717a7B189ddA4F8F);
 
     vm.label(connext, "Connext");
-    vm.label(address(xPermissionless), "XDomainPermissionless");
+    vm.label(address(xUnpermissioned), "XDomainUnpermissioned");
     vm.label(address(token), "TestToken");
     vm.label(address(this), "TestContract");
   }
 
-  function testDepositEmitsPermissionlessInitiated() public {
+  function testDepositEmitsUnpermissionedInitiated() public {
     address userChainA = address(0xA);
     vm.label(address(userChainA), "userChainA");
 
@@ -110,15 +110,15 @@ contract XDomainPermissionlessTestForked is DSTestPlus {
       token.balanceOf(address(userChainA))
     );
 
-    // User must approve transfer to xPermissionless
+    // User must approve transfer to xUnpermissioned
     vm.prank(userChainA);
-    token.approve(address(xPermissionless), amount);
+    token.approve(address(xUnpermissioned), amount);
 
     vm.expectEmit(true, true, true, true);
-    emit PermissionlessInitiated(testToken, amount, address(userChainA));
+    emit UnpermissionedInitiated(testToken, amount, address(userChainA));
 
     vm.prank(address(userChainA));
-    xPermissionless.deposit(
+    xUnpermissioned.deposit(
       target,
       address(token),
       rinkebyChainId,

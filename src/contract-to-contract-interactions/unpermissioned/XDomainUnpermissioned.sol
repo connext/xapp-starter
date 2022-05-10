@@ -5,10 +5,10 @@ import {IConnextHandler} from "nxtp/interfaces/IConnextHandler.sol";
 import {ERC20} from "@solmate/tokens/ERC20.sol";
 
 /**
- * @title XDomainPermissionless
- * @notice Example of cross-domain permissionless calls.
+ * @title XDomainUnpermissioned
+ * @notice Example of cross-domain unpermissioned calls.
  */
-contract XDomainPermissionless {
+contract XDomainUnpermissioned {
   event DepositInitiated(address asset, uint256 amount, address onBehalfOf);
 
   IConnextHandler public immutable connext;
@@ -18,7 +18,7 @@ contract XDomainPermissionless {
   }
 
   /**
-   * Call a function on a target contract, permissionlessly.
+   * Call a function on a target contract that is unpermissioned.
    * @notice Uses calldata in an `xcall` to execute a function on a Target contract. This
    *          contract assists with encoding function selector
    * @dev Initiates the Connext bridging flow with calldata to be used on the target contract.
@@ -42,7 +42,7 @@ contract XDomainPermissionless {
     // This contract approves transfer to Connext
     token.approve(address(connext), amount);
 
-    // Encode function of the target contract (from PermissionlessTarget.sol)
+    // Encode function of the target contract (from UnpermissionedTarget.sol)
     // In this case: deposit(address asset, uint256 amount, address onBehalfOf)
     bytes4 selector = bytes4(keccak256("deposit(address,uint256,address)"));
 

@@ -5,7 +5,7 @@ Starter kit for cross-domain apps (xApps).
 
 With Connext's upgraded protocol, there are generally three types of bridging transactions that can be executed fully through smart contract integration.
 - Simple transfers
-- Permissionless calls
+- Unpermissioned calls
 - Permissioned calls
 
 This starter repo contains contracts that demonstrate how to use each type of transaction.
@@ -22,21 +22,21 @@ Example use cases:
 Contracts:
 - XDomainTransfer.sol
 
-## XDomainPermissionless
+## XDomainUnpermissioned
 
-Transfer funds and/or call a target contract with arbitrary calldata on the Receiving Chain. Assuming the receiving side is a permissionless call, this flow is essentially the same as a simple transfer except encoded calldata is included in the `xcall`. The call can simply use `amount: 0` if no transfer is required.
+Transfer funds and/or call a target contract with arbitrary calldata on the Receiving Chain. Assuming the receiving side is a unpermissioned call, this flow is essentially the same as a simple transfer except encoded calldata is included in the `xcall`. The call can simply use `amount: 0` if no transfer is required.
 
 Example use cases:
 - Deposit funds into a liquidity pool on the Receiving Chain
 - Execute a token Swap on the Receiving Chain
 
 Contracts:
-- XDomainPermissionless.sol
-- PermissionlessTarget.sol
+- XDomainUnpermissioned.sol
+- UnpermissionedTarget.sol
 
 ## XDomainPermissioned
 
-Like permissionless, call a target contract with arbitrary calldata on the Receiving Chain. Except, the target function is permissioned which means the contract owner must make sure to check the origin in order to uphold permissioning requirements.
+Like unpermissioned, call a target contract with arbitrary calldata on the Receiving Chain. Except, the target function is permissioned which means the contract owner must make sure to check the origin in order to uphold permissioning requirements.
 
 Example use cases:
 - Hold a governance vote on Sending Chain and execute the outcome of it on the Receiving Chain (and other DAO operations)
@@ -68,9 +68,9 @@ src
 ├─ contract-to-contract-interactions
 |  └─ transfer
 │    └─ XDomainTransfer.sol — "XDomainTransfer Contract"
-|  └─ permissionless
-│    └─ XDomainPermissionless.sol — "XDomainPermissionless Contract"
-│    └─ PermissionlessTarget.sol — "Target Contract"
+|  └─ unpermissioned
+│    └─ XDomainUnpermissioned.sol — "XDomainUnpermissioned Contract"
+│    └─ UnpermissionedTarget.sol — "Target Contract"
 |  └─ permissioned
 │    └─ XDomainPermissioned.sol — "XDomainPermissioned Contract"
 │    └─ PermissionedTarget.sol — "Target Contract"
@@ -91,7 +91,7 @@ make install
 ```bash
 make test-unit-all
 make test-unit-transfer
-make test-unit-permissionless
+make test-unit-unpermissioned
 make test-unit-permissioned
 ```
 
@@ -100,7 +100,7 @@ make test-unit-permissioned
 This uses forge's `--forked` mode. Make sure you have `TESTNET_RPC_URL` defined in your `.env` file. Currently, the test cases are pointed at Connext's Kovan testnet deployments.
 ```
 make test-forked-transfer
-make test-forked-permissionless
+make test-forked-unpermissioned
 make test-forked-permissioned
 ```
 
@@ -118,14 +118,14 @@ forge create <path/to/contract:contractName> -i --rpc-url <rpc_url> --constructo
     forge create src/contract-to-contract-interactions/transfer/XDomainTransfer.sol:XDomainTransfer -i --rpc-url <source_chain_rpc> --constructor-args <address(ConnextHandler)>
     ```
 
-- Deployment order for Permissionless Deposit
+- Deployment order for Unpermissioned Deposit
 
     ```
-    forge create src/contract-to-contract-interactions/permissionless/XDomainPermissionless.sol:XDomainPermissionless -i --rpc-url <source_chain_rpc>
+    forge create src/contract-to-contract-interactions/unpermissioned/XDomainUnpermissioned.sol:XDomainUnpermissioned -i --rpc-url <source_chain_rpc>
     ```
 
     ``` 
-    forge create src/contract-to-contract-interactions/permissionless/PermissionlessTarget.sol:PermissionlessTarget -i --rpc-url <destination_chain_rpc>
+    forge create src/contract-to-contract-interactions/unpermissioned/UnpermissionedTarget.sol:UnpermissionedTarget -i --rpc-url <destination_chain_rpc>
     ```
 
 - Deployment order for Permissioned Update
@@ -150,10 +150,10 @@ There is a set of Hardhat tasks available for executing transactions on deployed
   yarn hardhat transfer --origin-domain <domainID> --destination-domain <domainID> --contract-address <XDomainTransfer> --token-address <address(origin_TestERC20)> --wallet-address <your_wallet_address> --wallet-private-key <your_private_key>
   ```
 
-- Execute Permissionless Deposit
+- Execute Unpermissioned Deposit
 
   ```
-  yarn hardhat deposit --origin-domain <domainID> --destination-domain <domainID> --contract-address <address(XDomainPermissionless)> --token-address <address(origin_TestERC20)> --wallet-address <your_wallet_address> --wallet-private-key <your_private_key>
+  yarn hardhat deposit --origin-domain <domainID> --destination-domain <domainID> --contract-address <address(XDomainUnpermissioned)> --token-address <address(origin_TestERC20)> --wallet-address <your_wallet_address> --wallet-private-key <your_private_key>
   ```
 
 - Execute Permissioned Update
