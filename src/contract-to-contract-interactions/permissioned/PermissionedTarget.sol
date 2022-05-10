@@ -3,6 +3,7 @@ pragma solidity 0.8.11;
 
 import {ERC20} from "@solmate/tokens/ERC20.sol";
 import {IExecutor} from "nxtp/interfaces/IExecutor.sol";
+import {ConnextHandler} from "nxtp/nomad-xapps/contracts/connext/ConnextHandler.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 /**
@@ -18,27 +19,36 @@ contract PermissionedTarget is Ownable {
   // The origin Domain ID
   uint32 public originDomain;
 
-  constructor(address _originContract, uint32 _originDomain) {
+  // The address of the Connext Executor contract
+  address public executor;
+
+  // A modifier for permissioned function calls.
+  // Note: This is an important security consideration. If your target
+  //       contract function is meant to be permissioned, it must check 
+  //       that the originating call is from the correct domain and contract.
+  //       Also, check that the msg.sender is the Connext Executor address.
+  modifier onlyExecutor() {
+    require(
+      IExecutor(msg.sender).originSender() == originContract && 
+      IExecutor(msg.sender).origin() == originDomain && 
+      msg.sender == executor,
+      "Expected origin contract on origin domain called by Executor"
+    );
+    _;
+  } 
+
+  constructor(
+    address _originContract, 
+    uint32 _originDomain, 
+    address payable _connext
+  ) {
     originContract = _originContract;
     originDomain = _originDomain;
+    executor = address(ConnextHandler(_connext).executor()); 
   }
 
   // Permissioned function
-  function updateValue(uint256 newValue) external onlyOwner {
-    // Note: This is an important security consideration. If your target
-    //       contract function is meant to be permissioned, it must check 
-    //       that the originating call is from the correct domain and sender.
-    require(
-      // origin domain of the source contract
-      IExecutor(msg.sender).origin() == originDomain,
-      "Expected origin domain"
-    );
-    require(
-      // msg.sender of xcall from the origin domain
-      IExecutor(msg.sender).originSender() == originContract,
-      "Expected origin domain contract"
-    );
-
+  function updateValue(uint256 newValue) external onlyExecutor {
     value = newValue;
   }
 }
