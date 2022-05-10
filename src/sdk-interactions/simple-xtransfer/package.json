@@ -1,0 +1,20 @@
+{
+  "name": "simple-xtransfer",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@connext/nxtp-sdk": "^0.2.0-alpha.9",
+    "@types/node": "^17.0.31",
+    "ethers": "^5.6.5",
+    "typescript": "^4.6.4"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.3.1",
+    "dotenv": "^16.0.0"
+  },
+  "scripts": {
+    "build": "tsc && mv dist/index.js dist/index.mjs",
+    "xtransfer": "node dist/index.mjs"
+  }
+}
