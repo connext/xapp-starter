@@ -4,10 +4,10 @@ pragma solidity 0.8.11;
 import {ERC20} from "@solmate/tokens/ERC20.sol";
 
 /**
- * @title Target
+ * @title UnpermissionedTarget
  * @notice A contrived example target contract.
  */
-contract Target {
+contract UnpermissionedTarget {
   mapping(address => mapping(address => uint256)) public balances;
 
   // Unpermissioned function - anyone can deposit funds into any address
