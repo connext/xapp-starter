@@ -147,13 +147,13 @@ There is a set of Hardhat tasks available for executing transactions on deployed
 - Execute Simple Transfer
 
   ```
-  yarn hardhat transfer --origin-domain <domainID> --destination-domain <domainID> --contract-address <XDomainTransfer> --token-address <address(origin_TestERC20)> --wallet-address <your_wallet_address> --wallet-private-key <your_private_key>
+  yarn hardhat transfer --origin-domain <domainID> --destination-domain <domainID> --contract-address <XDomainTransfer> --token-address <address(origin_TestERC20)> --wallet-address <your_wallet_address> --wallet-private-key <your_private_key> --amount <amount>
   ```
 
 - Execute Unpermissioned Deposit
 
   ```
-  yarn hardhat deposit --origin-domain <domainID> --destination-domain <domainID> --contract-address <address(XDomainUnpermissioned)> --token-address <address(origin_TestERC20)> --wallet-address <your_wallet_address> --wallet-private-key <your_private_key>
+  yarn hardhat deposit --origin-domain <domainID> --destination-domain <domainID> --contract-address <address(XDomainUnpermissioned)> --token-address <address(origin_TestERC20)> --wallet-address <your_wallet_address> --wallet-private-key <your_private_key> --amount <amount>
   ```
 
 - Execute Permissioned Update

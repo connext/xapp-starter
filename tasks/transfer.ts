@@ -11,9 +11,18 @@ export default task("transfer", "Execute a transfer")
   .addParam("destinationDomain", "The domain ID of the receiving chain")
   .addParam("walletAddress", "The address of the signing wallet")
   .addParam("walletPrivateKey", "The private key of the signing wallet")
+  .addParam("amount", "The amount to send")
   .setAction(
     async (
-      { contractAddress, tokenAddress, originDomain, destinationDomain, walletAddress, walletPrivateKey }
+      { 
+        contractAddress, 
+        tokenAddress, 
+        originDomain,
+        destinationDomain, 
+        walletAddress,
+        walletPrivateKey,
+        amount
+      }
     ) => {
       const contractABI = [
         "event TransferInitiated(address asset, address from, address to)",
@@ -29,8 +38,6 @@ export default task("transfer", "Execute a transfer")
       const wallet = new ethers.Wallet(walletPrivateKey, provider);
       const xTransfer = new ethers.Contract(contractAddress, contractABI, wallet);
       const token = new ethers.Contract(tokenAddress, tokenABI, wallet);
-
-      const amount = ethers.BigNumber.from("1000000000000000000");
 
       // 1) mint some tokens 
       async function mint() {
