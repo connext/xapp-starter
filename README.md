@@ -131,11 +131,11 @@ forge create <path/to/contract:contractName> -i --rpc-url <rpc_url> --constructo
 - Deployment order for Permissioned Update
 
     ```
-    forge create src/contract-to-contract-interactions/permissioned/XDomainPermissioned.sol:XDomainPermissioned -i --rpc-url <rpc_url> --constructor-args <address(ConnextHandler)>
+    forge create src/contract-to-contract-interactions/permissioned/XDomainPermissioned.sol:XDomainPermissioned -i --rpc-url <source_chain_rpc> --constructor-args <address(ConnextHandler)>
     ```
     
     ```
-    forge create src/contract-to-contract-interactions/permissioned/PermissionedTarget.sol:PermissionedTarget -i --rpc-url <rpc_url> --constructor-args <address(XDomainPermissioned)> <origin_domainID>
+    forge create src/contract-to-contract-interactions/permissioned/PermissionedTarget.sol:PermissionedTarget -i --rpc-url <destination_chain_rpc> --constructor-args <address(XDomainPermissioned)> <origin_domainID>
     ```
 
 ### Live Testnet Testing
