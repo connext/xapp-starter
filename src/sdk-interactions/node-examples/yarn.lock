@@ -2,12 +2,12 @@
 # yarn lockfile v1
 
 
-"@connext/nxtp-contracts@0.2.0-alpha.9":
-  version "0.2.0-alpha.9"
-  resolved "https://registry.yarnpkg.com/@connext/nxtp-contracts/-/nxtp-contracts-0.2.0-alpha.9.tgz#16ab0dedbd6add89fb3a6fecc03a5c3c08733b2a"
-  integrity sha512-KdgxI5TW84zgRcDXwmLqpkT2A5CZ5cvAwc1ekRyehSjckxCWQf01qq40zcEWGOBNxnvvdvD1YK49GZ2uLFi9Xw==
+"@connext/nxtp-contracts@0.2.0-alpha.15":
+  version "0.2.0-alpha.15"
+  resolved "https://registry.yarnpkg.com/@connext/nxtp-contracts/-/nxtp-contracts-0.2.0-alpha.15.tgz#d6736506d13644c07c7cd000d2f379ca31f6f773"
+  integrity sha512-JNuqMu8oMm7EjSNotzjE4PqWLnRPhVD9XpwpsZN2wtE1VSfMv1tSBtdaNmcV3/5YIBnATrKCQ2ErjTwcGiGYwg==
   dependencies:
-    "@connext/nxtp-utils" "0.2.0-alpha.9"
+    "@connext/nxtp-utils" "0.2.0-alpha.15"
     "@openzeppelin/hardhat-upgrades" "^1.16.1"
     "@typescript-eslint/eslint-plugin" "^5.16.0"
     adv "^0.1.5"
@@ -18,24 +18,24 @@
     hardhat-gas-reporter "^1.0.8"
     typechain "^8.0.0"
 
-"@connext/nxtp-sdk@^0.2.0-alpha.9":
-  version "0.2.0-alpha.9"
-  resolved "https://registry.yarnpkg.com/@connext/nxtp-sdk/-/nxtp-sdk-0.2.0-alpha.9.tgz#29f087b7a0d9d4c35ce4678fb9b52a6436aa2680"
-  integrity sha512-ggYX/44aIFSSVn5OU23iZPFFwoKfH4J8IpcEKVnUq93TJYEld7VcBPiQh5/u+BD1nRmO4zTWqWHKRoZEEKzcHw==
+"@connext/nxtp-sdk@^0.2.0-alpha.15":
+  version "0.2.0-alpha.15"
+  resolved "https://registry.yarnpkg.com/@connext/nxtp-sdk/-/nxtp-sdk-0.2.0-alpha.15.tgz#b859129cc715185efe046cd7e104f47f4856faa8"
+  integrity sha512-XeLUoGu6AkeuPJHz1vDkMbCWRQOBgdwhvpvGvOSpX3vSZuFTukQ0dN7s8jnm4scC/Zj5s10CZg39AVaMC7Pj2A==
   dependencies:
-    "@connext/nxtp-txservice" "0.2.0-alpha.9"
-    "@connext/nxtp-utils" "0.2.0-alpha.9"
+    "@connext/nxtp-txservice" "0.2.0-alpha.15"
+    "@connext/nxtp-utils" "0.2.0-alpha.15"
     "@sinclair/typebox" "^0.23.4"
     axios "^0.27.2"
     ethers "^5.6.1"
 
-"@connext/nxtp-txservice@0.2.0-alpha.9":
-  version "0.2.0-alpha.9"
-  resolved "https://registry.yarnpkg.com/@connext/nxtp-txservice/-/nxtp-txservice-0.2.0-alpha.9.tgz#6b0fe808fc8a78d05241b1f820cd262436e8a6be"
-  integrity sha512-0ua3/QG81yEUz8EOLOBH04f5SyhT0eeuzo+fbkUYQ9yGJMYi7gl8FGUfoV1ZoR9TvqP/m9ODAFsx0/VfX4BdvA==
+"@connext/nxtp-txservice@0.2.0-alpha.15":
+  version "0.2.0-alpha.15"
+  resolved "https://registry.yarnpkg.com/@connext/nxtp-txservice/-/nxtp-txservice-0.2.0-alpha.15.tgz#b28dc461c37b17d1a3b2aa44ba2a6aea7092d1a4"
+  integrity sha512-+0GP+lFq9VB2jkAHaidj6Kg4Miro/bm/+uw1DIxJgjgOqbgK5bcIlYFKbC3kpi6vlATs1XwJkMZMTo7Z7AV0Dg==
   dependencies:
-    "@connext/nxtp-contracts" "0.2.0-alpha.9"
-    "@connext/nxtp-utils" "0.2.0-alpha.9"
+    "@connext/nxtp-contracts" "0.2.0-alpha.15"
+    "@connext/nxtp-utils" "0.2.0-alpha.15"
     "@sinclair/typebox" "^0.23.4"
     "@typescript-eslint/eslint-plugin" "^5.16.0"
     ajv "^8.11.0"
@@ -46,10 +46,10 @@
     interval-promise "^1.4.0"
     p-queue "6.6.2"
 
-"@connext/nxtp-utils@0.2.0-alpha.9":
-  version "0.2.0-alpha.9"
-  resolved "https://registry.yarnpkg.com/@connext/nxtp-utils/-/nxtp-utils-0.2.0-alpha.9.tgz#b57faab1b5ef8ebf8945cc4a086ece893c3c754e"
-  integrity sha512-3twEiBsIMVYHKKKErvF2iuc6EkZXSTsYtZSmMwUhxEJuAsstlJH2/sp22TTYMGP6kvGLXPrOCgwGVC/8q4nC5g==
+"@connext/nxtp-utils@0.2.0-alpha.15":
+  version "0.2.0-alpha.15"
+  resolved "https://registry.yarnpkg.com/@connext/nxtp-utils/-/nxtp-utils-0.2.0-alpha.15.tgz#788c259489cf46b0e71698b4d032703e52d36f1e"
+  integrity sha512-6Gg2ILiatyRCmvZZU1tD9qiWYbuzuHyKcPLYBR3uTs6xc+HyvIXxq7yhtpwvkYl13tltGCO1gWG7kycyvB2Jhg==
   dependencies:
     "@sinclair/typebox" "^0.23.4"
     "@typescript-eslint/eslint-plugin" "^5.16.0"
