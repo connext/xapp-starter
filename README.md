@@ -29,6 +29,8 @@ Transfer funds and/or call a target contract with arbitrary calldata on the Rece
 Example use cases:
 - Deposit funds into a liquidity pool on the Receiving Chain
 - Execute a token Swap on the Receiving Chain
+- Connecting DEX liquidity across chains in a single seamless transaction
+- Crosschain vault zaps and vault strategy management
 
 Contracts:
 - XDomainUnpermissioned.sol
@@ -41,8 +43,6 @@ Like unpermissioned, call a target contract with arbitrary calldata on the Recei
 Example use cases:
 - Hold a governance vote on Sending Chain and execute the outcome of it on the Receiving Chain (and other DAO operations)
 - Lock-and-mint or burn-and-mint token bridging
-- Connecting DEX liquidity across chains in a single seamless transaction
-- Crosschain vault zaps and vault strategy management
 - Critical protocol operations such as replicating/syncing global constants (e.g. PCV) across chains
 - Bringing UniV3 TWAPs to every chain without introducing oracles
 - Chain-agnostic veToken governance
