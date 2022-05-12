@@ -73,18 +73,15 @@ contract XDomainUnpermissionedTestUnit is DSTestPlus {
  */
 contract XDomainUnpermissionedTestForked is DSTestPlus {
   // Testnet Addresses
-  address private connext = 0xA09C4Dd04fd656d2ED0ee1c95A1cB14B921296A8;
-  address private testToken = 0xB5AabB55385bfBe31D627E2A717a7B189ddA4F8F;
+  address public connext = 0x71a52104739064bc35bED4Fc3ba8D9Fb2a84767f;
+  address public constant testToken =
+    0xB5AabB55385bfBe31D627E2A717a7B189ddA4F8F;
   address private target = address(1);
 
   XDomainUnpermissioned private xUnpermissioned;
   MockERC20 private token;
 
-  event UnpermissionedInitiated(
-    address asset,
-    uint256 amount,
-    address onBehalfOf
-  );
+  event DepositInitiated(address asset, uint256 amount, address onBehalfOf);
 
   function setUp() public {
     xUnpermissioned = new XDomainUnpermissioned(IConnextHandler(connext));
@@ -115,14 +112,14 @@ contract XDomainUnpermissionedTestForked is DSTestPlus {
     token.approve(address(xUnpermissioned), amount);
 
     vm.expectEmit(true, true, true, true);
-    emit UnpermissionedInitiated(testToken, amount, address(userChainA));
+    emit DepositInitiated(testToken, amount, userChainA);
 
     vm.prank(address(userChainA));
     xUnpermissioned.deposit(
       target,
       address(token),
-      rinkebyChainId,
-      kovanChainId,
+      kovanDomainId,
+      rinkebyDomainId,
       10_000
     );
   }

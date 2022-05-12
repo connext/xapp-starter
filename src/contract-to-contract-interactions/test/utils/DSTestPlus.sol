@@ -13,8 +13,8 @@ contract DSTestPlus is DSTest {
 
     // Nomad Domain IDs
     uint32 public mainnetDomainId = 6648936;
-    uint32 public rinkebyDomainId = 2000;
-    uint32 public kovanDomainId = 3000;
+    uint32 public rinkebyDomainId = 1111;
+    uint32 public kovanDomainId = 2221;
 
     // Chain IDs
     uint32 public mainnetChainId = 1;

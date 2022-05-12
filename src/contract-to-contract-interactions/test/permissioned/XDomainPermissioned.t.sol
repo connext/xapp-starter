@@ -61,8 +61,9 @@ contract XDomainPermissionedTestUnit is DSTestPlus {
  */
 contract XDomainPermissionedTestForked is DSTestPlus {
   // Testnet Addresses
-  address private connext = 0xA09C4Dd04fd656d2ED0ee1c95A1cB14B921296A8;
-  address private testToken = 0xB5AabB55385bfBe31D627E2A717a7B189ddA4F8F;
+  address public connext = 0x71a52104739064bc35bED4Fc3ba8D9Fb2a84767f;
+  address public constant testToken =
+    0xB5AabB55385bfBe31D627E2A717a7B189ddA4F8F;
   address private target = address(1);
 
   XDomainPermissioned private xPermissioned;
@@ -93,8 +94,8 @@ contract XDomainPermissionedTestForked is DSTestPlus {
     xPermissioned.update(
       target,
       address(token),
-      rinkebyChainId,
-      kovanChainId,
+      kovanDomainId,
+      rinkebyDomainId,
       newValue
     );
   }
