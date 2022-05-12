@@ -46,7 +46,7 @@ contract XDomainTransfer {
     // Empty callData because this is a simple transfer of funds
     IConnextHandler.CallParams memory callParams = IConnextHandler.CallParams({
       to: to,
-      callData: "0x",
+      callData: "",
       originDomain: originDomain,
       destinationDomain: destinationDomain
     });
