@@ -13,6 +13,8 @@ const callParams = {
   callData: "0x", // empty calldata for a simple transfer
   originDomain: "2221", // send from Kovan
   destinationDomain: "1111", // to Rinkeby
+  forceSlow: false,
+  receiveLocal: false
 };
 
 const xCallArgs = {

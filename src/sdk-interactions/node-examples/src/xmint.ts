@@ -27,6 +27,8 @@ const callParams = {
   callData: calldata, 
   originDomain: "2221", // send from Kovan
   destinationDomain: "1111", // to Rinkeby
+  forceSlow: false,
+  receiveLocal: false
 };
 
 const xCallArgs = {
