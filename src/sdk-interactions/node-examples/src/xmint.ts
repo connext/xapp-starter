@@ -16,7 +16,7 @@ const iface = new ethers.utils.Interface(contractABI);
 const calldata = iface.encodeFunctionData(
   "mint", 
   [
-    "0x6d2A06543D23Cc6523AE5046adD8bb60817E0a94", 
+    await signer.getAddress(), // the address that should receive the minted funds
     ethers.BigNumber.from("100000000000000000000") // amount to mint (100 TEST)
   ]
 )
