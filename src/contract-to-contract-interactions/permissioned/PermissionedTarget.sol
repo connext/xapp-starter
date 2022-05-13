@@ -1,16 +1,15 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.11;
 
-import {ERC20} from "@solmate/tokens/ERC20.sol";
 import {IExecutor} from "nxtp/interfaces/IExecutor.sol";
-import {ConnextHandler} from "nxtp/nomad-xapps/contracts/connext/ConnextHandler.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import {IConnextHandler} from "nxtp/interfaces/IConnextHandler.sol";
+import {ERC20} from "@solmate/tokens/ERC20.sol";
 
 /**
  * @title PermissionedTarget
  * @notice A contrived example target contract.
  */
-contract PermissionedTarget is Ownable {
+contract PermissionedTarget {
   uint256 public value;
 
   // The address of xDomainPermissioned.sol
@@ -44,7 +43,7 @@ contract PermissionedTarget is Ownable {
   ) {
     originContract = _originContract;
     originDomain = _originDomain;
-    executor = address(ConnextHandler(_connext).executor()); 
+    executor = IConnextHandler(_connext).getExecutor(); 
   }
 
   // Permissioned function

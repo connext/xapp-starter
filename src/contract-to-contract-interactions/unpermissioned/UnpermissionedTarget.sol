@@ -23,21 +23,10 @@ contract UnpermissionedTarget {
     return balances[asset][onBehalfOf];
   }
 
-  function withdraw(address asset, uint256 amount) public returns (uint256) {
-    require(amount <= balances[asset][msg.sender], "Not enough deposited");
-
-    ERC20 token = ERC20(asset);
-    balances[asset][msg.sender] -= amount;
-    token.transfer(msg.sender, amount);
-
-    return balances[asset][msg.sender];
-  }
-
-  function balance(address asset, address depositor)
-    public
-    view
-    returns (uint256)
-  {
+  function balance(
+    address asset, 
+    address depositor
+  ) public view returns (uint256) {
     return balances[asset][depositor];
   }
 }

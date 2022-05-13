@@ -36,7 +36,9 @@ contract XDomainPermissioned {
       to: to,
       callData: callData,
       originDomain: originDomain,
-      destinationDomain: destinationDomain
+      destinationDomain: destinationDomain,
+      forceSlow: false,
+      receiveLocal: false
     });
 
     IConnextHandler.XCallArgs memory xcallArgs = IConnextHandler.XCallArgs({
