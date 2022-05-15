@@ -98,7 +98,7 @@ make test-unit-permissioned
 ### Integration Tests
 
 This uses forge's `--forked` mode. Make sure you have `TESTNET_RPC_URL` defined in your `.env` file. Currently, the test cases are pointed at Connext's Kovan testnet deployments.
-```
+```bash
 make test-forked-transfer
 make test-forked-unpermissioned
 make test-forked-permissioned
@@ -108,56 +108,73 @@ make test-forked-permissioned
 
 This command will allow you to deploy contracts in this repository using the RPC provider of your choice.
 
-```
+```bash
 forge create <path/to/contract:contractName> -i --rpc-url <rpc_url> --constructor-args <space separated args>
 ```
 
 - Deployment order for Simple Transfer 
 
-    ```
+    ```bash
     forge create src/contract-to-contract-interactions/transfer/XDomainTransfer.sol:XDomainTransfer -i --rpc-url <source_chain_rpc> --constructor-args <address(ConnextHandler)>
     ```
 
 - Deployment order for Unpermissioned Deposit
 
-    ```
+    ```bash
     forge create src/contract-to-contract-interactions/unpermissioned/XDomainUnpermissioned.sol:XDomainUnpermissioned -i --rpc-url <source_chain_rpc> --constructor-args <address(ConnextHandler)>
     ```
 
-    ``` 
+    ```bash
     forge create src/contract-to-contract-interactions/unpermissioned/UnpermissionedTarget.sol:UnpermissionedTarget -i --rpc-url <destination_chain_rpc>
     ```
 
 - Deployment order for Permissioned Update
 
-    ```
+    ```bash
     forge create src/contract-to-contract-interactions/permissioned/XDomainPermissioned.sol:XDomainPermissioned -i --rpc-url <source_chain_rpc> --constructor-args <address(ConnextHandler)>
     ```
     
+    ```bash
+    forge create src/contract-to-contract-interactions/permissioned/PermissionedTarget.sol:PermissionedTarget -i --rpc-url <destination_chain_rpc> --constructor-args <address(XDomainPermissioned)> <origin_domainID> <address(ConnextHandler)> 
     ```
-    forge create src/contract-to-contract-interactions/permissioned/PermissionedTarget.sol:PermissionedTarget -i --rpc-url <destination_chain_rpc> --constructor-args <address(XDomainPermissioned)> <origin_domainID>
+
+### Verification
+
+Use the `forge verify-contract` command. 
+- compiler version should be specified in "v.X.Y.Z+commit.xxxxxxxx" format, a list of versions can be found [here](https://etherscan.io/solcversions)
+- see [Chainlist](https://chainlist.org/) for chain-id
+- constructor arguments must be in ABI-encoded format
+  - tip: can be found as the last 64*N characters of the "Input Data" used in the Contract Creation transaction, where N is the number of constructor arguments
+
+    Ex: 3 constructor arguments used
+    ```bash
+    echo -n <input_data> | tail -c 192
     ```
+
+```bash
+forge verify-contract --compiler-version <solc_version> <address(contract)> <path_to_contract_src> <etherscan_api_key> --chain-id <chain_id> --constructor-args <encoded_constructor_args>
+```
 
 ### Live Testnet Testing
 
-The core set of Connext + Nomad contracts have already been deployed to testnet. For the most up-to-date contracts, please reference the [Connext deployments](https://github.com/connext/nxtp/tree/amarok/packages/deployments/contracts/deployments).
+The core set of Connext + Nomad contracts have already been deployed to testnet. For the most up-to-date contracts, please reference the [Connext deployments](https://github.com/connext/nxtp/tree/main/packages/deployments/contracts/deployments).
 
 There is a set of Hardhat tasks available for executing transactions on deployed contracts.
 
 - Execute Simple Transfer
 
-  ```
+  ```bash
   yarn hardhat transfer --origin-domain <domainID> --destination-domain <domainID> --contract-address <XDomainTransfer> --token-address <address(origin_TestERC20)> --wallet-address <your_wallet_address> --wallet-private-key <your_private_key> --amount <amount>
   ```
 
 - Execute Unpermissioned Deposit
 
-  ```
+  ```bash
   yarn hardhat deposit --origin-domain <domainID> --destination-domain <domainID> --contract-address <address(XDomainUnpermissioned)> --token-address <address(origin_TestERC20)> --wallet-address <your_wallet_address> --wallet-private-key <your_private_key> --amount <amount>
   ```
 
 - Execute Permissioned Update
 
-  ```
+  ```bash
   yarn hardhat update --origin-domain <domainID> --destination-domain <domainID> --contract-address <address(XDomainPermissioned)> --middleware-address <address(PermissionedTarget)> --token-address <address(origin_TestERC20)> --wallet-address <your_wallet_address> --wallet-private-key <your_private_key>
   ```
