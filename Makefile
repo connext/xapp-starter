@@ -22,9 +22,6 @@ update :; forge update
 # Builds
 build :; forge clean && forge build 
 
-# chmod scripts
-scripts :; chmod +x ./scripts/*
-
 # Tests
 test-unit-all :; forge clean && forge test --match-contract "TestUnit" -vvvv
 test-unit-transfer :; forge clean && forge test --match-contract "XDomainTransferTestUnit" -vvvv
@@ -33,9 +30,6 @@ test-unit-unpermissioned :; forge clean && forge test --match-contract "XDomainU
 test-forked-unpermissioned :; forge clean && forge test --match-contract "XDomainUnpermissionedTestForked" --fork-url ${TESTNET_ORIGIN_RPC_URL} -vvvv
 test-unit-permissioned :; forge clean && forge test --match-contract "XDomainPermissionedTestUnit" -vvvv
 test-forked-permissioned :; forge clean && forge test --match-contract "XDomainPermissionedTestForked" --fork-url ${TESTNET_ORIGIN_RPC_URL} -vvvv
-
-# Deployments
-deploy-testnet :; ./scripts/deploy_testnet.sh
 
 # Lints
 lint :; prettier --write src/**/*.sol && prettier --write src/**/*.sol
