@@ -164,7 +164,7 @@ There is a set of Hardhat tasks available for executing transactions on deployed
 - Execute Simple Transfer
 
   ```bash
-  yarn hardhat transfer --origin-domain <domainID> --destination-domain <domainID> --contract-address <XDomainTransfer> --token-address <address(origin_TestERC20)> --wallet-address <your_wallet_address> --wallet-private-key <your_private_key> --amount <amount>
+  yarn hardhat transfer --origin-domain <domainID> --destination-domain <domainID> --contract-address <XDomainTransfer> --token-address <address(origin_TestERC20)> --wallet-private-key <your_private_key> --amount <amount>
   ```
 
 - Execute Unpermissioned Deposit

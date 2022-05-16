@@ -5,11 +5,10 @@ dotEnvConfig();
 import { ethers } from 'ethers';
 
 export default task("transfer", "Execute a transfer")
-  .addParam("contractAddress", "The address of the XDomainTransfer contract")
-  .addParam("tokenAddress", "The address of the TestERC20")
   .addParam("originDomain", "The domain ID of the sending chain")
   .addParam("destinationDomain", "The domain ID of the receiving chain")
-  .addParam("walletAddress", "The address of the signing wallet")
+  .addParam("contractAddress", "The address of the XDomainTransfer contract")
+  .addParam("tokenAddress", "The address of the TestERC20")
   .addParam("walletPrivateKey", "The private key of the signing wallet")
   .addParam("amount", "The amount to send")
   .setAction(
@@ -19,7 +18,6 @@ export default task("transfer", "Execute a transfer")
         tokenAddress, 
         originDomain,
         destinationDomain, 
-        walletAddress,
         walletPrivateKey,
         amount
       }
@@ -42,7 +40,7 @@ export default task("transfer", "Execute a transfer")
       // 1) mint some tokens 
       async function mint() {
         let unsignedTx = await token.populateTransaction.mint(
-          walletAddress,
+          wallet.address,
           amount
         );
         let txResponse = await wallet.sendTransaction(unsignedTx);
@@ -62,7 +60,7 @@ export default task("transfer", "Execute a transfer")
       // 3) transfer some tokens 
       async function transfer() {
         let unsignedTx = await xTransfer.populateTransaction.transfer(
-          walletAddress,
+          wallet.address,
           tokenAddress,
           originDomain,
           destinationDomain,
