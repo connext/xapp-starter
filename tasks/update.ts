@@ -11,8 +11,8 @@ export default task("update", "Execute a permissioned update")
   .addParam("targetAddress", "The address of the Target contract")
   .addParam("tokenAddress", "The address of the TestERC20")
   .addParam("walletPrivateKey", "The private key of the signing wallet")
-  .addParam("value", "The new value to update to")
-  .addParam("permissioned", "True if this is a permissioned update")
+  .addOptionalParam("value", "The new value to update to")
+  .addOptionalParam("permissioned", "True if this is a permissioned update")
   .setAction(
     async (
       { 
@@ -22,8 +22,8 @@ export default task("update", "Execute a permissioned update")
         originDomain, 
         destinationDomain, 
         walletPrivateKey,
-        value,
-        permissioned
+        value: _value,
+        permissioned: _permissioned
       }
     ) => {
       const contractABI = [
@@ -31,6 +31,9 @@ export default task("update", "Execute a permissioned update")
         "function update(address to, address asset, uint32 originDomain, uint32 destinationDomain, uint256 amount, bool permissioned)"
       ];
      
+      const value = _value || 1;
+      const permissioned = _permissioned || false;
+      
       const provider = new ethers.providers.JsonRpcProvider(process.env.TESTNET_ORIGIN_RPC_URL);
       const wallet = new ethers.Wallet(walletPrivateKey, provider);
       const source = new ethers.Contract(sourceAddress, contractABI, wallet);
