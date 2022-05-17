@@ -46,7 +46,7 @@ contract SourceTestUnit is DSTestPlus {
     emit UpdateInitiated(target, newValue, permissioned);
 
     vm.prank(address(userChainA));
-    source.update(
+    source.updateValue(
       target,
       address(token),
       rinkebyChainId,
@@ -94,7 +94,7 @@ contract SourceTestForked is DSTestPlus {
     emit UpdateInitiated(target, newValue, permissioned);
 
     vm.prank(address(userChainA));
-    source.update(
+    source.updateValue(
       target,
       address(token),
       kovanDomainId,
