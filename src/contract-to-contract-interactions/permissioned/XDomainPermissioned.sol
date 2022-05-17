@@ -37,7 +37,7 @@ contract XDomainPermissioned {
       callData: callData,
       originDomain: originDomain,
       destinationDomain: destinationDomain,
-      forceSlow: false,
+      forceSlow: true,
       receiveLocal: false
     });
 
