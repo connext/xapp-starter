@@ -3,7 +3,6 @@ import { HardhatUserConfig } from "hardhat/types";
 import { config as dotenvConfig } from "dotenv";
 
 import "./tasks/transfer";
-import "./tasks/deposit";
 import "./tasks/update";
 
 dotenvConfig();

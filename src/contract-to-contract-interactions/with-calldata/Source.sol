@@ -4,11 +4,11 @@ pragma solidity ^0.8.10;
 import {IConnextHandler} from "nxtp/interfaces/IConnextHandler.sol";
 
 /**
- * @title XDomainPermissioned
- * @notice Example of a cross-domain permissioned call.
+ * @title Source 
+ * @notice Example contract for cross-domain calls (xcalls).
  */
-contract XDomainPermissioned {
-  event UpdateInitiated(address asset, uint256 newValue, address onBehalfOf);
+contract Source {
+  event UpdateInitiated(address to, uint256 newValue, bool permissioned);
 
   IConnextHandler public immutable connext;
 
@@ -17,19 +17,29 @@ contract XDomainPermissioned {
   }
 
   /**
-   * Updates a cross-chain value.
+   * Cross-domain update of a value on a target contract.
    @dev Initiates the Connext bridging flow with calldata to be used on the target contract.
    */
-  function update(
+  function updateValue(
     address to,
     address asset,
     uint32 originDomain,
     uint32 destinationDomain,
-    uint256 newValue
+    uint256 newValue,
+    bool permissioned
   ) external payable {
-    // Encode function of the target contract (from PermissionedTarget.sol)
-    // In this case: updateValue(uint256 newValue)
-    bytes4 selector = bytes4(keccak256("updateValue(uint256)"));
+
+    bytes4 selector;
+    bool forceSlow;
+
+    // Encode function of the target contract (from Target.sol)
+    if (permissioned) {
+      selector = bytes4(keccak256("updateValuePermissioned(uint256)"));
+      forceSlow = true;
+    } else {
+      selector = bytes4(keccak256("updateValueUnpermissioned(uint256)"));
+      forceSlow = false;
+    }
     bytes memory callData = abi.encodeWithSelector(selector, newValue);
 
     IConnextHandler.CallParams memory callParams = IConnextHandler.CallParams({
@@ -37,7 +47,7 @@ contract XDomainPermissioned {
       callData: callData,
       originDomain: originDomain,
       destinationDomain: destinationDomain,
-      forceSlow: true,
+      forceSlow: forceSlow,
       receiveLocal: false
     });
 
@@ -50,6 +60,6 @@ contract XDomainPermissioned {
 
     connext.xcall(xcallArgs);
 
-    emit UpdateInitiated(asset, newValue, msg.sender);
+    emit UpdateInitiated(to, newValue, permissioned);
   }
 }

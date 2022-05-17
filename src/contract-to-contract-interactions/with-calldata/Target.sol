@@ -3,16 +3,17 @@ pragma solidity 0.8.11;
 
 import {IExecutor} from "nxtp/interfaces/IExecutor.sol";
 import {IConnextHandler} from "nxtp/interfaces/IConnextHandler.sol";
-import {ERC20} from "@solmate/tokens/ERC20.sol";
 
 /**
- * @title PermissionedTarget
+ * @title Target
  * @notice A contrived example target contract.
  */
-contract PermissionedTarget {
+contract Target {
+  event UpdateCompleted(address sender, uint256 newValue, bool permissioned);
+
   uint256 public value;
 
-  // The address of xDomainPermissioned.sol
+  // The address of Source.sol
   address public originContract;
 
   // The origin Domain ID
@@ -29,7 +30,7 @@ contract PermissionedTarget {
   modifier onlyExecutor() {
     require(
       IExecutor(msg.sender).originSender() == originContract && 
-      IExecutor(msg.sender).origin() == originDomain && 
+      IExecutor(msg.sender).origin() == originDomain &&
       msg.sender == executor,
       "Expected origin contract on origin domain called by Executor"
     );
@@ -39,15 +40,24 @@ contract PermissionedTarget {
   constructor(
     address _originContract, 
     uint32 _originDomain, 
-    address payable _connext
+    IConnextHandler _connext
   ) {
     originContract = _originContract;
     originDomain = _originDomain;
-    executor = IConnextHandler(_connext).getExecutor(); 
+    executor = IConnextHandler(_connext).getExecutor();
+  }
+
+  // Unpermissioned function
+  function updateValueUnpermissioned(uint256 newValue) external {
+    value = newValue;
+
+    emit UpdateCompleted(msg.sender, newValue, false); 
   }
 
   // Permissioned function
-  function updateValue(uint256 newValue) external onlyExecutor {
+  function updateValuePermissioned(uint256 newValue) external onlyExecutor {
     value = newValue;
+
+    emit UpdateCompleted(msg.sender, newValue, true); 
   }
 }

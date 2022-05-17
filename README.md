@@ -10,9 +10,11 @@ With Connext's upgraded protocol, there are generally three types of bridging tr
 
 This starter repo contains contracts that demonstrate how to use each type of transaction.
 
+The high level flow is as follows:
+
 <img src="documentation/assets/xcall.png" alt="drawing" width="500"/>
 
-## XDomainTransfer
+## Transfer
 
 Simple transfer from Sending Chain to Receiving Chain. Does not use calldata. 
 
@@ -20,11 +22,11 @@ Example use cases:
 - Send funds across chains
 
 Contracts:
-- XDomainTransfer.sol
+- Transfer.sol
 
-## XDomainUnpermissioned
+## Unpermissioned 
 
-Transfer funds and/or call a target contract with arbitrary calldata on the Receiving Chain. Assuming the receiving side is a unpermissioned call, this flow is essentially the same as a simple transfer except encoded calldata is included in the `xcall`. The call can simply use `amount: 0` if no transfer is required.
+Transfer funds and/or call a target contract with arbitrary calldata on the Receiving Chain. Assuming the receiving side is an unpermissioned call, this flow is essentially the same as a simple transfer except encoded calldata is included in the `xcall`. The call can simply use `amount: 0` if no transfer is required.
 
 Example use cases:
 - Deposit funds into a liquidity pool on the Receiving Chain
@@ -33,10 +35,10 @@ Example use cases:
 - Crosschain vault zaps and vault strategy management
 
 Contracts:
-- XDomainUnpermissioned.sol
-- UnpermissionedTarget.sol
+- Source.sol
+- Target.sol
 
-## XDomainPermissioned
+## Permissioned
 
 Like unpermissioned, call a target contract with arbitrary calldata on the Receiving Chain. Except, the target function is permissioned which means the contract owner must make sure to check the origin in order to uphold permissioning requirements.
 
@@ -49,8 +51,8 @@ Example use cases:
 - Metaverse-to-metaverse interoperability
 
 Contracts:
-- XDomainPermissioned.sol
-- PermissionedTarget.sol
+- Source.sol
+- Target.sol
 
 # Development
 
@@ -67,17 +69,14 @@ This project uses Foundry for testing and deploying contracts. Hardhat tasks are
 src
 ├─ contract-to-contract-interactions
 |  └─ transfer
-│    └─ XDomainTransfer.sol — "XDomainTransfer Contract"
-|  └─ unpermissioned
-│    └─ XDomainUnpermissioned.sol — "XDomainUnpermissioned Contract"
-│    └─ UnpermissionedTarget.sol — "Target Contract"
-|  └─ permissioned
-│    └─ XDomainPermissioned.sol — "XDomainPermissioned Contract"
-│    └─ PermissionedTarget.sol — "Target Contract"
+│    └─ Transfer.sol
+|  └─ with-calldata
+│    └─ Source.sol
+│    └─ Target.sol
 |  └─ tests
 │    └─ ...
 ├─ sdk-interactions
-│    └─ ...
+│    └─ node-examples
 ```
 ## Setup
 ```bash
@@ -91,8 +90,8 @@ make install
 ```bash
 make test-unit-all
 make test-unit-transfer
-make test-unit-unpermissioned
-make test-unit-permissioned
+make test-unit-source
+make test-unit-target
 ```
 
 ### Integration Tests
@@ -100,51 +99,36 @@ make test-unit-permissioned
 This uses forge's `--forked` mode. Make sure you have `TESTNET_RPC_URL` defined in your `.env` file. Currently, the test cases are pointed at Connext's Kovan testnet deployments.
 ```bash
 make test-forked-transfer
-make test-forked-unpermissioned
-make test-forked-permissioned
+make test-forked-source
 ```
 
 ### Deployment
 
-This command will allow you to deploy contracts in this repository using the RPC provider of your choice.
+Deploy contracts in this repository using the RPC provider of your choice.
 
-```bash
-forge create <path/to/contract:contractName> -i --rpc-url <rpc_url> --constructor-args <space separated args>
-```
-
-- Deployment order for Simple Transfer 
+- Deployment order for Simple Transfer example
 
     ```bash
-    forge create src/contract-to-contract-interactions/transfer/XDomainTransfer.sol:XDomainTransfer -i --rpc-url <source_chain_rpc> --constructor-args <address(ConnextHandler)>
+    forge create src/contract-to-contract-interactions/transfer/Transfer.sol:Transfer -i --rpc-url <origin_rpc_url> --constructor-args <address(origin_ConnextHandler)>
     ```
 
-- Deployment order for Unpermissioned Deposit
+- Deployment order for Source + Target of with-calldata examples
 
     ```bash
-    forge create src/contract-to-contract-interactions/unpermissioned/XDomainUnpermissioned.sol:XDomainUnpermissioned -i --rpc-url <source_chain_rpc> --constructor-args <address(ConnextHandler)>
-    ```
-
-    ```bash
-    forge create src/contract-to-contract-interactions/unpermissioned/UnpermissionedTarget.sol:UnpermissionedTarget -i --rpc-url <destination_chain_rpc>
-    ```
-
-- Deployment order for Permissioned Update
-
-    ```bash
-    forge create src/contract-to-contract-interactions/permissioned/XDomainPermissioned.sol:XDomainPermissioned -i --rpc-url <source_chain_rpc> --constructor-args <address(ConnextHandler)>
+    forge create src/contract-to-contract-interactions/with-calldata/Source.sol:Source -i --rpc-url <origin_rpc_url> --constructor-args <address(origin_ConnextHandler)>
     ```
     
     ```bash
-    forge create src/contract-to-contract-interactions/permissioned/PermissionedTarget.sol:PermissionedTarget -i --rpc-url <destination_chain_rpc> --constructor-args <address(XDomainPermissioned)> <origin_domainID> <address(ConnextHandler)> 
+    forge create src/contract-to-contract-interactions/permissioned/Target.sol:Target -i --rpc-url <destination_rpc_url> --constructor-args <address(Source)> <origin_domainID> <address(destination_ConnextHandler)> 
     ```
 
 ### Verification
 
 Use the `forge verify-contract` command. 
-- compiler version should be specified in "v.X.Y.Z+commit.xxxxxxxx" format, a list of versions can be found [here](https://etherscan.io/solcversions)
-- see [Chainlist](https://chainlist.org/) for chain-id
-- constructor arguments must be in ABI-encoded format
-  - tip: can be found as the last 64*N characters of the "Input Data" used in the Contract Creation transaction, where N is the number of constructor arguments
+- Compiler version should be specified in "v.X.Y.Z+commit.xxxxxxxx" format, a list of versions can be found [here](https://etherscan.io/solcversions)
+- See [Chainlist](https://chainlist.org/) for chain-id
+- Constructor arguments must be in ABI-encoded format
+  - Tip: can be found as the last 64*N characters of the "Input Data" used in the Contract Creation transaction, where N is the number of constructor arguments
 
     Ex: 3 constructor arguments used
     ```bash
@@ -164,17 +148,17 @@ There is a set of Hardhat tasks available for executing transactions on deployed
 - Execute Simple Transfer
 
   ```bash
-  yarn hardhat transfer --origin-domain <domainID> --destination-domain <domainID> --contract-address <XDomainTransfer> --token-address <address(origin_TestERC20)> --wallet-private-key <your_private_key> --amount <amount>
+  yarn hardhat transfer --origin-domain <domainID> --destination-domain <domainID> --contract-address <address(Transfer)> --token-address <address(origin_TestERC20)> --wallet-private-key <your_private_key> --amount <amount>
   ```
 
-- Execute Unpermissioned Deposit
+- Execute Unpermissioned Update
 
   ```bash
-  yarn hardhat deposit --origin-domain <domainID> --destination-domain <domainID> --contract-address <address(XDomainUnpermissioned)> --token-address <address(origin_TestERC20)> --wallet-address <your_wallet_address> --wallet-private-key <your_private_key> --amount <amount>
+  yarn hardhat update --origin-domain <domainID> --destination-domain <domainID> --source-address <address(Source)> --target-address <address(Target)> --token-address <address(origin_TestERC20)> --wallet-address <your_wallet_address> --wallet-private-key <your_private_key> --value <value> --permissioned false
   ```
 
 - Execute Permissioned Update
 
   ```bash
-  yarn hardhat update --origin-domain <domainID> --destination-domain <domainID> --contract-address <address(XDomainPermissioned)> --middleware-address <address(PermissionedTarget)> --token-address <address(origin_TestERC20)> --wallet-address <your_wallet_address> --wallet-private-key <your_private_key>
+  yarn hardhat update --origin-domain <domainID> --destination-domain <domainID> --source-address <address(Source)> --target-address <address(Target)> --token-address <address(origin_TestERC20)> --wallet-address <your_wallet_address> --wallet-private-key <your_private_key> --value <value> --permissioned true
   ```

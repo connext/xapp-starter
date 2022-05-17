@@ -7,7 +7,7 @@ import { ethers } from 'ethers';
 export default task("transfer", "Execute a transfer")
   .addParam("originDomain", "The domain ID of the sending chain")
   .addParam("destinationDomain", "The domain ID of the receiving chain")
-  .addParam("contractAddress", "The address of the XDomainTransfer contract")
+  .addParam("contractAddress", "The address of the Transfer contract")
   .addParam("tokenAddress", "The address of the TestERC20")
   .addParam("walletPrivateKey", "The private key of the signing wallet")
   .addParam("amount", "The amount to send")
@@ -34,7 +34,7 @@ export default task("transfer", "Execute a transfer")
      
       const provider = new ethers.providers.JsonRpcProvider(process.env.TESTNET_ORIGIN_RPC_URL);
       const wallet = new ethers.Wallet(walletPrivateKey, provider);
-      const xTransfer = new ethers.Contract(contractAddress, contractABI, wallet);
+      const transfer = new ethers.Contract(contractAddress, contractABI, wallet);
       const token = new ethers.Contract(tokenAddress, tokenABI, wallet);
 
       // 1) mint some tokens 
@@ -58,8 +58,8 @@ export default task("transfer", "Execute a transfer")
       }
                   
       // 3) transfer some tokens 
-      async function transfer() {
-        let unsignedTx = await xTransfer.populateTransaction.transfer(
+      async function executeTransfer() {
+        let unsignedTx = await transfer.populateTransaction.transfer(
           wallet.address,
           tokenAddress,
           originDomain,
@@ -74,7 +74,7 @@ export default task("transfer", "Execute a transfer")
       console.log(minted.status == 1 ? "Successful mint" : "Failed mint");
       let approved = await approve();
       console.log(approved.status == 1 ? "Successful approve" : "Failed approve");
-      let transferred = await transfer();
+      let transferred = await executeTransfer();
       console.log(transferred.status == 1 ? "Successful transfer" : "Failed transfer"); 
       console.log(`Transaction hash: `, transferred.transactionHash); 
     });

@@ -1,30 +1,30 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.10;
 
-import {XDomainTransfer} from "../../transfer/XDomainTransfer.sol";
+import {Transfer} from "../../transfer/Transfer.sol";
 import {IConnextHandler} from "nxtp/interfaces/IConnextHandler.sol";
 import {ConnextHandler} from "nxtp/nomad-xapps/contracts/connext/ConnextHandler.sol";
 import {DSTestPlus} from "../utils/DSTestPlus.sol";
 import {MockERC20} from "@solmate/test/utils/mocks/MockERC20.sol";
 
 /**
- * @title XDomainTransferTestUnit
- * @notice Unit tests for XDomainTransfer.
+ * @title TransferTestUnit
+ * @notice Unit tests for Transfer.
  */
-contract XDomainTransferTestUnit is DSTestPlus {
+contract TransferTestUnit is DSTestPlus {
   MockERC20 private token;
   IConnextHandler private connext;
-  XDomainTransfer private xTransfer;
+  Transfer private transfer;
 
   event TransferInitiated(address asset, address from, address to);
 
   function setUp() public {
     connext = new ConnextHandler();
     token = new MockERC20("TestToken", "TT", 18);
-    xTransfer = new XDomainTransfer(IConnextHandler(connext));
+    transfer = new Transfer(IConnextHandler(connext));
 
     vm.label(address(connext), "Connext");
-    vm.label(address(xTransfer), "XDomainTransfer");
+    vm.label(address(transfer), "Transfer");
     vm.label(address(token), "TestToken");
     vm.label(address(this), "TestContract");
   }
@@ -45,9 +45,9 @@ contract XDomainTransferTestUnit is DSTestPlus {
       token.balanceOf(address(userChainA))
     );
 
-    // User must approve transfer to xTransfer
+    // User must approve transfer to transfer contract
     vm.prank(userChainA);
-    token.approve(address(xTransfer), amount);
+    token.approve(address(transfer), amount);
 
     // Mock the xcall
     bytes memory mockxcall = abi.encodeWithSelector(connext.xcall.selector);
@@ -62,7 +62,7 @@ contract XDomainTransferTestUnit is DSTestPlus {
     );
 
     vm.prank(address(userChainA));
-    xTransfer.transfer(
+    transfer.transfer(
       address(userChainB),
       address(token),
       kovanDomainId,
@@ -73,26 +73,26 @@ contract XDomainTransferTestUnit is DSTestPlus {
 }
 
 /**
- * @title XDomainTransferTestForked
- * @notice Integration tests for XDomainTransfer. Should be run with forked testnet (Kovan).
+ * @title TransferTestForked
+ * @notice Integration tests for Transfer. Should be run with forked testnet (Kovan).
  */
-contract XDomainTransferTestForked is DSTestPlus {
+contract TransferTestForked is DSTestPlus {
   // Testnet Addresses
   address public connext = 0x71a52104739064bc35bED4Fc3ba8D9Fb2a84767f;
   address public constant testToken =
     0xB5AabB55385bfBe31D627E2A717a7B189ddA4F8F;
 
-  XDomainTransfer private xTransfer;
+  Transfer private transfer;
   MockERC20 private token;
 
   event TransferInitiated(address asset, address from, address to);
 
   function setUp() public {
-    xTransfer = new XDomainTransfer(IConnextHandler(connext));
+    transfer = new Transfer(IConnextHandler(connext));
     token = MockERC20(0xB5AabB55385bfBe31D627E2A717a7B189ddA4F8F);
 
     vm.label(connext, "Connext");
-    vm.label(address(xTransfer), "XDomainTransfer");
+    vm.label(address(transfer), "Transfer");
     vm.label(address(token), "TestToken");
     vm.label(address(this), "TestContract");
   }
@@ -113,9 +113,9 @@ contract XDomainTransferTestForked is DSTestPlus {
       token.balanceOf(address(userChainA))
     );
 
-    // User must approve transfer to xTransfer
+    // User must approve transfer to transfer
     vm.prank(userChainA);
-    token.approve(address(xTransfer), amount);
+    token.approve(address(transfer), amount);
 
     vm.expectEmit(true, true, true, true);
     emit TransferInitiated(
@@ -125,7 +125,7 @@ contract XDomainTransferTestForked is DSTestPlus {
     );
 
     vm.prank(address(userChainA));
-    xTransfer.transfer(
+    transfer.transfer(
       address(userChainB),
       address(token),
       kovanDomainId,

@@ -28,7 +28,7 @@ export default task("update", "Execute a permissioned update")
     ) => {
       const contractABI = [
         "event UpdateInitiated(address asset, uint256 amount, address onBehalfOf)",
-        "function update(address to, address asset, uint32 originDomain, uint32 destinationDomain, uint256 amount, bool permissioned)"
+        "function updateValue(address to, address asset, uint32 originDomain, uint32 destinationDomain, uint256 amount, bool permissioned)"
       ];
      
       const value = _value || 1;
@@ -38,8 +38,8 @@ export default task("update", "Execute a permissioned update")
       const wallet = new ethers.Wallet(walletPrivateKey, provider);
       const source = new ethers.Contract(sourceAddress, contractABI, wallet);
 
-      async function update() {
-        let unsignedTx = await source.populateTransaction.update(
+      async function updateValue() {
+        let unsignedTx = await source.populateTransaction.updateValue(
           targetAddress,
           tokenAddress,
           originDomain,
@@ -51,7 +51,7 @@ export default task("update", "Execute a permissioned update")
         return await txResponse.wait();
       }
 
-      let updated = await update();
+      let updated = await updateValue();
       console.log(updated.status == 1 ? "Successful update" : "Failed update"); 
-      console.log(`Trasaction hash: `, updated.transactionHash); 
+      console.log(`Transaction hash: `, updated.transactionHash); 
     });

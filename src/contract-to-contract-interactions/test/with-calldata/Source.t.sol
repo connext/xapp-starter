@@ -1,33 +1,33 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.10;
 
-import {XDomainPermissioned} from "../../permissioned/XDomainPermissioned.sol";
+import {Source} from "../../with-calldata/Source.sol";
 import {IConnextHandler} from "nxtp/interfaces/IConnextHandler.sol";
 import {ConnextHandler} from "nxtp/nomad-xapps/contracts/connext/ConnextHandler.sol";
 import {DSTestPlus} from "../utils/DSTestPlus.sol";
 import {MockERC20} from "@solmate/test/utils/mocks/MockERC20.sol";
 
 /**
- * @title XDomainPermissionedTestUnit
- * @notice Unit tests for XDomainPermissioned.
+ * @title SourceTestUnit 
+ * @notice Unit tests for Source.
  */
-contract XDomainPermissionedTestUnit is DSTestPlus {
+contract SourceTestUnit is DSTestPlus {
   MockERC20 private token;
   IConnextHandler private connext;
-  XDomainPermissioned private xPermissioned;
+  Source private source;
   address private target = address(1);
 
-  event UpdateInitiated(address asset, uint256 amount, address onBehalfOf);
+  event UpdateInitiated(address to, uint256 newValue, bool permissioned);
 
   function setUp() public {
     connext = new ConnextHandler();
     token = new MockERC20("TestToken", "TT", 18);
-    xPermissioned = new XDomainPermissioned(IConnextHandler(connext));
+    source = new Source(IConnextHandler(connext));
 
     vm.label(address(this), "TestContract");
     vm.label(address(connext), "Connext");
     vm.label(address(token), "TestToken");
-    vm.label(address(xPermissioned), "XDomainPermissioned");
+    vm.label(address(source), "Source");
   }
 
   function testUpdateEmitsUpdateInitiated() public {
@@ -35,6 +35,7 @@ contract XDomainPermissionedTestUnit is DSTestPlus {
     vm.label(address(userChainA), "userChainA");
 
     uint256 newValue = 100;
+    bool permissioned = false;
 
     // Mock the xcall
     bytes memory mockxcall = abi.encodeWithSelector(connext.xcall.selector);
@@ -42,41 +43,42 @@ contract XDomainPermissionedTestUnit is DSTestPlus {
 
     // Check for an event emitted
     vm.expectEmit(true, true, true, true);
-    emit UpdateInitiated(address(token), newValue, address(userChainA));
+    emit UpdateInitiated(target, newValue, permissioned);
 
     vm.prank(address(userChainA));
-    xPermissioned.update(
+    source.update(
       target,
       address(token),
       rinkebyChainId,
       kovanChainId,
-      newValue
+      newValue,
+      permissioned
     );
   }
 }
 
 /**
- * @title XDomainPermissionedTestForked
- * @notice Integration tests for XDomainPermissioned. Should be run with forked testnet (Kovan).
+ * @title SourceTestForked
+ * @notice Integration tests for Source. Should be run with forked testnet (Kovan).
  */
-contract XDomainPermissionedTestForked is DSTestPlus {
+contract SourceTestForked is DSTestPlus {
   // Testnet Addresses
   address public connext = 0x71a52104739064bc35bED4Fc3ba8D9Fb2a84767f;
   address public constant testToken =
     0xB5AabB55385bfBe31D627E2A717a7B189ddA4F8F;
   address private target = address(1);
 
-  XDomainPermissioned private xPermissioned;
+  Source private source;
   MockERC20 private token;
 
-  event UpdateInitiated(address asset, uint256 amount, address onBehalfOf);
+  event UpdateInitiated(address to, uint256 newValue, bool permissioned);
 
   function setUp() public {
-    xPermissioned = new XDomainPermissioned(IConnextHandler(connext));
+    source = new Source(IConnextHandler(connext));
     token = MockERC20(0xB5AabB55385bfBe31D627E2A717a7B189ddA4F8F);
 
     vm.label(connext, "Connext");
-    vm.label(address(xPermissioned), "XDomainPermissioned");
+    vm.label(address(source), "Source");
     vm.label(address(token), "TestToken");
     vm.label(address(this), "TestContract");
   }
@@ -86,17 +88,19 @@ contract XDomainPermissionedTestForked is DSTestPlus {
     vm.label(address(userChainA), "userChainA");
 
     uint256 newValue = 100;
+    bool permissioned = false;
 
     vm.expectEmit(true, true, true, true);
-    emit UpdateInitiated(testToken, newValue, address(userChainA));
+    emit UpdateInitiated(target, newValue, permissioned);
 
     vm.prank(address(userChainA));
-    xPermissioned.update(
+    source.update(
       target,
       address(token),
       kovanDomainId,
       rinkebyDomainId,
-      newValue
+      newValue,
+      permissioned
     );
   }
 }

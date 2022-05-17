@@ -24,12 +24,11 @@ build :; forge clean && forge build
 
 # Tests
 test-unit-all :; forge clean && forge test --match-contract "TestUnit" -vvvv
-test-unit-transfer :; forge clean && forge test --match-contract "XDomainTransferTestUnit" -vvvv
-test-forked-transfer :; forge clean && forge test --match-contract "XDomainTransferTestForked" --fork-url ${TESTNET_ORIGIN_RPC_URL} -vvvv
-test-unit-unpermissioned :; forge clean && forge test --match-contract "XDomainUnpermissionedTestUnit" -vvvv
-test-forked-unpermissioned :; forge clean && forge test --match-contract "XDomainUnpermissionedTestForked" --fork-url ${TESTNET_ORIGIN_RPC_URL} -vvvv
-test-unit-permissioned :; forge clean && forge test --match-contract "XDomainPermissionedTestUnit" -vvvv
-test-forked-permissioned :; forge clean && forge test --match-contract "XDomainPermissionedTestForked" --fork-url ${TESTNET_ORIGIN_RPC_URL} -vvvv
+test-unit-transfer :; forge clean && forge test --match-contract "TransferTestUnit" -vvvv
+test-forked-transfer :; forge clean && forge test --match-contract "TransferTestForked" --fork-url ${TESTNET_ORIGIN_RPC_URL} -vvvv
+test-unit-source:; forge clean && forge test --match-contract "SourceTestUnit" -vvvv
+test-forked-source :; forge clean && forge test --match-contract "SourceTestForked" --fork-url ${TESTNET_ORIGIN_RPC_URL} -vvvv
+test-unit-target:; forge clean && forge test --match-contract "TargetTestUnit" -vvvv
 
 # Lints
 lint :; prettier --write src/**/*.sol && prettier --write src/**/*.sol
