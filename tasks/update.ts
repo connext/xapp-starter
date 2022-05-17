@@ -5,43 +5,44 @@ dotEnvConfig();
 import { ethers } from 'ethers';
 
 export default task("update", "Execute a permissioned update")
-  .addParam("contractAddress", "The address of the XDomainPermissioned contract")
-  .addParam("middlewareAddress", "The address of the Middleware contract")
-  .addParam("tokenAddress", "The address of the TestERC20")
   .addParam("originDomain", "The domain ID of the sending chain")
   .addParam("destinationDomain", "The domain ID of the receiving chain")
-  .addParam("walletAddress", "The address of the signing wallet")
+  .addParam("sourceAddress", "The address of the Source contract")
+  .addParam("targetAddress", "The address of the Target contract")
+  .addParam("tokenAddress", "The address of the TestERC20")
   .addParam("walletPrivateKey", "The private key of the signing wallet")
+  .addParam("value", "The new value to update to")
+  .addParam("permissioned", "True if this is a permissioned update")
   .setAction(
     async (
-      { contractAddress, middlewareAddress, tokenAddress, originDomain, destinationDomain, walletAddress, walletPrivateKey }
+      { 
+        sourceAddress, 
+        targetAddress, 
+        tokenAddress, 
+        originDomain, 
+        destinationDomain, 
+        walletPrivateKey,
+        value,
+        permissioned
+      }
     ) => {
       const contractABI = [
         "event UpdateInitiated(address asset, uint256 amount, address onBehalfOf)",
-        "function update(address to, address asset, uint32 originDomain, uint32 destinationDomain, uint256 amount)"
+        "function update(address to, address asset, uint32 originDomain, uint32 destinationDomain, uint256 amount, bool permissioned)"
       ];
-      
-      const tokenABI = [
-        "function mint(address account, uint256 amount)",
-        "function approve(address spender, uint256 amount)"
-      ]
      
       const provider = new ethers.providers.JsonRpcProvider(process.env.TESTNET_ORIGIN_RPC_URL);
       const wallet = new ethers.Wallet(walletPrivateKey, provider);
-      const xPermissioned = new ethers.Contract(contractAddress, contractABI, wallet);
-      const middleware = new ethers.Contract(middlewareAddress, contractABI, wallet);
-      const token = new ethers.Contract(tokenAddress, tokenABI, wallet);
+      const source = new ethers.Contract(sourceAddress, contractABI, wallet);
 
-      const value = 100;
-
-      // 1) execute the permissioned update 
       async function update() {
-        let unsignedTx = await xPermissioned.populateTransaction.update(
-          walletAddress,
+        let unsignedTx = await source.populateTransaction.update(
+          targetAddress,
           tokenAddress,
           originDomain,
           destinationDomain,
-          value);
+          value,
+          permissioned === "true");
         unsignedTx.gasLimit = ethers.BigNumber.from("30000000"); 
         let txResponse = await wallet.sendTransaction(unsignedTx);
         return await txResponse.wait();
