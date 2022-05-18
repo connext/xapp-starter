@@ -119,7 +119,7 @@ Deploy contracts in this repository using the RPC provider of your choice.
     ```
     
     ```bash
-    forge create src/contract-to-contract-interactions/permissioned/Target.sol:Target -i --rpc-url <destination_rpc_url> --constructor-args <address(Source)> <origin_domainID> <address(destination_ConnextHandler)> 
+    forge create src/contract-to-contract-interactions/with-calldata/Target.sol:Target -i --rpc-url <destination_rpc_url> --constructor-args <address(Source)> <origin_domainID> <address(destination_ConnextHandler)> 
     ```
 
 ### Verification
