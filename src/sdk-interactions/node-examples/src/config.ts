@@ -20,7 +20,7 @@ const nxtpConfig: NxtpSdkConfig = {
       assets: [
         {
           name: "TEST",
-          address: "0xB7b1d3cC52E658922b2aF00c5729001ceA98142C",
+          address: "0x3FFc03F05D1869f493c7dbf913E636C6280e0ff9",
         },
       ],
     },
@@ -29,7 +29,16 @@ const nxtpConfig: NxtpSdkConfig = {
       assets: [
         {
           name: "TEST",
-          address: "0xB5AabB55385bfBe31D627E2A717a7B189ddA4F8F",
+          address: "0x3FFc03F05D1869f493c7dbf913E636C6280e0ff9",
+        },
+      ],
+    },
+    "3331": {
+      providers: [process.env.GOERLI_RPC_URL],
+      assets: [
+        {
+          name: "TEST",
+          address: "0x3FFc03F05D1869f493c7dbf913E636C6280e0ff9",
         },
       ],
     },

@@ -23,17 +23,20 @@ const calldata = iface.encodeFunctionData(
 
 // Construct the xcall arguments
 const callParams = {
-  to: "0xB7b1d3cC52E658922b2aF00c5729001ceA98142C", // Rinkeby Test Token - this is the contract we are targeting
+  to: "0x3FFc03F05D1869f493c7dbf913E636C6280e0ff9", // Rinkeby Test Token - this is the contract we are targeting
   callData: calldata, 
   originDomain: "2221", // send from Kovan
   destinationDomain: "1111", // to Rinkeby
+  recovery: await signer.getAddress(),
+  callback: ethers.constants.AddressZero,
+  callbackFee: "0",
   forceSlow: false,
   receiveLocal: false
 };
 
 const xCallArgs = {
   params: callParams,
-  transactingAssetId: "0xB5AabB55385bfBe31D627E2A717a7B189ddA4F8F", // the Kovan Test Token
+  transactingAssetId: "0x3FFc03F05D1869f493c7dbf913E636C6280e0ff9", // the Kovan Test Token
   amount: "0", // not sending funds, so no need for the approval dance
   relayerFee: "0", // relayers on testnet don't take a fee
 };
