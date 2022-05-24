@@ -2,6 +2,7 @@
 pragma solidity ^0.8.10;
 
 import {IConnextHandler} from "nxtp/interfaces/IConnextHandler.sol";
+import {CallParams, XCallArgs} from "nxtp/libraries/LibConnextStorage.sol";
 
 /**
  * @title Source 
@@ -42,16 +43,19 @@ contract Source {
     }
     bytes memory callData = abi.encodeWithSelector(selector, newValue);
 
-    IConnextHandler.CallParams memory callParams = IConnextHandler.CallParams({
+    CallParams memory callParams = CallParams({
       to: to,
       callData: callData,
       originDomain: originDomain,
       destinationDomain: destinationDomain,
+      recovery: to,
+      callback: address(this),
+      callbackFee: 0,
       forceSlow: forceSlow,
       receiveLocal: false
     });
 
-    IConnextHandler.XCallArgs memory xcallArgs = IConnextHandler.XCallArgs({
+    XCallArgs memory xcallArgs = XCallArgs({
       params: callParams,
       transactingAssetId: asset,
       amount: 0,

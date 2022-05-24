@@ -3,7 +3,6 @@ pragma solidity ^0.8.10;
 
 import {Source} from "../../with-calldata/Source.sol";
 import {IConnextHandler} from "nxtp/interfaces/IConnextHandler.sol";
-import {ConnextHandler} from "nxtp/nomad-xapps/contracts/connext/ConnextHandler.sol";
 import {DSTestPlus} from "../utils/DSTestPlus.sol";
 import {MockERC20} from "@solmate/test/utils/mocks/MockERC20.sol";
 
@@ -13,19 +12,19 @@ import {MockERC20} from "@solmate/test/utils/mocks/MockERC20.sol";
  */
 contract SourceTestUnit is DSTestPlus {
   MockERC20 private token;
-  IConnextHandler private connext;
+  address private connext;
   Source private source;
   address private target = address(1);
 
   event UpdateInitiated(address to, uint256 newValue, bool permissioned);
 
   function setUp() public {
-    connext = new ConnextHandler();
+    connext = address(1);
     token = new MockERC20("TestToken", "TT", 18);
     source = new Source(IConnextHandler(connext));
 
     vm.label(address(this), "TestContract");
-    vm.label(address(connext), "Connext");
+    vm.label(connext, "Connext");
     vm.label(address(token), "TestToken");
     vm.label(address(source), "Source");
   }
@@ -38,8 +37,8 @@ contract SourceTestUnit is DSTestPlus {
     bool permissioned = false;
 
     // Mock the xcall
-    bytes memory mockxcall = abi.encodeWithSelector(connext.xcall.selector);
-    vm.mockCall(address(connext), mockxcall, abi.encode(1));
+    bytes memory mockxcall = abi.encodeWithSelector(IConnextHandler.xcall.selector);
+    vm.mockCall(connext, mockxcall, abi.encode(1));
 
     // Check for an event emitted
     vm.expectEmit(true, true, true, true);
@@ -63,9 +62,9 @@ contract SourceTestUnit is DSTestPlus {
  */
 contract SourceTestForked is DSTestPlus {
   // Testnet Addresses
-  address public connext = 0x71a52104739064bc35bED4Fc3ba8D9Fb2a84767f;
+  address public connext = 0x3366A61A701FA84A86448225471Ec53c5c4ad49f;
   address public constant testToken =
-    0xB5AabB55385bfBe31D627E2A717a7B189ddA4F8F;
+    0x3FFc03F05D1869f493c7dbf913E636C6280e0ff9;
   address private target = address(1);
 
   Source private source;
@@ -75,7 +74,7 @@ contract SourceTestForked is DSTestPlus {
 
   function setUp() public {
     source = new Source(IConnextHandler(connext));
-    token = MockERC20(0xB5AabB55385bfBe31D627E2A717a7B189ddA4F8F);
+    token = MockERC20(testToken);
 
     vm.label(connext, "Connext");
     vm.label(address(source), "Source");

@@ -20,7 +20,7 @@ contract Target {
   uint32 public originDomain;
 
   // The address of the Connext Executor contract
-  address public executor;
+  IExecutor public executor;
 
   // A modifier for permissioned function calls.
   // Note: This is an important security consideration. If your target
@@ -31,7 +31,7 @@ contract Target {
     require(
       IExecutor(msg.sender).originSender() == originContract && 
       IExecutor(msg.sender).origin() == originDomain &&
-      msg.sender == executor,
+      msg.sender == address(executor),
       "Expected origin contract on origin domain called by Executor"
     );
     _;
@@ -44,7 +44,7 @@ contract Target {
   ) {
     originContract = _originContract;
     originDomain = _originDomain;
-    executor = IConnextHandler(_connext).getExecutor();
+    executor = _connext.executor();
   }
 
   // Unpermissioned function
