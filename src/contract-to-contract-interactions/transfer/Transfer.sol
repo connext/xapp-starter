@@ -2,6 +2,7 @@
 pragma solidity ^0.8.10;
 
 import {IConnextHandler} from "nxtp/interfaces/IConnextHandler.sol";
+import {CallParams, XCallArgs} from "nxtp/libraries/LibConnextStorage.sol";
 import {ERC20} from "@solmate/tokens/ERC20.sol";
 
 /**
@@ -44,16 +45,19 @@ contract Transfer {
     token.approve(address(connext), amount);
 
     // Empty callData because this is a simple transfer of funds
-    IConnextHandler.CallParams memory callParams = IConnextHandler.CallParams({
+    CallParams memory callParams = CallParams({
       to: to,
       callData: "",
       originDomain: originDomain,
       destinationDomain: destinationDomain,
+      recovery: to,
+      callback: address(this),
+      callbackFee: 0,
       forceSlow: false,
       receiveLocal: false
     });
 
-    IConnextHandler.XCallArgs memory xcallArgs = IConnextHandler.XCallArgs({
+    XCallArgs memory xcallArgs = XCallArgs({
       params: callParams,
       transactingAssetId: asset,
       amount: amount,
