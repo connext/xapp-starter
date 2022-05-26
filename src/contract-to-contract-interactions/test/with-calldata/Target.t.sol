@@ -2,8 +2,8 @@
 pragma solidity ^0.8.10;
 
 import {Target} from "../../with-calldata/Target.sol";
-import {IConnextHandler} from "nxtp/interfaces/IConnextHandler.sol";
-import {IExecutor} from "nxtp/interfaces/IExecutor.sol";
+import {IConnextHandler} from "nxtp/core/connext/interfaces/IConnextHandler.sol";
+import {IExecutor} from "nxtp/core/connext/interfaces/IExecutor.sol";
 import {DSTestPlus} from "../utils/DSTestPlus.sol";
 import "forge-std/Test.sol";
 

@@ -2,7 +2,7 @@
 pragma solidity ^0.8.10;
 
 import {Source} from "../../with-calldata/Source.sol";
-import {IConnextHandler} from "nxtp/interfaces/IConnextHandler.sol";
+import {IConnextHandler} from "nxtp/core/connext/interfaces/IConnextHandler.sol";
 import {DSTestPlus} from "../utils/DSTestPlus.sol";
 import {MockERC20} from "@solmate/test/utils/mocks/MockERC20.sol";
 

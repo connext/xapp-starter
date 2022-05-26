@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.10;
 
-import {IConnextHandler} from "nxtp/interfaces/IConnextHandler.sol";
-import {CallParams, XCallArgs} from "nxtp/libraries/LibConnextStorage.sol";
+import {IConnextHandler} from "nxtp/core/connext/interfaces/IConnextHandler.sol";
+import {CallParams, XCallArgs} from "nxtp/core/connext/libraries/LibConnextStorage.sol";
 
 /**
  * @title Source 
