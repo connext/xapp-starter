@@ -165,7 +165,7 @@ There is a set of Hardhat tasks available for executing transactions on deployed
 
 ### Check Execution Results
 
-You can just check your wallet balance in the Simple Transfer case to see if the funds arrived at the destionation address. For the unpermissioned/permissioned updates, you can either read the `value` from a verified Target contract on Etherscan or you can use the following `cast` command to read it directly from terminal.
+You can just check your wallet balance in the Simple Transfer case to see if the funds arrived at the destination address. For the unpermissioned/permissioned updates, you can either read the `value` from a verified Target contract on Etherscan or you can use the following `cast` command to read it directly from terminal.
 
 ```bash
 cast call --chain <rinkeby|kovan|etc> <address(Target)> "value()" --rpc-url <destination_rpc_url>

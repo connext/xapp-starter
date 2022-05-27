@@ -24,6 +24,11 @@ contract Transfer {
    *         how to use `xcall` to transfer funds from a user on one chain to a receiving
    *         address on another.
    * @dev For list of Nomad Domain IDs, see: https://docs.nomad.xyz/bridge/domains.html
+   * @param to The destination address (e.g. a wallet)
+   * @param asset Address of token on origin domain 
+   * @param originDomain The origin domain ID (e.g. 2111 for Kovan)
+   * @param destinationDomain The origin domain ID (e.g. 1111 for Rinkeby)
+   * @param amount The amount to transfer
    */
   function transfer(
     address to,
@@ -47,21 +52,21 @@ contract Transfer {
     // Empty callData because this is a simple transfer of funds
     CallParams memory callParams = CallParams({
       to: to,
-      callData: "",
-      originDomain: originDomain,
+      callData: "", // empty here because we're only sending funds
+      originDomain: originDomain, 
       destinationDomain: destinationDomain,
-      recovery: to,
-      callback: address(this),
-      callbackFee: 0,
-      forceSlow: false,
-      receiveLocal: false
+      recovery: to, // fallback address to send funds to if execution fails on destination side
+      callback: address(0), // zero address because we don't expect a callback
+      callbackFee: 0, // fee paid to relayers; relayers don't take any fees on testnet
+      forceSlow: false, // option that allows users to take the Nomad slow path (~30 mins) instead of paying routers a 0.05% fee on their transaction
+      receiveLocal: false // option for users to receive the local Nomad-flavored asset instead of the adopted asset on the destination side
     });
 
     XCallArgs memory xcallArgs = XCallArgs({
       params: callParams,
       transactingAssetId: asset,
       amount: amount,
-      relayerFee: 0
+      relayerFee: 0 // fee paid to relayers; relayers don't take any fees on testnet
     });
 
     connext.xcall(xcallArgs);
