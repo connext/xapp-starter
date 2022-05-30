@@ -7,7 +7,7 @@ import {DSTestPlus} from "../utils/DSTestPlus.sol";
 import {MockERC20} from "@solmate/test/utils/mocks/MockERC20.sol";
 
 /**
- * @title SourceTestUnit 
+ * @title SourceTestUnit
  * @notice Unit tests for Source.
  */
 contract SourceTestUnit is DSTestPlus {
@@ -37,7 +37,9 @@ contract SourceTestUnit is DSTestPlus {
     bool permissioned = false;
 
     // Mock the xcall
-    bytes memory mockxcall = abi.encodeWithSelector(IConnextHandler.xcall.selector);
+    bytes memory mockxcall = abi.encodeWithSelector(
+      IConnextHandler.xcall.selector
+    );
     vm.mockCall(connext, mockxcall, abi.encode(1));
 
     // Check for an event emitted

@@ -18,7 +18,7 @@ contract TransferTestUnit is DSTestPlus {
   event TransferInitiated(address asset, address from, address to);
 
   function setUp() public {
-    connext = address(1); 
+    connext = address(1);
     token = new MockERC20("TestToken", "TT", 18);
     transfer = new Transfer(IConnextHandler(connext));
 
@@ -49,7 +49,9 @@ contract TransferTestUnit is DSTestPlus {
     token.approve(address(transfer), amount);
 
     // Mock the xcall
-    bytes memory mockxcall = abi.encodeWithSelector(IConnextHandler.xcall.selector);
+    bytes memory mockxcall = abi.encodeWithSelector(
+      IConnextHandler.xcall.selector
+    );
     vm.mockCall(connext, mockxcall, abi.encode(1));
 
     // Check for an event emitted

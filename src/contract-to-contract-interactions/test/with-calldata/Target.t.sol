@@ -55,22 +55,20 @@ contract TargetTestUnit is DSTestPlus {
     uint256 newValue = 100;
 
     vm.mockCall(
-      address(IExecutor(address(this))), 
-      abi.encodeWithSelector(
-        IExecutor(address(this)).originSender.selector
-      ), 
+      address(IExecutor(address(this))),
+      abi.encodeWithSelector(IExecutor(address(this)).originSender.selector),
       abi.encode(source)
     );
 
     vm.mockCall(
-      address(IExecutor(address(this))), 
-      abi.encodeWithSelector(
-        IExecutor(address(this)).origin.selector
-      ), 
+      address(IExecutor(address(this))),
+      abi.encodeWithSelector(IExecutor(address(this)).origin.selector),
       abi.encode(rinkebyChainId)
     );
 
-    vm.expectRevert("Expected origin contract on origin domain called by Executor");
+    vm.expectRevert(
+      "Expected origin contract on origin domain called by Executor"
+    );
     target.updateValuePermissioned(newValue);
   }
 
@@ -78,27 +76,21 @@ contract TargetTestUnit is DSTestPlus {
     uint256 newValue = 100;
 
     vm.mockCall(
-      address(IExecutor(address(this))), 
-      abi.encodeWithSelector(
-        IExecutor(address(this)).originSender.selector
-      ), 
+      address(IExecutor(address(this))),
+      abi.encodeWithSelector(IExecutor(address(this)).originSender.selector),
       abi.encode(source)
     );
 
     vm.mockCall(
-      address(IExecutor(address(this))), 
-      abi.encodeWithSelector(
-        IExecutor(address(this)).origin.selector
-      ), 
+      address(IExecutor(address(this))),
+      abi.encodeWithSelector(IExecutor(address(this)).origin.selector),
       abi.encode(rinkebyChainId)
     );
 
-    stdstore
-      .target(address(target))
-      .sig("executor()")
-      .checked_write(address(this));
+    stdstore.target(address(target)).sig("executor()").checked_write(
+      address(this)
+    );
 
     target.updateValuePermissioned(newValue);
   }
-
 }

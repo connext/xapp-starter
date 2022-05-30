@@ -34,7 +34,7 @@ test-unit-target:; forge clean && forge test --match-contract "TargetTestUnit" -
 lint :; prettier --write src/**/*.sol && prettier --write src/**/*.sol
 
 # Generate Gas Snapshots
-snapshot :; forge clean && forge snapshot --optimize --optimize-runs 1000000
+snapshot :; forge clean && forge snapshot --optimize --optimizer-runs 1000000
 
 # Rename all instances of femplate with the new repo name
 rename :; chmod +x ./scripts/* && ./scripts/rename.sh

@@ -9,17 +9,17 @@ import {Vm} from "@std/Vm.sol";
 import {Test} from "forge-std/Test.sol";
 
 contract DSTestPlus is Test {
-    XConsole console = new XConsole();
+  XConsole console = new XConsole();
 
-    // Nomad Domain IDs
-    uint32 public mainnetDomainId = 6648936;
-    uint32 public rinkebyDomainId = 1111;
-    uint32 public kovanDomainId = 2221;
+  // Nomad Domain IDs
+  uint32 public mainnetDomainId = 6648936;
+  uint32 public rinkebyDomainId = 1111;
+  uint32 public kovanDomainId = 2221;
 
-    // Chain IDs
-    uint32 public mainnetChainId = 1;
-    uint32 public ropstenChainId = 3;
-    uint32 public rinkebyChainId = 4;
-    uint32 public goerliChainId = 5;
-    uint32 public kovanChainId = 42;
+  // Chain IDs
+  uint32 public mainnetChainId = 1;
+  uint32 public ropstenChainId = 3;
+  uint32 public rinkebyChainId = 4;
+  uint32 public goerliChainId = 5;
+  uint32 public kovanChainId = 42;
 }

@@ -25,7 +25,7 @@ contract Transfer {
    *         address on another.
    * @dev For list of Nomad Domain IDs, see: https://docs.nomad.xyz/bridge/domains.html
    * @param to The destination address (e.g. a wallet)
-   * @param asset Address of token on origin domain 
+   * @param asset Address of token on origin domain
    * @param originDomain The origin domain ID (e.g. 2111 for Kovan)
    * @param destinationDomain The origin domain ID (e.g. 1111 for Rinkeby)
    * @param amount The amount to transfer
@@ -53,13 +53,13 @@ contract Transfer {
     CallParams memory callParams = CallParams({
       to: to,
       callData: "", // empty here because we're only sending funds
-      originDomain: originDomain, 
+      originDomain: originDomain,
       destinationDomain: destinationDomain,
       recovery: to, // fallback address to send funds to if execution fails on destination side
       callback: address(0), // zero address because we don't expect a callback
       callbackFee: 0, // fee paid to relayers; relayers don't take any fees on testnet
-      forceSlow: false, // option that allows users to take the Nomad slow path (~30 mins) instead of paying routers a 0.05% fee on their transaction
-      receiveLocal: false // option for users to receive the local Nomad-flavored asset instead of the adopted asset on the destination side
+      forceSlow: false, // option to force Nomad slow path (~30 mins) instead of paying 0.05% fee
+      receiveLocal: false // option to receive the local Nomad-flavored asset instead of the adopted asset
     });
 
     XCallArgs memory xcallArgs = XCallArgs({

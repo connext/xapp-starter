@@ -24,22 +24,22 @@ contract Target {
 
   // A modifier for permissioned function calls.
   // Note: This is an important security consideration. If your target
-  //       contract function is meant to be permissioned, it must check 
+  //       contract function is meant to be permissioned, it must check
   //       that the originating call is from the correct domain and contract.
   //       Also, check that the msg.sender is the Connext Executor address.
   modifier onlyExecutor() {
     require(
-      IExecutor(msg.sender).originSender() == originContract && 
-      IExecutor(msg.sender).origin() == originDomain &&
-      msg.sender == address(executor),
+      IExecutor(msg.sender).originSender() == originContract &&
+        IExecutor(msg.sender).origin() == originDomain &&
+        msg.sender == address(executor),
       "Expected origin contract on origin domain called by Executor"
     );
     _;
-  } 
+  }
 
   constructor(
-    address _originContract, 
-    uint32 _originDomain, 
+    address _originContract,
+    uint32 _originDomain,
     IConnextHandler _connext
   ) {
     originContract = _originContract;
@@ -51,13 +51,13 @@ contract Target {
   function updateValueUnpermissioned(uint256 newValue) external {
     value = newValue;
 
-    emit UpdateCompleted(msg.sender, newValue, false); 
+    emit UpdateCompleted(msg.sender, newValue, false);
   }
 
   // Permissioned function
   function updateValuePermissioned(uint256 newValue) external onlyExecutor {
     value = newValue;
 
-    emit UpdateCompleted(msg.sender, newValue, true); 
+    emit UpdateCompleted(msg.sender, newValue, true);
   }
 }
