@@ -48,16 +48,24 @@ contract Target {
   }
 
   // Unpermissioned function
-  function updateValueUnpermissioned(uint256 newValue) external {
+  function updateValueUnpermissioned(uint256 newValue) 
+    external 
+    returns (uint256)
+  {
     value = newValue;
 
     emit UpdateCompleted(msg.sender, newValue, false);
+    return newValue;
   }
 
   // Permissioned function
-  function updateValuePermissioned(uint256 newValue) external onlyExecutor {
+  function updateValuePermissioned(uint256 newValue) 
+    external onlyExecutor 
+    returns (uint256)
+  {
     value = newValue;
 
     emit UpdateCompleted(msg.sender, newValue, true);
+    return newValue;
   }
 }

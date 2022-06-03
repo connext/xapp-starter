@@ -2,14 +2,16 @@
 pragma solidity ^0.8.10;
 
 import {IConnextHandler} from "nxtp/core/connext/interfaces/IConnextHandler.sol";
+import {ICallback} from "nxtp/core/promise/interfaces/ICallback.sol";
 import {CallParams, XCallArgs} from "nxtp/core/connext/libraries/LibConnextStorage.sol";
 
 /**
  * @title Source
  * @notice Example contract for cross-domain calls (xcalls).
  */
-contract Source {
+contract Source is ICallback {
   event UpdateInitiated(address to, uint256 newValue, bool permissioned);
+  event CallbackCalled(bytes32 transferId, bool success, uint256 newValue); 
 
   IConnextHandler public immutable connext;
 
@@ -48,7 +50,7 @@ contract Source {
       originDomain: originDomain,
       destinationDomain: destinationDomain,
       recovery: to, // fallback address to send funds to if execution fails on destination side
-      callback: address(0), // zero address because we don't expect a callback
+      callback: address(this), // this contract implements the callback
       callbackFee: 0, // fee paid to relayers; relayers don't take any fees on testnet
       forceSlow: forceSlow, // option to force Nomad slow path (~30 mins) instead of paying 0.05% fee
       receiveLocal: false // option to receive the local Nomad-flavored asset instead of the adopted asset
@@ -64,5 +66,18 @@ contract Source {
     connext.xcall(xcallArgs);
 
     emit UpdateInitiated(to, newValue, permissioned);
+  }
+
+  /**
+   * Callback function required for contracts implementing the ICallback interface.
+   @dev This function is called to handle return data from the destination domain.
+   */ 
+  function callback(
+    bytes32 transferId,
+    bool success,
+    bytes memory data
+  ) external {
+    uint256 newValue = abi.decode(data, (uint256));
+    emit CallbackCalled(transferId, success, newValue);
   }
 }
