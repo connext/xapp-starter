@@ -12,7 +12,7 @@ const callParams = {
   to: await signer.getAddress(), // the address that should receive the funds
   callData: "0x", // empty calldata for a simple transfer
   originDomain: "2221", // send from Kovan
-  destinationDomain: "3331", // to Rinkeby
+  destinationDomain: "1111", // to Rinkeby
   recovery: await signer.getAddress(),
   callback: ethers.constants.AddressZero,
   callbackFee: "0",
