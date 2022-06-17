@@ -17,3 +17,6 @@
 	path = lib/nxtp
 	url = https://github.com/connext/nxtp
 	branch = prod 
+[submodule "lib/nfthashi"]
+	path = lib/nfthashi
+	url = git@github.com:nfthashi/monorepo
