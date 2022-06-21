@@ -19,4 +19,4 @@
 	branch = prod 
 [submodule "lib/nfthashi"]
 	path = lib/nfthashi
-	url = git@github.com:nfthashi/monorepo
+	url = https://github.com/nfthashi/monorepo
