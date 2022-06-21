@@ -26,8 +26,8 @@ contract Transfer {
    * @dev For list of Nomad Domain IDs, see: https://docs.nomad.xyz/bridge/domains.html
    * @param to The destination address (e.g. a wallet)
    * @param asset Address of token on origin domain
-   * @param originDomain The origin domain ID (e.g. 2111 for Kovan)
-   * @param destinationDomain The origin domain ID (e.g. 1111 for Rinkeby)
+   * @param originDomain The origin domain ID (e.g. 1111 for Rinkeby)
+   * @param destinationDomain The origin domain ID (e.g. 3331 for Goerli)
    * @param amount The amount to transfer
    */
   function transfer(

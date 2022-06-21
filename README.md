@@ -96,7 +96,7 @@ make test-unit-target
 
 ### Integration Tests
 
-This uses forge's `--forked` mode. Make sure you have `TESTNET_RPC_URL` defined in your `.env` file. Currently, the test cases are pointed at Connext's Kovan testnet deployments.
+This uses forge's `--forked` mode. Make sure you have `TESTNET_RPC_URL` defined in your `.env` file. Currently, the test cases are pointed at Connext's Rinkeby testnet deployments.
 ```bash
 make test-forked-transfer
 make test-forked-source
@@ -168,5 +168,5 @@ There is a set of Hardhat tasks available for executing transactions on deployed
 You can just check your wallet balance in the Simple Transfer case to see if the funds arrived at the destination address. For the unpermissioned/permissioned updates, you can either read the `value` from a verified Target contract on Etherscan or you can use the following `cast` command to read it directly from terminal.
 
 ```bash
-cast call --chain <rinkeby|kovan|etc> <address(Target)> "value()" --rpc-url <destination_rpc_url>
+cast call --chain <rinkeby|goerli|etc> <address(Target)> "value()" --rpc-url <destination_rpc_url>
 ```

@@ -8,7 +8,7 @@ import { ethers } from "ethers";
 const privateKey = process.env.PRIVATE_KEY;
 let signer = new ethers.Wallet(privateKey);
 
-const provider = new ethers.providers.JsonRpcProvider(process.env.KOVAN_RPC_URL);
+const provider = new ethers.providers.JsonRpcProvider(process.env.RINKEBY_RPC_URL);
 signer = signer.connect(provider);
 
 const nxtpConfig: NxtpSdkConfig = {
@@ -17,15 +17,6 @@ const nxtpConfig: NxtpSdkConfig = {
   chains: {
     "1111": {
       providers: [process.env.RINKEBY_RPC_URL],
-      assets: [
-        {
-          name: "TEST",
-          address: "0x3FFc03F05D1869f493c7dbf913E636C6280e0ff9",
-        },
-      ],
-    },
-    "2221": {
-      providers: [process.env.KOVAN_RPC_URL],
       assets: [
         {
           name: "TEST",

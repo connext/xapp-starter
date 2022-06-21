@@ -51,7 +51,7 @@ contract SourceTestUnit is DSTestPlus {
       target,
       address(token),
       rinkebyChainId,
-      kovanChainId,
+      goerliChainId,
       newValue,
       permissioned
     );
@@ -60,7 +60,7 @@ contract SourceTestUnit is DSTestPlus {
 
 /**
  * @title SourceTestForked
- * @notice Integration tests for Source. Should be run with forked testnet (Kovan).
+ * @notice Integration tests for Source. Should be run with forked testnet (Rinkeby).
  */
 contract SourceTestForked is DSTestPlus {
   // Testnet Addresses
@@ -98,8 +98,8 @@ contract SourceTestForked is DSTestPlus {
     source.updateValue(
       target,
       address(token),
-      kovanDomainId,
       rinkebyDomainId,
+      goerliDomainId,
       newValue,
       permissioned
     );

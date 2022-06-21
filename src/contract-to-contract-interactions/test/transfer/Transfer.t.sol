@@ -66,8 +66,8 @@ contract TransferTestUnit is DSTestPlus {
     transfer.transfer(
       address(userChainB),
       address(token),
-      kovanDomainId,
       rinkebyDomainId,
+      goerliDomainId,
       amount
     );
   }
@@ -75,7 +75,7 @@ contract TransferTestUnit is DSTestPlus {
 
 /**
  * @title TransferTestForked
- * @notice Integration tests for Transfer. Should be run with forked testnet (Kovan).
+ * @notice Integration tests for Transfer. Should be run with forked testnet (Rinkeby).
  */
 contract TransferTestForked is DSTestPlus {
   // Testnet Addresses
@@ -129,8 +129,8 @@ contract TransferTestForked is DSTestPlus {
     transfer.transfer(
       address(userChainB),
       address(token),
-      kovanDomainId,
       rinkebyDomainId,
+      goerliDomainId,
       amount
     );
   }

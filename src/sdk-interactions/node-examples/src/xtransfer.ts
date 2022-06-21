@@ -11,8 +11,8 @@ const {nxtpSdkBase} = await create(nxtpConfig);
 const callParams = {
   to: await signer.getAddress(), // the address that should receive the funds
   callData: "0x", // empty calldata for a simple transfer
-  originDomain: "2221", // send from Kovan
-  destinationDomain: "1111", // to Rinkeby
+  originDomain: "1111", // send from Rinkeby
+  destinationDomain: "3331", // to Goerli
   recovery: await signer.getAddress(),
   callback: ethers.constants.AddressZero,
   callbackFee: "0",
@@ -22,7 +22,7 @@ const callParams = {
 
 const xCallArgs = {
   params: callParams,
-  transactingAssetId: "0x3FFc03F05D1869f493c7dbf913E636C6280e0ff9", // the Kovan Test Token
+  transactingAssetId: "0x3FFc03F05D1869f493c7dbf913E636C6280e0ff9", // the Rinkeby Test Token
   amount: "1000000000000000000", // amount to send (1 TEST)
   relayerFee: "0", // relayers on testnet don't take a fee
 };

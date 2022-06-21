@@ -14,12 +14,11 @@ contract DSTestPlus is Test {
   // Nomad Domain IDs
   uint32 public mainnetDomainId = 6648936;
   uint32 public rinkebyDomainId = 1111;
-  uint32 public kovanDomainId = 2221;
+  uint32 public goerliDomainId = 3331;
 
   // Chain IDs
   uint32 public mainnetChainId = 1;
   uint32 public ropstenChainId = 3;
   uint32 public rinkebyChainId = 4;
   uint32 public goerliChainId = 5;
-  uint32 public kovanChainId = 42;
 }
