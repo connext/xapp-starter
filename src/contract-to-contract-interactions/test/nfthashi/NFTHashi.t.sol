@@ -159,7 +159,7 @@ contract NFTHashiTestForked is DSTestPlus {
 
   function setUp() public {
     nftHashi = new NFTHashi(
-      kovanDomainId,
+      rinkebyDomainId,
       connext,
       testToken,
       "",
