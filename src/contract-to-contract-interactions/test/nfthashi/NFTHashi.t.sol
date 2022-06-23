@@ -77,7 +77,7 @@ contract NFTHashiTestUnit is DSTestPlus {
 
     token = new MockERC20("TestToken", "TT", 18);
     nftHashi = new NFTHashi(
-      kovanDomainId,
+      rinkebyDomainId,
       address(connext),
       address(token),
       "",
