@@ -29,6 +29,9 @@ test-forked-transfer :; forge clean && forge test --match-contract "TransferTest
 test-unit-source:; forge clean && forge test --match-contract "SourceTestUnit" -vvvv
 test-forked-source :; forge clean && forge test --match-contract "SourceTestForked" --fork-url ${TESTNET_ORIGIN_RPC_URL} -vvvv
 test-unit-target:; forge clean && forge test --match-contract "TargetTestUnit" -vvvv
+test-unit-nfthashi:; forge clean && forge test --match-contract "NFTHashiTestUnit" -vvvv
+test-forked-nfthashi:; forge clean && forge test --match-contract "NFTHashiTestForked" --fork-url ${TESTNET_ORIGIN_RPC_URL} -vvvv
+
 
 # Lints
 lint :; prettier --write src/**/*.sol && prettier --write src/**/*.sol
