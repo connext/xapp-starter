@@ -64,7 +64,7 @@ contract SourceTestUnit is DSTestPlus {
  */
 contract SourceTestForked is DSTestPlus {
   // Testnet Addresses
-  address public connext = 0x3366A61A701FA84A86448225471Ec53c5c4ad49f;
+  address public connext = 0x2307Ed9f152FA9b3DcDfe2385d279D8C2A9DF2b0;
   address public constant testToken =
     0x3FFc03F05D1869f493c7dbf913E636C6280e0ff9;
   address private target = address(1);
