@@ -1,0 +1,12 @@
+# Gitpod configuration
+tasks:
+  - init: |
+      # setup foundry forge locally
+      curl -L https://foundry.paradigm.xyz | bash
+      source /home/gitpod/.bashrc
+      foundryup
+      make install
+    command: |
+      # build source and run tests
+      make build
+      make test-unit-all
