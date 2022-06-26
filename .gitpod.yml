@@ -12,7 +12,6 @@ tasks:
       # setup foundry forge locally
       curl -L https://foundry.paradigm.xyz | bash
       source /home/gitpod/.bashrc
-      export PATH="$PATH:/home/gitpod/.foundry/bin"
       foundryup
       make install
       # build source and run tests
