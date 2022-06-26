@@ -3,7 +3,10 @@ image:
   file: .gitpod.dockerfile
 
 tasks:
-  - init: |
+  - name: xapp-starter
+    init: |
+      # bring in secret access tokens from gitpod user dashboard
+      eval $(gp env -e)
       # heavy lifting that gitpod executes on each commit
       # https://www.gitpod.io/docs/config-start-tasks#prebuild-and-new-workspaces
       # setup foundry forge locally
@@ -15,3 +18,11 @@ tasks:
       # build source and run tests
       make build
       make test-unit-all
+      gp sync-done setup
+  - name: Shell
+    init: |
+      gp sync-await setup
+      eval $(gp env -e)
+    command: |
+      bash
+    openMode: split-right
