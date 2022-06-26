@@ -1,12 +1,13 @@
 # Gitpod configuration
 tasks:
   - init: |
+      # heavy lifting that gitpod executes on each commit
+      # https://www.gitpod.io/docs/config-start-tasks#prebuild-and-new-workspaces
       # setup foundry forge locally
       curl -L https://foundry.paradigm.xyz | bash
       source /home/gitpod/.bashrc
       foundryup
       make install
-    command: |
       # build source and run tests
       make build
       make test-unit-all
