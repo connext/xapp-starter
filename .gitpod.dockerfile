@@ -4,6 +4,6 @@ FROM gitpod/workspace-full
 RUN sudo apt-get update \
  && sudo apt-get install -y \
  && curl -L https://foundry.paradigm.xyz | bash \
- && source /home/gitpod/.bashrc \
+ && export PATH="$PATH:/home/gitpod/.foundry/bin" \
  && foundryup \
  && sudo rm -rf /var/lib/apt/lists/*
