@@ -1,4 +1,4 @@
-# Gitpod configuration
+
 image:
   file: .gitpod.dockerfile
 
@@ -20,3 +20,7 @@ tasks:
     command: |
       bash
     openMode: split-right
+
+vscode:
+  extensions:
+    - ms-vscode.makefile-tools
