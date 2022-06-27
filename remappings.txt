@@ -1,10 +1,7 @@
-@aave/=lib/aave-v3-core/
-@ds=lib/ds-test/src/
-@std=lib/forge-std/src/
-@solmate=lib/solmate/src/
-@clones=lib/clones-with-immutable-args/src/
-nxtp=lib/nxtp/packages/deployments/contracts/contracts/
-@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts
-@openzeppelin/contracts-upgradeable/=lib/nxtp/packages/deployments/contracts/lib/openzeppelin-contracts-upgradeable/contracts
-@nfthashi/contracts=lib/nfthashi/packages/contracts/contracts
-@connext/nxtp-contracts/contracts=lib/nxtp/packages/deployments/contracts/contracts/core/connext
+clones-with-immutable-args/=lib/clones-with-immutable-args/src/
+ds-test/=lib/ds-test/src/
+forge-std/=lib/forge-std/src/
+hardhat/=lib/hardhat/
+nfthashi/=lib/nfthashi/
+openzeppelin-contracts/=lib/openzeppelin-contracts/
+solmate/=lib/solmate/src/
