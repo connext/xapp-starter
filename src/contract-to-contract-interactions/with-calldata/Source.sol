@@ -14,9 +14,23 @@ contract Source is ICallback {
   event CallbackCalled(bytes32 transferId, bool success, uint256 newValue); 
 
   IConnextHandler public immutable connext;
+  address public immutable promiseRouter;
 
-  constructor(IConnextHandler _connext) {
+  // A modifier for permissioning the callback.
+  // Note: This is an important security consideration. Only the PromiseRouter (the
+  //       Connext contract that executes the callback function) should be able to
+  //       call the callback function.
+  modifier onlyPromiseRouter () {
+    require(
+      msg.sender == address(promiseRouter),
+      "Expected PromiseRouter"
+    );
+    _;
+  }
+
+  constructor(IConnextHandler _connext, address _promiseRouter) {
     connext = _connext;
+    promiseRouter = _promiseRouter;
   }
 
   /**
@@ -76,7 +90,7 @@ contract Source is ICallback {
     bytes32 transferId,
     bool success,
     bytes memory data
-  ) external {
+  ) external onlyPromiseRouter {
     uint256 newValue = abi.decode(data, (uint256));
     emit CallbackCalled(transferId, success, newValue);
   }

@@ -46,7 +46,7 @@ export default task("update", "Execute a permissioned update")
           destinationDomain,
           value,
           permissioned === "true");
-        unsignedTx.gasLimit = ethers.BigNumber.from("30000000"); 
+        unsignedTx.gasLimit = ethers.BigNumber.from("20000000"); 
         let txResponse = await wallet.sendTransaction(unsignedTx);
         return await txResponse.wait();
       }
