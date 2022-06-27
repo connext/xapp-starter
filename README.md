@@ -56,6 +56,8 @@ Contracts:
 
 # Development
 
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/connext/xapp-starter)
+
 ## Getting Started
 
 This project uses Foundry for testing and deploying contracts. Hardhat tasks are used for interacting with deployed contracts.
