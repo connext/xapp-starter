@@ -2,7 +2,7 @@
 # (-include to ignore error if it does not exist)
 -include .env
 
-all: clean install update solc build 
+all: clean install update solc build
 
 # Install proper solc version.
 solc:; nix-env -f https://github.com/dapphub/dapptools/archive/master.tar.gz -iA solc-static-versions.solc_0_8_12
@@ -20,7 +20,7 @@ install :; forge install
 update :; forge update
 
 # Builds
-build :; forge clean && forge build 
+build :; forge clean && forge build
 
 # Tests
 test-unit-all :; forge clean && forge test --match-contract "TestUnit" -vvvv

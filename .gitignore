@@ -6,6 +6,7 @@ node_modules/
 # Ignore Environment Variables!
 .env
 .env.prod
+.env.local
 
 # Ignore all vscode settings
 .vscode/

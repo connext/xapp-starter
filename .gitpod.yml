@@ -1,0 +1,26 @@
+
+image:
+  file: .gitpod.dockerfile
+
+tasks:
+  - name: xapp-starter
+    init: |
+      # bring in secret access tokens from gitpod user dashboard
+      eval $(gp env -e)
+      # heavy lifting that gitpod executes on each commit
+      make install
+      # build source and run tests
+      make build
+      make test-unit-all
+      gp sync-done setup
+  - name: Shell
+    init: |
+      gp sync-await setup
+      eval $(gp env -e)
+    command: |
+      bash
+    openMode: split-right
+
+vscode:
+  extensions:
+    - ms-vscode.makefile-tools
