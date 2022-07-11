@@ -79,7 +79,7 @@ contract TransferTestUnit is DSTestPlus {
  */
 contract TransferTestForked is DSTestPlus {
   // Testnet Addresses
-  address public connext = 0x2307Ed9f152FA9b3DcDfe2385d279D8C2A9DF2b0;
+  address public connext = 0x4cAA6358a3d9d1906B5DABDE60A626AAfD80186F;
   address public constant testToken =
     0x3FFc03F05D1869f493c7dbf913E636C6280e0ff9;
 
