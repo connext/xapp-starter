@@ -7,24 +7,28 @@ import { signer, nxtpConfig } from "./config.js";
 
 const {nxtpSdkBase} = await create(nxtpConfig);
 
+const signerAddress = await signer.getAddress();
+
 // Construct the xcall arguments
 const callParams = {
-  to: await signer.getAddress(), // the address that should receive the funds
+  to: signerAddress, // the address that should receive the funds
   callData: "0x", // empty calldata for a simple transfer
   originDomain: "1111", // send from Rinkeby
   destinationDomain: "3331", // to Goerli
-  recovery: await signer.getAddress(),
+  agent: signerAddress, // address allowed to execute in addition to relayers 
+  recovery: signerAddress,
+  forceSlow: false,
+  receiveLocal: false,
   callback: ethers.constants.AddressZero,
   callbackFee: "0",
-  forceSlow: false,
-  receiveLocal: false
+  relayerFee: "0", // relayers on testnet don't take a fee
+  slippageTol: "9995", // tolerate .05% slippage
 };
 
 const xCallArgs = {
   params: callParams,
   transactingAssetId: "0x3FFc03F05D1869f493c7dbf913E636C6280e0ff9", // the Rinkeby Test Token
   amount: "1000000000000000000", // amount to send (1 TEST)
-  relayerFee: "0", // relayers on testnet don't take a fee
 };
 
 // Approve the asset transfer because we're sending funds

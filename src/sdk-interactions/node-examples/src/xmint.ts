@@ -7,6 +7,8 @@ import { signer, nxtpConfig } from "./config.js";
 
 const {nxtpSdkBase} = await create(nxtpConfig);
 
+const signerAddress = await signer.getAddress();
+
 // Create and encode the calldata
 const contractABI = [
   "function mint(address account, uint256 amount)"
@@ -27,18 +29,20 @@ const callParams = {
   callData: calldata, 
   originDomain: "1111", // send from Rinkeby
   destinationDomain: "3331", // to Goerli
+  agent: signerAddress, // address allowed to execute in addition to relayers 
   recovery: await signer.getAddress(),
+  forceSlow: false,
+  receiveLocal: false,
   callback: ethers.constants.AddressZero,
   callbackFee: "0",
-  forceSlow: false,
-  receiveLocal: false
+  relayerFee: "0", // relayers on testnet don't take a fee
+  slippageTol: "9995", // tolerate .05% slippage
 };
 
 const xCallArgs = {
   params: callParams,
   transactingAssetId: "0x3FFc03F05D1869f493c7dbf913E636C6280e0ff9", // the Rinkeby Test Token
   amount: "0", // not sending funds, so no need for the approval dance
-  relayerFee: "0", // relayers on testnet don't take a fee
 };
 
 // Approve the asset transfer because we're sending funds
