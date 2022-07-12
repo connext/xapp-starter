@@ -70,7 +70,7 @@ contract Source is ICallback {
       callback: address(this), // this contract implements the callback
       callbackFee: 0, // fee paid to relayers; relayers don't take any fees on testnet
       relayerFee: 0, // fee paid to relayers; relayers don't take any fees on testnet
-      slippageTol: 9995
+      slippageTol: 9995 // tolerate .05% slippage
     });
 
     XCallArgs memory xcallArgs = XCallArgs({
