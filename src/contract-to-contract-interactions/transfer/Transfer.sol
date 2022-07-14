@@ -55,7 +55,7 @@ contract Transfer {
       callData: "", // empty here because we're only sending funds
       originDomain: originDomain,
       destinationDomain: destinationDomain,
-      agent: to,
+      agent: to, // address allowed to transaction on destination side in addition to relayers
       recovery: to, // fallback address to send funds to if execution fails on destination side
       forceSlow: false, // option to force Nomad slow path (~30 mins) instead of paying 0.05% fee
       receiveLocal: false, // option to receive the local Nomad-flavored asset instead of the adopted asset

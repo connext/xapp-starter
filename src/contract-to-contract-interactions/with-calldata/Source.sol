@@ -63,8 +63,8 @@ contract Source is ICallback {
       callData: callData,
       originDomain: originDomain,
       destinationDomain: destinationDomain,
-      agent: msg.sender,
-      recovery: to, // fallback address to send funds to if execution fails on destination side
+      agent: msg.sender, // address allowed to transaction on destination side in addition to relayers
+      recovery: msg.sender, // fallback address to send funds to if execution fails on destination side
       forceSlow: forceSlow, // option to force Nomad slow path (~30 mins) instead of paying 0.05% fee
       receiveLocal: false, // option to receive the local Nomad-flavored asset instead of the adopted asset
       callback: address(this), // this contract implements the callback
