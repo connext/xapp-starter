@@ -20,6 +20,7 @@ const nxtpConfig: NxtpSdkConfig = {
       assets: [
         {
           name: "TEST",
+          symbol: "TEST",
           address: "0x3FFc03F05D1869f493c7dbf913E636C6280e0ff9",
         },
       ],
@@ -29,7 +30,8 @@ const nxtpConfig: NxtpSdkConfig = {
       assets: [
         {
           name: "TEST",
-          address: "0x3FFc03F05D1869f493c7dbf913E636C6280e0ff9",
+          symbol: "TEST",
+          address: "0x26FE8a8f86511d678d031a022E48FfF41c6a3e3b",
         },
       ],
     },

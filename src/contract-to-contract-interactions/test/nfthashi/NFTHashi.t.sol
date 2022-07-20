@@ -148,10 +148,10 @@ contract NFTHashiTestUnit is DSTestPlus {
 
 /**
  * @title NFTHashiTestForked
- * @notice Integration tests for NFTHashi. Should be run with forked testnet (Kovan).
+ * @notice Integration tests for NFTHashi. Should be run with forked testnet (Rinkeby).
  */
 contract NFTHashiTestForked is DSTestPlus {
-  address public connext = 0x3366A61A701FA84A86448225471Ec53c5c4ad49f;
+  address public connext = 0x4cAA6358a3d9d1906B5DABDE60A626AAfD80186F;
   address public constant testToken =
     0x3FFc03F05D1869f493c7dbf913E636C6280e0ff9;
 

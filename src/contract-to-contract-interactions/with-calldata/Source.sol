@@ -63,18 +63,20 @@ contract Source is ICallback {
       callData: callData,
       originDomain: originDomain,
       destinationDomain: destinationDomain,
-      recovery: to, // fallback address to send funds to if execution fails on destination side
+      agent: msg.sender, // address allowed to transaction on destination side in addition to relayers
+      recovery: msg.sender, // fallback address to send funds to if execution fails on destination side
+      forceSlow: forceSlow, // option to force Nomad slow path (~30 mins) instead of paying 0.05% fee
+      receiveLocal: false, // option to receive the local Nomad-flavored asset instead of the adopted asset
       callback: address(this), // this contract implements the callback
       callbackFee: 0, // fee paid to relayers; relayers don't take any fees on testnet
-      forceSlow: forceSlow, // option to force Nomad slow path (~30 mins) instead of paying 0.05% fee
-      receiveLocal: false // option to receive the local Nomad-flavored asset instead of the adopted asset
+      relayerFee: 0, // fee paid to relayers; relayers don't take any fees on testnet
+      slippageTol: 9995 // tolerate .05% slippage
     });
 
     XCallArgs memory xcallArgs = XCallArgs({
       params: callParams,
       transactingAssetId: asset,
-      amount: 0, // no amount sent with this calldata-only xcall
-      relayerFee: 0 // fee paid to relayers; relayers don't take any fees on testnet
+      amount: 0 // no amount sent with this calldata-only xcall
     });
 
     connext.xcall(xcallArgs);
