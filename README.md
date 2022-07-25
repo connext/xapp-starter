@@ -5,8 +5,8 @@ Starter kit for cross-domain apps (xApps).
 
 With Connext's upgraded protocol, there are generally three types of bridging transactions that can be executed fully through smart contract integration.
 - Simple transfers
-- Unpermissioned calls
-- Permissioned calls
+- Unauthenticated calls
+- Authenticated calls
 
 This starter repo contains contracts that demonstrate how to use each type of transaction.
 
@@ -24,9 +24,9 @@ Example use cases:
 Contracts:
 - Transfer.sol
 
-## Unpermissioned 
+## Unauthenticated 
 
-Transfer funds and/or call a target contract with arbitrary calldata on the Receiving Chain. Assuming the receiving side is an unpermissioned call, this flow is essentially the same as a simple transfer except encoded calldata is included in the `xcall`. The call can simply use `amount: 0` if no transfer is required.
+Transfer funds and/or call a target contract with arbitrary calldata on the Receiving Chain. Assuming the receiving side is an unauthenticated call, this flow is essentially the same as a simple transfer except encoded calldata is included in the `xcall`. The call can simply use `amount: 0` if no transfer is required.
 
 Example use cases:
 - Deposit funds into a liquidity pool on the Receiving Chain
@@ -38,9 +38,9 @@ Contracts:
 - Source.sol
 - Target.sol
 
-## Permissioned
+## Authenticated
 
-Like unpermissioned, call a target contract with arbitrary calldata on the Receiving Chain. Except, the target function is permissioned which means the contract owner must make sure to check the origin in order to uphold permissioning requirements.
+Like unauthenticated, call a target contract with arbitrary calldata on the Receiving Chain. Except, the target function is authenticated which means the contract owner must make sure to check the origin in order to uphold authentication requirements.
 
 Example use cases:
 - Hold a governance vote on Sending Chain and execute the outcome of it on the Receiving Chain (and other DAO operations)
@@ -153,21 +153,21 @@ There is a set of Hardhat tasks available for executing transactions on deployed
   yarn hardhat transfer --origin-domain <domainID> --destination-domain <domainID> --contract-address <address(Transfer)> --token-address <address(origin_TestERC20)> --wallet-private-key <your_private_key> --amount <amount>
   ```
 
-- Execute Unpermissioned Update
+- Execute Unauthenticated Update
 
   ```bash
-  yarn hardhat update --origin-domain <domainID> --destination-domain <domainID> --source-address <address(Source)> --target-address <address(Target)> --token-address <address(origin_TestERC20)> --wallet-private-key <your_private_key> --value <value> --permissioned false
+  yarn hardhat update --origin-domain <domainID> --destination-domain <domainID> --source-address <address(Source)> --target-address <address(Target)> --token-address <address(origin_TestERC20)> --wallet-private-key <your_private_key> --value <value> --authenticated false
   ```
 
-- Execute Permissioned Update
+- Execute Authenticated Update
 
   ```bash
-  yarn hardhat update --origin-domain <domainID> --destination-domain <domainID> --source-address <address(Source)> --target-address <address(Target)> --token-address <address(origin_TestERC20)>  --wallet-private-key <your_private_key> --value <value> --permissioned true
+  yarn hardhat update --origin-domain <domainID> --destination-domain <domainID> --source-address <address(Source)> --target-address <address(Target)> --token-address <address(origin_TestERC20)>  --wallet-private-key <your_private_key> --value <value> --authenticated true
   ```
 
 ### Check Execution Results
 
-You can just check your wallet balance in the Simple Transfer case to see if the funds arrived at the destination address. For the unpermissioned/permissioned updates, you can either read the `value` from a verified Target contract on Etherscan or you can use the following `cast` command to read it directly from terminal.
+You can just check your wallet balance in the Simple Transfer case to see if the funds arrived at the destination address. For the unauthenticated/authenticated updates, you can either read the `value` from a verified Target contract on Etherscan or you can use the following `cast` command to read it directly from terminal.
 
 ```bash
 cast call --chain <rinkeby|goerli|etc> <address(Target)> "value()" --rpc-url <destination_rpc_url>

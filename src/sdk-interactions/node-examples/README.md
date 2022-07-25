@@ -30,9 +30,9 @@ This script fires off a cross-chain transfer that sends funds from your wallet o
 yarn xtransfer
 ```
 
-## xmint (unpermissioned)
+## xmint (unauthenticated)
 
-This script fires off a cross-chain mint. Normally, minting requires permissioning but our Test Token has an unpermissioned `mint` function that we can leverage for this example.
+This script fires off a cross-chain mint. Normally, minting requires authentication but our Test Token has an unauthenticated `mint` function that we can leverage for this example.
 
 ```bash
 yarn xmint

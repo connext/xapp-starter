@@ -17,7 +17,7 @@ contract SourceTestUnit is DSTestPlus {
   Source private source;
   address private target = address(1);
 
-  event UpdateInitiated(address to, uint256 newValue, bool permissioned);
+  event UpdateInitiated(address to, uint256 newValue, bool authenticated);
 
   function setUp() public {
     connext = address(1);
@@ -36,7 +36,7 @@ contract SourceTestUnit is DSTestPlus {
     vm.label(address(userChainA), "userChainA");
 
     uint256 newValue = 100;
-    bool permissioned = false;
+    bool authenticated = false;
 
     // Mock the xcall
     bytes memory mockxcall = abi.encodeWithSelector(
@@ -46,7 +46,7 @@ contract SourceTestUnit is DSTestPlus {
 
     // Check for an event emitted
     vm.expectEmit(true, true, true, true);
-    emit UpdateInitiated(target, newValue, permissioned);
+    emit UpdateInitiated(target, newValue, authenticated);
 
     vm.prank(address(userChainA));
     source.updateValue(
@@ -55,7 +55,7 @@ contract SourceTestUnit is DSTestPlus {
       rinkebyChainId,
       goerliChainId,
       newValue,
-      permissioned
+      authenticated
     );
   }
 }
@@ -75,7 +75,7 @@ contract SourceTestForked is DSTestPlus {
   Source private source;
   MockERC20 private token;
 
-  event UpdateInitiated(address to, uint256 newValue, bool permissioned);
+  event UpdateInitiated(address to, uint256 newValue, bool authenticated);
 
   function setUp() public {
     source = new Source(IConnextHandler(connext), promiseRouter);
@@ -92,10 +92,10 @@ contract SourceTestForked is DSTestPlus {
     vm.label(address(userChainA), "userChainA");
 
     uint256 newValue = 100;
-    bool permissioned = false;
+    bool authenticated = false;
 
     vm.expectEmit(true, true, true, true);
-    emit UpdateInitiated(target, newValue, permissioned);
+    emit UpdateInitiated(target, newValue, authenticated);
 
     vm.prank(address(userChainA));
     source.updateValue(
@@ -104,7 +104,7 @@ contract SourceTestForked is DSTestPlus {
       rinkebyDomainId,
       goerliDomainId,
       newValue,
-      permissioned
+      authenticated
     );
   }
 }

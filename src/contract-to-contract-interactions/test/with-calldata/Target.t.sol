@@ -18,7 +18,7 @@ contract TargetTestUnit is DSTestPlus {
   address private source = address(2);
   Target private target;
 
-  event UpdateCompleted(address sender, uint256 newValue, bool permissioned);
+  event UpdateCompleted(address sender, uint256 newValue, bool authenticated);
 
   function setUp() public {
     vm.mockCall(
@@ -35,23 +35,23 @@ contract TargetTestUnit is DSTestPlus {
     vm.label(address(target), "Target");
   }
 
-  function testUpdateUnpermissionedEmitsUpdateCompleted() public {
+  function testUpdateUnauthenticatedEmitsUpdateCompleted() public {
     uint256 newValue = 100;
 
     vm.expectEmit(true, true, true, true);
     emit UpdateCompleted(address(this), newValue, false);
 
-    target.updateValueUnpermissioned(newValue);
+    target.updateValueUnauthenticated(newValue);
   }
 
-  function testUpdateUnpermissionedSucceeds() public {
+  function testUpdateUnauthenticatedSucceeds() public {
     uint256 newValue = 100;
 
-    target.updateValueUnpermissioned(newValue);
+    target.updateValueUnauthenticated(newValue);
     assertEq(target.value(), newValue);
   }
 
-  function testUpdatePermissionedRevertsOnExecutorCheck() public {
+  function testUpdateAuthenticatedRevertsOnExecutorCheck() public {
     uint256 newValue = 100;
 
     vm.mockCall(
@@ -69,10 +69,10 @@ contract TargetTestUnit is DSTestPlus {
     vm.expectRevert(
       "Expected origin contract on origin domain called by Executor"
     );
-    target.updateValuePermissioned(newValue);
+    target.updateValueAuthenticated(newValue);
   }
 
-  function testUpdatePermissionedSucceeds() public {
+  function testUpdateAuthenticatedSucceeds() public {
     uint256 newValue = 100;
 
     vm.mockCall(
@@ -91,6 +91,6 @@ contract TargetTestUnit is DSTestPlus {
       address(this)
     );
 
-    target.updateValuePermissioned(newValue);
+    target.updateValueAuthenticated(newValue);
   }
 }

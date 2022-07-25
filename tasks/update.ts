@@ -4,7 +4,7 @@ dotEnvConfig();
 
 import { ethers } from 'ethers';
 
-export default task("update", "Execute a permissioned update")
+export default task("update", "Execute an authenticated update")
   .addParam("originDomain", "The domain ID of the sending chain")
   .addParam("destinationDomain", "The domain ID of the receiving chain")
   .addParam("sourceAddress", "The address of the Source contract")
@@ -12,7 +12,7 @@ export default task("update", "Execute a permissioned update")
   .addParam("tokenAddress", "The address of the TestERC20")
   .addParam("walletPrivateKey", "The private key of the signing wallet")
   .addOptionalParam("value", "The new value to update to")
-  .addOptionalParam("permissioned", "True if this is a permissioned update")
+  .addOptionalParam("authenticated", "True if this is an authenticated update")
   .setAction(
     async (
       { 
@@ -23,16 +23,16 @@ export default task("update", "Execute a permissioned update")
         destinationDomain, 
         walletPrivateKey,
         value: _value,
-        permissioned: _permissioned
+        authenticated: _authenticated
       }
     ) => {
       const contractABI = [
         "event UpdateInitiated(address asset, uint256 amount, address onBehalfOf)",
-        "function updateValue(address to, address asset, uint32 originDomain, uint32 destinationDomain, uint256 amount, bool permissioned)"
+        "function updateValue(address to, address asset, uint32 originDomain, uint32 destinationDomain, uint256 amount, bool authenticated)"
       ];
      
       const value = _value || 1;
-      const permissioned = _permissioned || false;
+      const authenticated = _authenticated || false;
       
       const provider = new ethers.providers.JsonRpcProvider(process.env.TESTNET_ORIGIN_RPC_URL);
       const wallet = new ethers.Wallet(walletPrivateKey, provider);
@@ -45,7 +45,7 @@ export default task("update", "Execute a permissioned update")
           originDomain,
           destinationDomain,
           value,
-          permissioned === "true");
+          authenticated === "true");
         unsignedTx.gasLimit = ethers.BigNumber.from("20000000"); 
         let txResponse = await wallet.sendTransaction(unsignedTx);
         return await txResponse.wait();

@@ -10,7 +10,7 @@ import {CallParams, XCallArgs} from "nxtp/core/connext/libraries/LibConnextStora
  * @notice Example contract for cross-domain calls (xcalls).
  */
 contract Source is ICallback {
-  event UpdateInitiated(address to, uint256 newValue, bool permissioned);
+  event UpdateInitiated(address to, uint256 newValue, bool authenticated);
   event CallbackCalled(bytes32 transferId, bool success, uint256 newValue); 
 
   IConnextHandler public immutable connext;
@@ -43,17 +43,17 @@ contract Source is ICallback {
     uint32 originDomain,
     uint32 destinationDomain,
     uint256 newValue,
-    bool permissioned
+    bool authenticated
   ) external payable {
     bytes4 selector;
     bool forceSlow;
 
     // Encode function of the target contract (from Target.sol)
-    if (permissioned) {
-      selector = bytes4(keccak256("updateValuePermissioned(uint256)"));
+    if (authenticated) {
+      selector = bytes4(keccak256("updateValueAuthenticated(uint256)"));
       forceSlow = true;
     } else {
-      selector = bytes4(keccak256("updateValueUnpermissioned(uint256)"));
+      selector = bytes4(keccak256("updateValueUnauthenticated(uint256)"));
       forceSlow = false;
     }
     bytes memory callData = abi.encodeWithSelector(selector, newValue);
@@ -81,7 +81,7 @@ contract Source is ICallback {
 
     connext.xcall(xcallArgs);
 
-    emit UpdateInitiated(to, newValue, permissioned);
+    emit UpdateInitiated(to, newValue, authenticated);
   }
 
   /**

@@ -9,7 +9,7 @@ import {IConnextHandler} from "nxtp/core/connext/interfaces/IConnextHandler.sol"
  * @notice A contrived example target contract.
  */
 contract Target {
-  event UpdateCompleted(address sender, uint256 newValue, bool permissioned);
+  event UpdateCompleted(address sender, uint256 newValue, bool authenticated);
 
   uint256 public value;
 
@@ -22,9 +22,9 @@ contract Target {
   // The address of the Connext Executor contract
   IExecutor public executor;
 
-  // A modifier for permissioned function calls.
+  // A modifier for authenticated function calls.
   // Note: This is an important security consideration. If your target
-  //       contract function is meant to be permissioned, it must check
+  //       contract function is meant to be authenticated, it must check
   //       that the originating call is from the correct domain and contract.
   //       Also, check that the msg.sender is the Connext Executor address.
   modifier onlyExecutor() {
@@ -47,8 +47,8 @@ contract Target {
     executor = _connext.executor();
   }
 
-  // Unpermissioned function
-  function updateValueUnpermissioned(uint256 newValue) 
+  // Unauthenticated function
+  function updateValueUnauthenticated(uint256 newValue) 
     external 
     returns (uint256)
   {
@@ -58,8 +58,8 @@ contract Target {
     return newValue;
   }
 
-  // Permissioned function
-  function updateValuePermissioned(uint256 newValue) 
+  // Authenticated function
+  function updateValueAuthenticated(uint256 newValue) 
     external onlyExecutor 
     returns (uint256)
   {
