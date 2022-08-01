@@ -48,8 +48,8 @@ contract SourceTestUnit is DSTestPlus {
     vm.prank(address(userChainA));
     source.updateValue(
       target,
-      rinkebyChainId,
-      goerliChainId,
+      rinkebyDomainId,
+      goerliDomainId,
       newValue,
       authenticated
     );
