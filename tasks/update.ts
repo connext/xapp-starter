@@ -27,8 +27,8 @@ export default task("update", "Execute an authenticated update")
       }
     ) => {
       const contractABI = [
-        "event UpdateInitiated(address asset, uint256 amount, address onBehalfOf)",
-        "function updateValue(address to, address asset, uint32 originDomain, uint32 destinationDomain, uint256 amount, bool authenticated)"
+        "event UpdateInitiated(address to, uint256 amount, address onBehalfOf)",
+        "function updateValue(address to, uint32 originDomain, uint32 destinationDomain, uint256 amount, bool authenticated)"
       ];
      
       const value = _value || 1;

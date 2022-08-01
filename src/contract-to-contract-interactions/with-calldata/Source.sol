@@ -39,7 +39,6 @@ contract Source is ICallback {
    */
   function updateValue(
     address to,
-    address asset,
     uint32 originDomain,
     uint32 destinationDomain,
     uint256 newValue,
@@ -75,7 +74,7 @@ contract Source is ICallback {
 
     XCallArgs memory xcallArgs = XCallArgs({
       params: callParams,
-      transactingAssetId: asset,
+      transactingAssetId: address(0), // 0 address is the native gas token
       amount: 0 // no amount sent with this calldata-only xcall
     });
 
