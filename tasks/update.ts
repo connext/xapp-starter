@@ -9,7 +9,6 @@ export default task("update", "Execute an authenticated update")
   .addParam("destinationDomain", "The domain ID of the receiving chain")
   .addParam("sourceAddress", "The address of the Source contract")
   .addParam("targetAddress", "The address of the Target contract")
-  .addParam("tokenAddress", "The address of the TestERC20")
   .addParam("walletPrivateKey", "The private key of the signing wallet")
   .addOptionalParam("value", "The new value to update to")
   .addOptionalParam("authenticated", "True if this is an authenticated update")
@@ -18,7 +17,6 @@ export default task("update", "Execute an authenticated update")
       { 
         sourceAddress, 
         targetAddress, 
-        tokenAddress, 
         originDomain, 
         destinationDomain, 
         walletPrivateKey,
@@ -28,7 +26,7 @@ export default task("update", "Execute an authenticated update")
     ) => {
       const contractABI = [
         "event UpdateInitiated(address to, uint256 amount, address onBehalfOf)",
-        "function updateValue(address to, uint32 originDomain, uint32 destinationDomain, uint256 amount, bool authenticated)"
+        "function updateValue(address to, uint32 originDomain, uint32 destinationDomain, uint256 newValue, bool authenticated)"
       ];
      
       const value = _value || 1;
@@ -41,7 +39,6 @@ export default task("update", "Execute an authenticated update")
       async function updateValue() {
         let unsignedTx = await source.populateTransaction.updateValue(
           targetAddress,
-          tokenAddress,
           originDomain,
           destinationDomain,
           value,
