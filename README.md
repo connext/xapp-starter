@@ -104,42 +104,25 @@ make test-forked-transfer
 make test-forked-source
 ```
 
-### Deployment
+### Deployment with Verification
 
-Deploy contracts in this repository using the RPC provider of your choice.
+Deploy contracts in this repository using the RPC provider of your choice (TESTNET_ORIGIN_RPC_URL in .env).
 
 - Deployment order for Simple Transfer example
 
     ```bash
-    forge create src/contract-to-contract-interactions/transfer/Transfer.sol:Transfer -i --rpc-url <origin_rpc_url> --constructor-args <address(origin_ConnextHandler)>
+    make deploy-transfer-testnet contract=Transfer connext=<address(origin_ConnextHandler)>
     ```
 
 - Deployment order for Source + Target of with-calldata examples
 
     ```bash
-    forge create src/contract-to-contract-interactions/with-calldata/Source.sol:Source -i --rpc-url <origin_rpc_url> --constructor-args <address(origin_ConnextHandler)> <address(origin_PromiseRouter)>
+    make deploy-source-testnet contract=Transfer connext=<address(origin_ConnextHandler)> promiseRouter=<address(origin_PromiseRouter)>
     ```
     
     ```bash
-    forge create src/contract-to-contract-interactions/with-calldata/Target.sol:Target -i --rpc-url <destination_rpc_url> --constructor-args <address(Source)> <origin_domainID> <address(destination_ConnextHandler)> 
+    make deploy-target-testnet contract=Target source=<address(Source)> originDomain=<origin_domainID> connext=<address(destination_ConnextHandler)>
     ```
-
-### Verification
-
-Use the `forge verify-contract` command. 
-- Compiler version should be specified in "v.X.Y.Z+commit.xxxxxxxx" format, a list of versions can be found [here](https://etherscan.io/solcversions)
-- See [Chainlist](https://chainlist.org/) for chain-id
-- Constructor arguments must be in ABI-encoded format
-  - Tip: can be found as the last 64*N characters of the "Input Data" used in the Contract Creation transaction, where N is the number of constructor arguments
-
-    Ex: 3 constructor arguments used
-    ```bash
-    echo -n <input_data> | tail -c 192
-    ```
-
-```bash
-forge verify-contract --compiler-version <solc_version> <address(contract)> <path_to_contract_src> <etherscan_api_key> --chain-id <chain_id> --constructor-args <encoded_constructor_args>
-```
 
 ### Live Testnet Testing
 
@@ -156,13 +139,13 @@ There is a set of Hardhat tasks available for executing transactions on deployed
 - Execute Unauthenticated Update
 
   ```bash
-  yarn hardhat update --origin-domain <domainID> --destination-domain <domainID> --source-address <address(Source)> --target-address <address(Target)> --token-address <address(origin_TestERC20)> --wallet-private-key <your_private_key> --value <value> --authenticated false
+  yarn hardhat update --origin-domain <domainID> --destination-domain <domainID> --source-address <address(Source)> --target-address <address(Target)> --wallet-private-key <your_private_key> --value <value> --authenticated false
   ```
 
 - Execute Authenticated Update
 
   ```bash
-  yarn hardhat update --origin-domain <domainID> --destination-domain <domainID> --source-address <address(Source)> --target-address <address(Target)> --token-address <address(origin_TestERC20)>  --wallet-private-key <your_private_key> --value <value> --authenticated true
+  yarn hardhat update --origin-domain <domainID> --destination-domain <domainID> --source-address <address(Source)> --target-address <address(Target)> --wallet-private-key <your_private_key> --value <value> --authenticated true
   ```
 
 ### Check Execution Results
