@@ -2,6 +2,7 @@ cache/
 out/
 dist/
 node_modules/
+broadcast/
 
 # Ignore Environment Variables!
 .env
