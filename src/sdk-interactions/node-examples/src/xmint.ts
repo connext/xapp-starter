@@ -25,38 +25,30 @@ const calldata = iface.encodeFunctionData(
 
 // Construct the xcall arguments
 const callParams = {
-  to: "0x3FFc03F05D1869f493c7dbf913E636C6280e0ff9", // Rinkeby Test Token - this is the contract we are targeting
+  to: "0x68Db1c8d85C09d546097C65ec7DCBFF4D6497CbF", // Opt-Goerli Test Token contract - the target
   callData: calldata, 
-  originDomain: "1111", // send from Rinkeby
-  destinationDomain: "3331", // to Goerli
-  agent: signerAddress, // address allowed to execute in addition to relayers 
-  recovery: await signer.getAddress(),
-  forceSlow: false,
-  receiveLocal: false,
-  callback: ethers.constants.AddressZero,
-  callbackFee: "0",
-  relayerFee: "0", // relayers on testnet don't take a fee
-  slippageTol: "9995", // tolerate .05% slippage
+  originDomain: "1735353714", // send from Goerli
+  destinationDomain: "1735356532", // to Optimism-Goerli
+  agent: signerAddress, // address allowed to transaction on destination side in addition to relayers
+  recovery: await signer.getAddress(), // fallback address to send funds to if execution fails on destination side
+  forceSlow: false, // option to force Nomad slow path (~30 mins) instead of paying 0.05% fee
+  receiveLocal: false, // option to receive the local Nomad-flavored asset instead of the adopted asset
+  callback: ethers.constants.AddressZero, // no callback so use the zero address
+  callbackFee: "0", // fee paid to relayers for the callback; no fees on testnet
+  relayerFee: "0", // fee paid to relayers for the forward call; no fees on testnet
+  destinationMinOut: "0", // not sending funds so minimum can be 0
 };
 
 const xCallArgs = {
   params: callParams,
-  transactingAssetId: ethers.constants.AddressZero, // not sending funds, so just use address 0
-  amount: "0", // not sending funds, so no need for the approval dance
+  transactingAssetId: ethers.constants.AddressZero, // not sending funds so just use address 0
+  transactingAmount: "0", // not sending funds with this calldata-only xcall
+  originMinOut: "0" // not sending funds so minimum can be 0
 };
-
-// Approve the asset transfer because we're sending funds
-const approveTxReq = await nxtpSdkBase.approveIfNeeded(
-  xCallArgs.params.originDomain,
-  xCallArgs.transactingAssetId,
-  xCallArgs.amount
-)
-const approveTxReceipt = await signer.sendTransaction(approveTxReq);
-const approveResult = await approveTxReceipt.wait();
 
 // Send the xcall
 const xcallTxReq = await nxtpSdkBase.xcall(xCallArgs);
 xcallTxReq.gasLimit = ethers.BigNumber.from("30000000"); 
 const xcallTxReceipt = await signer.sendTransaction(xcallTxReq);
-console.log(xcallTxReceipt); // so we can see the transaction hash
+console.log(xcallTxReceipt);
 const xcallResult = await xcallTxReceipt.wait();
