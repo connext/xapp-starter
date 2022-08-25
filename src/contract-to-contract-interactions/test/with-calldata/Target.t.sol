@@ -27,7 +27,7 @@ contract TargetTestUnit is DSTestPlus {
       abi.encode(address(3))
     );
 
-    target = new Target(source, rinkebyChainId, IConnextHandler(connext));
+    target = new Target(source, optimismGoerliChainId, IConnextHandler(connext));
 
     vm.label(address(this), "TestContract");
     vm.label(connext, "Connext");
@@ -63,7 +63,7 @@ contract TargetTestUnit is DSTestPlus {
     vm.mockCall(
       address(IExecutor(address(this))),
       abi.encodeWithSelector(IExecutor(address(this)).origin.selector),
-      abi.encode(rinkebyChainId)
+      abi.encode(optimismGoerliChainId)
     );
 
     vm.expectRevert(
@@ -84,7 +84,7 @@ contract TargetTestUnit is DSTestPlus {
     vm.mockCall(
       address(IExecutor(address(this))),
       abi.encodeWithSelector(IExecutor(address(this)).origin.selector),
-      abi.encode(rinkebyChainId)
+      abi.encode(optimismGoerliChainId)
     );
 
     stdstore.target(address(target)).sig("executor()").checked_write(

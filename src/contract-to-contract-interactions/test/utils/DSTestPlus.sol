@@ -11,14 +11,11 @@ import {Test} from "forge-std/Test.sol";
 contract DSTestPlus is Test {
   XConsole console = new XConsole();
 
-  // Nomad Domain IDs
-  uint32 public mainnetDomainId = 6648936;
-  uint32 public rinkebyDomainId = 1111;
-  uint32 public goerliDomainId = 3331;
+  // Domain IDs for testnet
+  uint32 public goerliDomainId = 1735353714;
+  uint32 public optimismGoerliDomainId = 1735356532;
 
   // Chain IDs
-  uint32 public mainnetChainId = 1;
-  uint32 public ropstenChainId = 3;
-  uint32 public rinkebyChainId = 4;
   uint32 public goerliChainId = 5;
+  uint32 public optimismGoerliChainId = 420;
 }
