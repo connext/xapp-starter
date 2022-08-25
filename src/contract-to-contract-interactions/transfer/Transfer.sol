@@ -23,11 +23,11 @@ contract Transfer {
    * @notice This simple example is not terribly useful in practice but it demonstrates
    *         how to use `xcall` to transfer funds from a user on one chain to a receiving
    *         address on another.
-   * @dev For list of Nomad Domain IDs, see: https://docs.nomad.xyz/bridge/domains.html
+   * @dev For a reference to Domain IDs, see: https://docs.connext.network/developers/testing-against-testnet
    * @param to The destination address (e.g. a wallet)
    * @param asset Address of token on origin domain
-   * @param originDomain The origin domain ID (e.g. 1111 for Rinkeby)
-   * @param destinationDomain The origin domain ID (e.g. 3331 for Goerli)
+   * @param originDomain The origin domain ID (e.g. 1735353714 for Goerli)
+   * @param destinationDomain The origin domain ID (e.g. 1735356532 for Optimism-Goerli)
    * @param amount The amount to transfer
    */
   function transfer(
@@ -49,7 +49,6 @@ contract Transfer {
     // This contract approves transfer to Connext
     token.approve(address(connext), amount);
 
-    // Empty callData because this is a simple transfer of funds
     CallParams memory callParams = CallParams({
       to: to,
       callData: "", // empty here because we're only sending funds
@@ -62,13 +61,14 @@ contract Transfer {
       callback: address(0), // zero address because we don't expect a callback
       callbackFee: 0, // fee paid to relayers; relayers don't take any fees on testnet
       relayerFee: 0, // fee paid to relayers; relayers don't take any fees on testnet
-      slippageTol: 9995
+      destinationMinOut: (amount / 100) * 97 // the minimum amount that the user will accept due to slippage from the StableSwap pool
     });
 
     XCallArgs memory xcallArgs = XCallArgs({
       params: callParams,
       transactingAssetId: asset,
-      amount: amount
+      transactingAmount: amount,
+      originMinOut: (amount / 100) * 97 // the minimum amount that the user will accept due to slippage from the StableSwap pool
     });
 
     connext.xcall(xcallArgs);
