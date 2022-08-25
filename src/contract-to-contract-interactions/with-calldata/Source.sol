@@ -67,16 +67,16 @@ contract Source is ICallback {
       forceSlow: forceSlow, // option to force Nomad slow path (~30 mins) instead of paying 0.05% fee
       receiveLocal: false, // option to receive the local Nomad-flavored asset instead of the adopted asset
       callback: address(this), // this contract implements the callback
-      callbackFee: 0, // fee paid to relayers; relayers don't take any fees on testnet
-      relayerFee: 0, // fee paid to relayers; relayers don't take any fees on testnet
-      destinationMinOut: 0 // no amount sent so minimum can be 0
+      callbackFee: 0, // fee paid to relayers for the callback; no fees on testnet
+      relayerFee: 0, // fee paid to relayers for the forward call; no fees on testnet
+      destinationMinOut: 0 // not sending funds so minimum can be 0
     });
 
     XCallArgs memory xcallArgs = XCallArgs({
       params: callParams,
       transactingAssetId: address(0), // 0 address is the native gas token
-      amount: 0 // no amount sent with this calldata-only xcall
-      originMinOut: 0 // no amount sent so minimum can be 0
+      transactingAmount: 0 // not sending funds with this calldata-only xcall
+      originMinOut: 0 // not sending funds so minimum can be 0
     });
 
     connext.xcall(xcallArgs);
