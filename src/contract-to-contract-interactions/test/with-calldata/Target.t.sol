@@ -4,6 +4,7 @@ pragma solidity ^0.8.14;
 import {Target} from "../../with-calldata/Target.sol";
 import {IConnextHandler} from "nxtp/core/connext/interfaces/IConnextHandler.sol";
 import {IExecutor} from "nxtp/core/connext/interfaces/IExecutor.sol";
+import {LibCrossDomainProperty} from "nxtp/core/connext/libraries/LibCrossDomainProperty.sol";
 import {DSTestPlus} from "../utils/DSTestPlus.sol";
 import "forge-std/Test.sol";
 
@@ -16,6 +17,7 @@ contract TargetTestUnit is DSTestPlus {
 
   address private connext = address(1);
   address private source = address(2);
+  address private executor = address(3);
   Target private target;
 
   event UpdateCompleted(address sender, uint256 newValue, bool authenticated);
@@ -24,7 +26,7 @@ contract TargetTestUnit is DSTestPlus {
     vm.mockCall(
       address(connext),
       abi.encodeWithSelector(IConnextHandler.executor.selector),
-      abi.encode(address(3))
+      abi.encode(executor)
     );
 
     target = new Target(source, optimismGoerliChainId, IConnextHandler(connext));
@@ -55,14 +57,14 @@ contract TargetTestUnit is DSTestPlus {
     uint256 newValue = 100;
 
     vm.mockCall(
-      address(IExecutor(address(this))),
-      abi.encodeWithSelector(IExecutor(address(this)).originSender.selector),
+      address(LibCrossDomainProperty),
+      abi.encodeWithSelector(LibCrossDomainProperty.originSender.selector),
       abi.encode(source)
     );
 
     vm.mockCall(
-      address(IExecutor(address(this))),
-      abi.encodeWithSelector(IExecutor(address(this)).origin.selector),
+      address(LibCrossDomainProperty),
+      abi.encodeWithSelector(LibCrossDomainProperty.origin.selector),
       abi.encode(optimismGoerliChainId)
     );
 
@@ -76,14 +78,14 @@ contract TargetTestUnit is DSTestPlus {
     uint256 newValue = 100;
 
     vm.mockCall(
-      address(IExecutor(address(this))),
-      abi.encodeWithSelector(IExecutor(address(this)).originSender.selector),
+      address(LibCrossDomainProperty),
+      abi.encodeWithSelector(LibCrossDomainProperty.originSender.selector),
       abi.encode(source)
     );
 
     vm.mockCall(
-      address(IExecutor(address(this))),
-      abi.encodeWithSelector(IExecutor(address(this)).origin.selector),
+      address(LibCrossDomainProperty),
+      abi.encodeWithSelector(LibCrossDomainProperty.origin.selector),
       abi.encode(optimismGoerliChainId)
     );
 
