@@ -74,8 +74,8 @@ contract Source is ICallback {
 
     XCallArgs memory xcallArgs = XCallArgs({
       params: callParams,
-      transactingAssetId: address(0), // 0 address is the native gas token
-      transactingAmount: 0 // not sending funds with this calldata-only xcall
+      transactingAsset: address(0), // 0 address is the native gas token
+      transactingAmount: 0, // not sending funds with this calldata-only xcall
       originMinOut: 0 // not sending funds so minimum can be 0
     });
 

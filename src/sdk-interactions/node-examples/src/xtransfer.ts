@@ -29,7 +29,7 @@ const callParams = {
 
 const xCallArgs = {
   params: callParams,
-  transactingAssetId: "0x3FFc03F05D1869f493c7dbf913E636C6280e0ff9", // the Goerli Test Token
+  transactingAsset: "0x7ea6eA49B0b0Ae9c5db7907d139D9Cd3439862a1", // the Goerli Test Token
   transactingAmount: amount.toString(), 
   originMinOut: (amount * 0.99).toString() // accept a 1% slippage tolerance on the origin-side stableswap
 };
@@ -37,7 +37,7 @@ const xCallArgs = {
 // Approve the asset transfer because we're sending funds
 const approveTxReq = await nxtpSdkBase.approveIfNeeded(
   xCallArgs.params.originDomain,
-  xCallArgs.transactingAssetId,
+  xCallArgs.transactingAsset,
   xCallArgs.transactingAmount
 )
 const approveTxReceipt = await signer.sendTransaction(approveTxReq);

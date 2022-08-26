@@ -66,7 +66,7 @@ contract Transfer {
 
     XCallArgs memory xcallArgs = XCallArgs({
       params: callParams,
-      transactingAssetId: asset,
+      transactingAsset: asset,
       transactingAmount: amount,
       originMinOut: (amount / 100) * 97 // the minimum amount that the user will accept due to slippage from the StableSwap pool
     });

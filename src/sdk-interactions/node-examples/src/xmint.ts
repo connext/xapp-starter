@@ -41,7 +41,7 @@ const callParams = {
 
 const xCallArgs = {
   params: callParams,
-  transactingAssetId: ethers.constants.AddressZero, // not sending funds so just use address 0
+  transactingAsset: ethers.constants.AddressZero, // not sending funds so just use address 0
   transactingAmount: "0", // not sending funds with this calldata-only xcall
   originMinOut: "0" // not sending funds so minimum can be 0
 };
