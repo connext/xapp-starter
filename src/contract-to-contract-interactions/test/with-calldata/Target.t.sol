@@ -22,6 +22,9 @@ contract TargetTestUnit is DSTestPlus {
 
   event UpdateCompleted(address sender, uint256 newValue, bool authenticated);
 
+  bytes4 public originSenderSelector = bytes4(keccak256("originSender(bytes)"));
+  bytes4 public originSelector = bytes4(keccak256("origin(bytes)"));
+
   function setUp() public {
     vm.mockCall(
       address(connext),
@@ -58,13 +61,13 @@ contract TargetTestUnit is DSTestPlus {
 
     vm.mockCall(
       address(LibCrossDomainProperty),
-      abi.encodeWithSelector(LibCrossDomainProperty.originSender.selector),
+      abi.encodeWithSelector(originSenderSelector),
       abi.encode(source)
     );
 
     vm.mockCall(
       address(LibCrossDomainProperty),
-      abi.encodeWithSelector(LibCrossDomainProperty.origin.selector),
+      abi.encodeWithSelector(originSelector),
       abi.encode(optimismGoerliChainId)
     );
 
@@ -79,13 +82,13 @@ contract TargetTestUnit is DSTestPlus {
 
     vm.mockCall(
       address(LibCrossDomainProperty),
-      abi.encodeWithSelector(LibCrossDomainProperty.originSender.selector),
+      abi.encodeWithSelector(originSenderSelector),
       abi.encode(source)
     );
 
     vm.mockCall(
       address(LibCrossDomainProperty),
-      abi.encodeWithSelector(LibCrossDomainProperty.origin.selector),
+      abi.encodeWithSelector(originSelector),
       abi.encode(optimismGoerliChainId)
     );
 
