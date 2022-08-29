@@ -26,7 +26,7 @@ export default task("update", "Execute an authenticated update")
     ) => {
       const contractABI = [
         "event UpdateInitiated(address to, uint256 amount, address onBehalfOf)",
-        "function updateValue(address to, uint32 originDomain, uint32 destinationDomain, uint256 newValue, bool authenticated)"
+        "function xChainUpdate(address to, uint32 originDomain, uint32 destinationDomain, uint256 newValue, bool authenticated)"
       ];
      
       const value = _value || 1;
@@ -36,8 +36,8 @@ export default task("update", "Execute an authenticated update")
       const wallet = new ethers.Wallet(walletPrivateKey, provider);
       const source = new ethers.Contract(sourceAddress, contractABI, wallet);
 
-      async function updateValue() {
-        let unsignedTx = await source.populateTransaction.updateValue(
+      async function xChainUpdate() {
+        let unsignedTx = await source.populateTransaction.xChainUpdate(
           targetAddress,
           originDomain,
           destinationDomain,
@@ -48,7 +48,7 @@ export default task("update", "Execute an authenticated update")
         return await txResponse.wait();
       }
 
-      let updated = await updateValue();
+      let updated = await xChainUpdate();
       console.log(updated.status == 1 ? "Successful update" : "Failed update"); 
       console.log(`Transaction hash: `, updated.transactionHash); 
     });
