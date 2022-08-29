@@ -2,6 +2,7 @@
 pragma solidity ^0.8.14;
 
 import {IExecutor} from "nxtp/core/connext/interfaces/IExecutor.sol";
+import {LibCrossDomainProperty} from "nxtp/core/connext/libraries/LibCrossDomainProperty.sol";
 import {IConnextHandler} from "nxtp/core/connext/interfaces/IConnextHandler.sol";
 
 /**
@@ -26,11 +27,11 @@ contract Target {
   // Note: This is an important security consideration. If your target
   //       contract function is meant to be authenticated, it must check
   //       that the originating call is from the correct domain and contract.
-  //       Also, check that the msg.sender is the Connext Executor address.
+  //       Also, it must be coming from the Connext Executor address.
   modifier onlyExecutor() {
     require(
-      IExecutor(msg.sender).originSender() == originContract &&
-        IExecutor(msg.sender).origin() == originDomain &&
+      LibCrossDomainProperty.originSender(msg.data) == originContract &&
+        LibCrossDomainProperty.origin(msg.data) == originDomain &&
         msg.sender == address(executor),
       "Expected origin contract on origin domain called by Executor"
     );

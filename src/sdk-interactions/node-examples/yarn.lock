@@ -3172,7 +3172,7 @@ mime-types@^2.1.12, mime-types@~2.1.19:
   dependencies:
     mime-db "1.52.0"
 
-minimal-polyfills@^2.1.5:
+minimal-polyfills@^2.1.5, minimal-polyfills@^2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/minimal-polyfills/-/minimal-polyfills-2.2.1.tgz#7249d7ece666d3b4e1ec1c1b8f949eb9d44e2308"
   integrity sha512-WLmHQrsZob4rVYf8yHapZPNJZ3sspGa/sN8abuSD59b0FifDEE7HMfLUi24z7mPZqTpBXy4Svp+iGvAmclCmXg==
@@ -3823,11 +3823,11 @@ rlp@^2.2.4:
     bn.js "^5.2.0"
 
 run-exclusive@^2.2.14:
-  version "2.2.14"
-  resolved "https://registry.yarnpkg.com/run-exclusive/-/run-exclusive-2.2.14.tgz#4f41dc7843e091f10991f8708fce87b09022a0ce"
-  integrity sha512-NHaQfB3zPJFx7p4M06AcmoK8xz/h8YDMCdy3jxfyoC9VqIbl1U+DiVjUuAYZBRMwvj5qkQnOUGfsmyUC4k46dg==
+  version "2.2.16"
+  resolved "https://registry.yarnpkg.com/run-exclusive/-/run-exclusive-2.2.16.tgz#8fa30a23037760af296c47872a5f6b38f25accf0"
+  integrity sha512-cdYv2LDvaBCRnrqXrwDFs1SgzGTx0EIsiEReTpsprEDR6hRUVlSyjoMYu+rez4S1gpz6YbOQxcmYFMXJQknVnQ==
   dependencies:
-    minimal-polyfills "^2.1.5"
+    minimal-polyfills "^2.2.1"
 
 run-parallel@^1.1.9:
   version "1.2.0"
@@ -3974,9 +3974,9 @@ solidity-ast@^0.4.15:
   integrity sha512-vCx17410X+NMnpLVyg6ix4NMCHFIkvWrJb1rPBBeQYEQChX93Zgb9WB9NaIY4zpsr3Q8IvAfohw+jmuBzGf8OQ==
 
 sonic-boom@^3.0.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/sonic-boom/-/sonic-boom-3.1.0.tgz#c79f4298ae841f236f3bc0d6c1225d39d51f8eb2"
-  integrity sha512-qVr246G5307nz5JmhtsvHudxNMrRTWTCmTg+tA4gHQJnVyx/SsyQnky/5peC23B8etvlKli9P6sNXWQGDxoskQ==
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/sonic-boom/-/sonic-boom-3.2.0.tgz#ce9f2de7557e68be2e52c8df6d9b052e7d348143"
+  integrity sha512-SbbZ+Kqj/XIunvIAgUZRlqd6CGQYq71tRRbXR92Za8J/R3Yh4Av+TWENiSiEgnlwckYLyP0YZQWVfyNC0dzLaA==
   dependencies:
     atomic-sleep "^1.0.0"
 

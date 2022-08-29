@@ -66,8 +66,8 @@ contract TransferTestUnit is DSTestPlus {
     transfer.transfer(
       address(userChainB),
       address(token),
-      rinkebyDomainId,
       goerliDomainId,
+      optimismGoerliDomainId,
       amount
     );
   }
@@ -75,13 +75,12 @@ contract TransferTestUnit is DSTestPlus {
 
 /**
  * @title TransferTestForked
- * @notice Integration tests for Transfer. Should be run with forked testnet (Rinkeby).
+ * @notice Integration tests for Transfer. Should be run with forked testnet (Goerli).
  */
 contract TransferTestForked is DSTestPlus {
   // Testnet Addresses
-  address public connext = 0x4cAA6358a3d9d1906B5DABDE60A626AAfD80186F;
-  address public constant testToken =
-    0x3FFc03F05D1869f493c7dbf913E636C6280e0ff9;
+  address public connext = 0xB4C1340434920d70aD774309C75f9a4B679d801e;
+  address public constant testToken = 0x7ea6eA49B0b0Ae9c5db7907d139D9Cd3439862a1;
 
   Transfer private transfer;
   MockERC20 private token;
@@ -129,8 +128,8 @@ contract TransferTestForked is DSTestPlus {
     transfer.transfer(
       address(userChainB),
       address(token),
-      rinkebyDomainId,
       goerliDomainId,
+      optimismGoerliDomainId,
       amount
     );
   }

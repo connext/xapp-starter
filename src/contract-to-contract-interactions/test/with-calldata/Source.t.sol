@@ -48,8 +48,8 @@ contract SourceTestUnit is DSTestPlus {
     vm.prank(address(userChainA));
     source.updateValue(
       target,
-      rinkebyDomainId,
       goerliDomainId,
+      optimismGoerliDomainId,
       newValue,
       authenticated
     );
@@ -58,12 +58,12 @@ contract SourceTestUnit is DSTestPlus {
 
 /**
  * @title SourceTestForked
- * @notice Integration tests for Source. Should be run with forked testnet (Rinkeby).
+ * @notice Integration tests for Source. Should be run with forked testnet (Goerli).
  */
 contract SourceTestForked is DSTestPlus {
   // Testnet Addresses
-  address public connext = 0x4cAA6358a3d9d1906B5DABDE60A626AAfD80186F;
-  address public promiseRouter = 0x6e4Eaa2A41f9c211C8511540BbB1D971B1483128;
+  address public connext = 	0xB4C1340434920d70aD774309C75f9a4B679d801e;
+  address public promiseRouter = 	0xD25575eD38fa0F168c9Ba4E61d887B6b3433F350;
   address private target = address(1);
 
   Source private source;
@@ -91,8 +91,8 @@ contract SourceTestForked is DSTestPlus {
     vm.prank(address(userChainA));
     source.updateValue(
       target,
-      rinkebyDomainId,
       goerliDomainId,
+      optimismGoerliDomainId,
       newValue,
       authenticated
     );
