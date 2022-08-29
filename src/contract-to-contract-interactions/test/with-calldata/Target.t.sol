@@ -36,7 +36,7 @@ contract TargetTestUnit is DSTestPlus {
 
     vm.label(address(this), "TestContract");
     vm.label(connext, "Connext");
-    vm.label(source, "Target");
+    vm.label(source, "Source");
     vm.label(address(target), "Target");
   }
 
@@ -56,46 +56,50 @@ contract TargetTestUnit is DSTestPlus {
     assertEq(target.value(), newValue);
   }
 
-  function testUpdateAuthenticatedRevertsOnExecutorCheck() public {
-    uint256 newValue = 100;
+  // TODO: the following two tests need to be able to mock internal library functions
+  // which currently isn't possible (https://github.com/foundry-rs/foundry/issues/432).
 
-    vm.mockCall(
-      address(LibCrossDomainProperty),
-      abi.encodeWithSelector(originSenderSelector),
-      abi.encode(source)
-    );
+  // function testUpdateAuthenticatedRevertsOnExecutorCheck() public {
+  //   uint256 newValue = 100;
 
-    vm.mockCall(
-      address(LibCrossDomainProperty),
-      abi.encodeWithSelector(originSelector),
-      abi.encode(optimismGoerliChainId)
-    );
+  //   vm.mockCall(
+  //     address(target),
+  //     abi.encodeWithSelector(originSenderSelector),
+  //     abi.encode(source)
+  //   );
 
-    vm.expectRevert(
-      "Expected origin contract on origin domain called by Executor"
-    );
-    target.updateValueAuthenticated(newValue);
-  }
+  //   vm.mockCall(
+  //     address(target),
+  //     abi.encodeWithSelector(originSelector),
+  //     abi.encode(optimismGoerliChainId)
+  //   );
 
-  function testUpdateAuthenticatedSucceeds() public {
-    uint256 newValue = 100;
+  //   vm.expectRevert(
+  //     "Expected origin contract on origin domain called by Executor"
+  //   );
+  //   target.updateValueAuthenticated(newValue);
+  // }
 
-    vm.mockCall(
-      address(LibCrossDomainProperty),
-      abi.encodeWithSelector(originSenderSelector),
-      abi.encode(source)
-    );
+  // function testUpdateAuthenticatedSucceeds() public {
+  //   uint256 newValue = 100;
 
-    vm.mockCall(
-      address(LibCrossDomainProperty),
-      abi.encodeWithSelector(originSelector),
-      abi.encode(optimismGoerliChainId)
-    );
+  //   vm.mockCall(
+  //     address(LibCrossDomainProperty),
+  //     abi.encodeWithSelector(originSenderSelector),
+  //     abi.encode(source)
+  //   );
 
-    stdstore.target(address(target)).sig("executor()").checked_write(
-      address(this)
-    );
+  //   vm.mockCall(
+  //     address(LibCrossDomainProperty),
+  //     abi.encodeWithSelector(originSelector),
+  //     abi.encode(optimismGoerliChainId)
+  //   );
 
-    target.updateValueAuthenticated(newValue);
-  }
+  //   stdstore.target(address(target)).sig("executor()").checked_write(
+  //     address(this)
+  //   );
+
+  //   target.updateValueAuthenticated(newValue);
+  //   assertEq(target.value(), newValue);
+  // }
 }
