@@ -9,7 +9,7 @@ const {nxtpSdkBase} = await create(nxtpConfig);
 
 const signerAddress = await signer.getAddress();
 
-const amount = 1000000000000000000; // amount to send (1 TEST)
+const amount = 4230000000000000000; // amount to send (1 TEST)
 
 // Construct the xcall arguments
 const callParams = {
@@ -47,5 +47,5 @@ await approveTxReceipt.wait();
 const xcallTxReq = await nxtpSdkBase.xcall(xCallArgs);
 xcallTxReq.gasLimit = ethers.BigNumber.from("20000000"); 
 const xcallTxReceipt = await signer.sendTransaction(xcallTxReq);
-console.log(xcallTxReceipt); // so we can see the transaction hash
+console.log(xcallTxReceipt);
 const xcallResult = await xcallTxReceipt.wait();

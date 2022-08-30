@@ -41,14 +41,14 @@ const callParams = {
 
 const xCallArgs = {
   params: callParams,
-  transactingAsset: ethers.constants.AddressZero, // not sending funds so just use address 0
+  transactingAsset: "0x7ea6eA49B0b0Ae9c5db7907d139D9Cd3439862a1", // not sending funds so use any registered asset
   transactingAmount: "0", // not sending funds with this calldata-only xcall
   originMinOut: "0" // not sending funds so minimum can be 0
 };
 
 // Send the xcall
 const xcallTxReq = await nxtpSdkBase.xcall(xCallArgs);
-xcallTxReq.gasLimit = ethers.BigNumber.from("30000000"); 
+xcallTxReq.gasLimit = ethers.BigNumber.from("20000000"); 
 const xcallTxReceipt = await signer.sendTransaction(xcallTxReq);
 console.log(xcallTxReceipt);
 const xcallResult = await xcallTxReceipt.wait();
