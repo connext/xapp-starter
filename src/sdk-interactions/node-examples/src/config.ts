@@ -10,10 +10,11 @@ let signer = new ethers.Wallet(privateKey);
 
 const provider = new ethers.providers.JsonRpcProvider(process.env.GOERLI_RPC_URL);
 signer = signer.connect(provider);
+const signerAddress = await signer.getAddress();
 
 const nxtpConfig: NxtpSdkConfig = {
   logLevel: "info",
-  signerAddress: await signer.getAddress(),
+  signerAddress: signerAddress,
   chains: {
     "1735353714": {
       providers: [process.env.GOERLI_RPC_URL],

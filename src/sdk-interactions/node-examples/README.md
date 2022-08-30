@@ -7,10 +7,10 @@ Simple examples using the Connext SDK and TypeScript / Nodejs.
 These examples use a wallet (i.e. MetaMask) to sign transactions and send funds. You may need some Test Tokens! There are a couple ways to do this.
 
 ### Testnet Bridge UI Faucet
-The simplest is to head over to the [testnet Bridge UI](https://amarok-testnet.coinhippo.io/) and connect your wallet to use the faucet.
+The simplest method is to head over to the [testnet Bridge UI](https://amarok-testnet.coinhippo.io/) and connect your wallet to use the faucet.
 
 ### Mint From Contract
-You can also navigate to the [Test Token (TEST) Contract on Rinkeby](https://rinkeby.etherscan.io/address/0x3FFc03F05D1869f493c7dbf913E636C6280e0ff9#writeContract), go to the "Contract" > "Write Contract" tab, click "Connect to Web3" to connect with your wallet, and use the exposed "mint" function to mint yourself some tokens.
+You can also navigate to the [Test Token (TEST) Contract on Goerli](https://goerli.etherscan.io/address/0x7ea6eA49B0b0Ae9c5db7907d139D9Cd3439862a1#writeContract), go to the "Contract" > "Write Contract" tab, click "Connect to Web3" to connect with your wallet, and use the exposed "mint" function to mint yourself some tokens.
 
 ## Setup
 

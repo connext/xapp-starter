@@ -37,7 +37,7 @@ contract Source is ICallback {
    * Cross-domain update of a value on a target contract.
    @dev Initiates the Connext bridging flow with calldata to be used on the target contract.
    */
-  function updateValue(
+  function xChainUpdate(
     address to,
     uint32 originDomain,
     uint32 destinationDomain,
@@ -62,10 +62,10 @@ contract Source is ICallback {
       callData: callData,
       originDomain: originDomain,
       destinationDomain: destinationDomain,
-      agent: msg.sender, // address allowed to transaction on destination side in addition to relayers
+      agent: msg.sender, // address allowed to execute transaction on destination side in addition to relayers
       recovery: msg.sender, // fallback address to send funds to if execution fails on destination side
-      forceSlow: forceSlow, // option to force Nomad slow path (~30 mins) instead of paying 0.05% fee
-      receiveLocal: false, // option to receive the local Nomad-flavored asset instead of the adopted asset
+      forceSlow: forceSlow, // option to force slow path instead of paying 0.05% fee on fast liquidity transfers
+      receiveLocal: false, // option to receive the local bridge-flavored asset instead of the adopted asset
       callback: address(this), // this contract implements the callback
       callbackFee: 0, // fee paid to relayers for the callback; no fees on testnet
       relayerFee: 0, // fee paid to relayers for the forward call; no fees on testnet

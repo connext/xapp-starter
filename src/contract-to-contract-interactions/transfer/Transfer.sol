@@ -54,21 +54,21 @@ contract Transfer {
       callData: "", // empty here because we're only sending funds
       originDomain: originDomain,
       destinationDomain: destinationDomain,
-      agent: to, // address allowed to transaction on destination side in addition to relayers
-      recovery: to, // fallback address to send funds to if execution fails on destination side
-      forceSlow: false, // option to force Nomad slow path (~30 mins) instead of paying 0.05% fee
+      agent: msg.sender, // address allowed to execute transaction on destination side in addition to relayers
+      recovery: msg.sender, // fallback address to send funds to if execution fails on destination side
+      forceSlow: false, // option to force Nomad slow path (~30 mins) instead of paying 0.05% fee on fast liquidity transfers
       receiveLocal: false, // option to receive the local Nomad-flavored asset instead of the adopted asset
       callback: address(0), // zero address because we don't expect a callback
       callbackFee: 0, // fee paid to relayers; relayers don't take any fees on testnet
       relayerFee: 0, // fee paid to relayers; relayers don't take any fees on testnet
-      destinationMinOut: (amount / 100) * 97 // the minimum amount that the user will accept due to slippage from the StableSwap pool
+      destinationMinOut: (amount / 100) * 97 // the minimum amount that the user will accept due to slippage from the StableSwap pool (3% here)
     });
 
     XCallArgs memory xcallArgs = XCallArgs({
       params: callParams,
       transactingAsset: asset,
       transactingAmount: amount,
-      originMinOut: (amount / 100) * 97 // the minimum amount that the user will accept due to slippage from the StableSwap pool
+      originMinOut: (amount / 100) * 97 // the minimum amount that the user will accept due to slippage from the StableSwap pool (3% here)
     });
 
     connext.xcall(xcallArgs);
