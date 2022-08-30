@@ -61,14 +61,14 @@ contract Transfer {
       callback: address(0), // zero address because we don't expect a callback
       callbackFee: 0, // fee paid to relayers; relayers don't take any fees on testnet
       relayerFee: 0, // fee paid to relayers; relayers don't take any fees on testnet
-      destinationMinOut: (amount / 100) * 97 // the minimum amount that the user will accept due to slippage from the StableSwap pool
+      destinationMinOut: (amount / 100) * 97 // the minimum amount that the user will accept due to slippage from the StableSwap pool (3% here)
     });
 
     XCallArgs memory xcallArgs = XCallArgs({
       params: callParams,
       transactingAsset: asset,
       transactingAmount: amount,
-      originMinOut: (amount / 100) * 97 // the minimum amount that the user will accept due to slippage from the StableSwap pool
+      originMinOut: (amount / 100) * 97 // the minimum amount that the user will accept due to slippage from the StableSwap pool (3% here)
     });
 
     connext.xcall(xcallArgs);
