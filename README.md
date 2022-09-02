@@ -85,6 +85,9 @@ src
 make install
 ```
 
+## Set up environment variables
+Copy the `.env.example` and fill in the placeholders
+
 ## Testing
 
 ### Unit Tests
