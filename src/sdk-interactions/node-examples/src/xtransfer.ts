@@ -9,7 +9,7 @@ const {nxtpSdkBase} = await create(nxtpConfig);
 
 const signerAddress = await signer.getAddress();
 
-const amount = 4230000000000000000; // amount to send (1 TEST)
+const amount = 1000000000000000000; // amount to send (1 TEST)
 
 // Construct the xcall arguments
 const callParams = {
