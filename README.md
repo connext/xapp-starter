@@ -83,6 +83,7 @@ src
 ## Setup
 ```bash
 make install
+yarn
 ```
 
 ## Set up environment variables
