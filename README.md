@@ -126,7 +126,7 @@ Deploy contracts in this repository using the RPC provider of your choice (TESTN
 
 ### Live Testnet Testing
 
-The core set of Connext + Nomad contracts have already been deployed to testnet. For the most up-to-date contracts, please reference the [Connext deployments](https://github.com/connext/nxtp/tree/main/packages/deployments/contracts/deployments).
+The core set of Connext contracts have already been deployed to testnet. For the most up-to-date contracts, please reference the [Connext deployments](https://github.com/connext/nxtp/tree/main/packages/deployments/contracts/deployments).
 
 There is a set of Hardhat tasks available for executing transactions on deployed contracts.
 
