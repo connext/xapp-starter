@@ -98,7 +98,7 @@ make test-unit-target
 
 ### Integration Tests
 
-This uses forge's `--forked` mode. Make sure you have `TESTNET_RPC_URL` defined in your `.env` file. Currently, the test cases are pointed at Connext's Rinkeby testnet deployments.
+This uses forge's `--forked` mode. Make sure you have `TESTNET_ORIGIN_RPC_URL` defined in your `.env` file.
 ```bash
 make test-forked-transfer
 make test-forked-source
