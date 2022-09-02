@@ -65,7 +65,7 @@ export default task("transfer", "Execute a transfer")
           originDomain,
           destinationDomain,
           amount);
-        unsignedTx.gasLimit = ethers.BigNumber.from("20000000"); 
+        unsignedTx.gasLimit = ethers.BigNumber.from("2000000"); 
         let txResponse = await wallet.sendTransaction(unsignedTx);
         return await txResponse.wait();
       }
