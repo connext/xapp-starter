@@ -24,9 +24,10 @@ build :; forge clean && forge build
 
 # Deployments
 deploy-transfer-anvil :; @forge script script/${contract}.s.sol:Deploy${contract} --sig "run(address)" "${connext}" --rpc-url http://localhost:8545 --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 --broadcast
-deploy-transfer-testnet :; @forge script script/${contract}.s.sol:Deploy${contract} --sig "run(address)" "${connext}" --rpc-url ${TESTNET_ORIGIN_RPC_URL} --private-key ${PRIVATE_KEY} --broadcast --verify --delay 10 --retries 3 --etherscan-api-key ${ETHERSCAN_KEY}  -vvvv
+deploy-and-verify-transfer-testnet :; @forge script script/${contract}.s.sol:Deploy${contract} --sig "run(address)" "${connext}" --rpc-url ${TESTNET_ORIGIN_RPC_URL} --private-key ${PRIVATE_KEY} --broadcast -vvvv
+deploy-transfer-testnet :; @forge script script/${contract}.s.sol:Deploy${contract} --sig "run(address)" "${connext}" --rpc-url ${TESTNET_ORIGIN_RPC_URL} --private-key ${PRIVATE_KEY} --broadcast -vvvv
 deploy-source-anvil :; @forge script script/${contract}.s.sol:Deploy${contract} --sig "run(address,address)" "${connext}" "${promiseRouter}" --rpc-url http://localhost:8545 --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 --broadcast
-deploy-source-testnet :; @forge script script/${contract}.s.sol:Deploy${contract} --sig "run(address,address)" "${connext}" "${promiseRouter}" --rpc-url ${TESTNET_ORIGIN_RPC_URL} --private-key ${PRIVATE_KEY} --broadcast --verify --delay 10 --retries 3 --etherscan-api-key ${ETHERSCAN_KEY}  -vvvv
+deploy-source-testnet :; @forge script script/${contract}.s.sol:Deploy${contract} --sig "run(address,address)" "${connext}" "${promiseRouter}" --rpc-url ${TESTNET_ORIGIN_RPC_URL} --private-key ${PRIVATE_KEY} --broadcast -vvvv
 deploy-target-anvil :; forge script script/${contract}.s.sol:Deploy${contract} --sig "run(address,uint32,address)" "${source}" "${originDomain}" "${connext}" --rpc-url http://localhost:8545 --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 --broadcast
 deploy-target-testnet :; forge script script/${contract}.s.sol:Deploy${contract} --sig "run(address,uint32,address)" "${source}" "${originDomain}" "${connext}" --rpc-url ${TESTNET_DESTINATION_RPC_URL} --private-key ${PRIVATE_KEY} --broadcast --verify --delay 10 --retries 3 --etherscan-api-key ${ETHERSCAN_KEY}  -vvvv
 
