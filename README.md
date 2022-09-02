@@ -63,7 +63,7 @@ Contracts:
 This project uses Foundry for testing and deploying contracts. Hardhat tasks are used for interacting with deployed contracts.
 
 - See the official Foundry installation [instructions](https://github.com/gakonst/foundry/blob/master/README.md#installation).
-- [Forge template](https://github.com/abigger87/femplate) by abigger87.
+- Also, download [make](https://askubuntu.com/questions/161104/how-do-i-install-make) if you don't already have it.
 
 ## Blueprint
 
