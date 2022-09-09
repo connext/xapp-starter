@@ -121,7 +121,7 @@ Deploy contracts in this repository using the RPC provider of your choice (TESTN
 - Deployment order for Source + Target of with-calldata examples
 
     ```bash
-    make deploy-source-testnet contract=Transfer connext=<address(origin_ConnextHandler)> promiseRouter=<address(origin_PromiseRouter)>
+    make deploy-source-testnet contract=Source connext=<address(origin_ConnextHandler)> promiseRouter=<address(origin_PromiseRouter)>
     ```
     
     ```bash
