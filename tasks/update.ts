@@ -9,7 +9,6 @@ export default task("update", "Execute an authenticated update")
   .addParam("destinationDomain", "The domain ID of the receiving chain")
   .addParam("sourceAddress", "The address of the Source contract")
   .addParam("targetAddress", "The address of the Target contract")
-  .addParam("walletPrivateKey", "The private key of the signing wallet")
   .addOptionalParam("value", "The new value to update to")
   .addOptionalParam("authenticated", "True if this is an authenticated update")
   .setAction(
@@ -19,7 +18,6 @@ export default task("update", "Execute an authenticated update")
         targetAddress, 
         originDomain, 
         destinationDomain, 
-        walletPrivateKey,
         value: _value,
         authenticated: _authenticated
       }
@@ -33,7 +31,7 @@ export default task("update", "Execute an authenticated update")
       const authenticated = _authenticated || false;
       
       const provider = new ethers.providers.JsonRpcProvider(process.env.TESTNET_ORIGIN_RPC_URL);
-      const wallet = new ethers.Wallet(walletPrivateKey, provider);
+      const wallet = new ethers.Wallet(String(process.env.PRIVATE_KEY), provider);
       const source = new ethers.Contract(sourceAddress, contractABI, wallet);
 
       async function xChainUpdate() {

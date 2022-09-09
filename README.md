@@ -137,19 +137,19 @@ There is a set of Hardhat tasks available for executing transactions on deployed
 - Execute Simple Transfer
 
   ```bash
-  yarn hardhat transfer --origin-domain <domainID> --destination-domain <domainID> --contract-address <address(Transfer)> --token-address <address(origin_TestERC20)> --wallet-private-key <your_private_key> --amount <amount>
+  yarn hardhat transfer --origin-domain <domainID> --destination-domain <domainID> --contract-address <address(Transfer)> --token-address <address(origin_TestERC20)> --amount <amount>
   ```
 
 - Execute Unauthenticated Update
 
   ```bash
-  yarn hardhat update --origin-domain <domainID> --destination-domain <domainID> --source-address <address(Source)> --target-address <address(Target)> --wallet-private-key <your_private_key> --value <value> --authenticated false
+  yarn hardhat update --origin-domain <domainID> --destination-domain <domainID> --source-address <address(Source)> --target-address <address(Target)> --value <value> --authenticated false
   ```
 
 - Execute Authenticated Update
 
   ```bash
-  yarn hardhat update --origin-domain <domainID> --destination-domain <domainID> --source-address <address(Source)> --target-address <address(Target)> --wallet-private-key <your_private_key> --value <value> --authenticated true
+  yarn hardhat update --origin-domain <domainID> --destination-domain <domainID> --source-address <address(Source)> --target-address <address(Target)> ---value <value> --authenticated true
   ```
 
 ### Check Execution Results

@@ -9,7 +9,6 @@ export default task("transfer", "Execute a transfer")
   .addParam("destinationDomain", "The domain ID of the receiving chain")
   .addParam("contractAddress", "The address of the Transfer contract")
   .addParam("tokenAddress", "The address of the TestERC20")
-  .addParam("walletPrivateKey", "The private key of the signing wallet")
   .addParam("amount", "The amount to send")
   .setAction(
     async (
@@ -18,7 +17,6 @@ export default task("transfer", "Execute a transfer")
         tokenAddress, 
         originDomain,
         destinationDomain, 
-        walletPrivateKey,
         amount
       }
     ) => {
@@ -33,7 +31,7 @@ export default task("transfer", "Execute a transfer")
       ]
      
       const provider = new ethers.providers.JsonRpcProvider(process.env.TESTNET_ORIGIN_RPC_URL);
-      const wallet = new ethers.Wallet(walletPrivateKey, provider);
+      const wallet = new ethers.Wallet(String(process.env.PRIVATE_KEY), provider);
       const transfer = new ethers.Contract(contractAddress, contractABI, wallet);
       const token = new ethers.Contract(tokenAddress, tokenABI, wallet);
 
