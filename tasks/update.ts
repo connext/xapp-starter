@@ -43,7 +43,7 @@ export default task("update", "Execute an authenticated update")
           destinationDomain,
           value,
           authenticated === "true");
-        unsignedTx.gasLimit = ethers.BigNumber.from("20000000"); 
+        unsignedTx.gasLimit = ethers.BigNumber.from("2000000"); 
         let txResponse = await wallet.sendTransaction(unsignedTx);
         return await txResponse.wait();
       }
