@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-pragma solidity ^0.8.14;
+pragma solidity ^0.8.15;
 
 import {Target} from "../../with-calldata/Target.sol";
-import {IConnextHandler} from "nxtp/core/connext/interfaces/IConnextHandler.sol";
-import {IExecutor} from "nxtp/core/connext/interfaces/IExecutor.sol";
-import {LibCrossDomainProperty} from "nxtp/core/connext/libraries/LibCrossDomainProperty.sol";
+import {IConnextHandler} from "@nxtp/core/connext/interfaces/IConnextHandler.sol";
+import {IExecutor} from "@nxtp/core/connext/interfaces/IExecutor.sol";
+import {LibCrossDomainProperty} from "@nxtp/core/connext/libraries/LibCrossDomainProperty.sol";
 import {DSTestPlus} from "../utils/DSTestPlus.sol";
 import "forge-std/Test.sol";
 

@@ -1,25 +1,23 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-pragma solidity ^0.8.14;
+pragma solidity ^0.8.15;
 
-import {Transfer} from "../../transfer/Transfer.sol";
-import {IConnextHandler} from "nxtp/core/connext/interfaces/IConnextHandler.sol";
+import {TransferToken} from "../../transfer-token/TransferToken.sol";
+import {IConnext} from "@nxtp/core/connext/interfaces/IConnext.sol";
 import {DSTestPlus} from "../utils/DSTestPlus.sol";
 import {MockERC20} from "@solmate/test/utils/mocks/MockERC20.sol";
 
 /**
- * @title TransferTestUnit
- * @notice Unit tests for Transfer.
+ * @title TransferTokenTestUnit
+ * @notice Unit tests for TransferToken.
  */
-contract TransferTestUnit is DSTestPlus {
+contract TransferTokenTestUnit is DSTestPlus {
   MockERC20 private token;
   address private connext;
-  Transfer private transfer;
-
-  event TransferInitiated(address asset, address from, address to);
+  TransferToken private transfer;
 
   function setUp() public {
     connext = address(1);
-    token = new MockERC20("TestToken", "TT", 18);
+    token = new MockERC20("TestToken", "TEST", 18);
     transfer = new Transfer(IConnextHandler(connext));
 
     vm.label(connext, "ConnextHandler");
@@ -79,7 +77,7 @@ contract TransferTestUnit is DSTestPlus {
  */
 contract TransferTestForked is DSTestPlus {
   // Testnet Addresses
-  address public connext = 0xB4C1340434920d70aD774309C75f9a4B679d801e;
+  address public connext = 0xD9e8b18Db316d7736A3d0386C59CA3332810df3B;
   address public constant testToken = 0x7ea6eA49B0b0Ae9c5db7907d139D9Cd3439862a1;
 
   Transfer private transfer;

@@ -118,14 +118,24 @@ Deploy contracts in this repository using the RPC provider of your choice (TESTN
     make deploy-transfer-testnet contract=Transfer connext=<address(origin_ConnextHandler)>
     ```
 
-- Deployment order for Source + Target of with-calldata examples
+- Deployment order for HelloSource + HelloTarget
 
     ```bash
-    make deploy-source-testnet contract=Source connext=<address(origin_ConnextHandler)> promiseRouter=<address(origin_PromiseRouter)>
+    make deploy-hellosource-testnet connext=<address(origin_Connext)>
     ```
     
     ```bash
-    make deploy-target-testnet contract=Target source=<address(Source)> originDomain=<origin_domainID> connext=<address(destination_ConnextHandler)>
+    make deploy-hellotarget-testnet
+    ```
+
+- Deployment order for HelloSourceAuthenticated + HelloTargetAuthenticated
+
+    ```bash
+    make deploy-hellosource-testnet connext=<address(origin_Connext)>
+    ```
+    
+    ```bash
+    make deploy-hellotarget-testnet
     ```
 
 ### Live Testnet Testing

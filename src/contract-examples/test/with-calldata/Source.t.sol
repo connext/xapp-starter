@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-pragma solidity ^0.8.14;
+pragma solidity ^0.8.15;
 
 import {Source} from "../../with-calldata/Source.sol";
-import {IConnextHandler} from "nxtp/core/connext/interfaces/IConnextHandler.sol";
+import {IConnext} from "@nxtp/core/connext/interfaces/IConnext.sol";
 import {DSTestPlus} from "../utils/DSTestPlus.sol";
 import {MockERC20} from "@solmate/test/utils/mocks/MockERC20.sol";
 
@@ -21,7 +21,7 @@ contract SourceTestUnit is DSTestPlus {
   function setUp() public {
     connext = address(1);
     promiseRouter = address(2);
-    source = new Source(IConnextHandler(connext), promiseRouter);
+    source = new Source(IConnext(connext), promiseRouter);
 
     vm.label(address(this), "TestContract");
     vm.label(connext, "Connext");
@@ -37,7 +37,7 @@ contract SourceTestUnit is DSTestPlus {
 
     // Mock the xcall
     bytes memory mockxcall = abi.encodeWithSelector(
-      IConnextHandler.xcall.selector
+      IConnext.xcall.selector
     );
     vm.mockCall(connext, mockxcall, abi.encode(1));
 
@@ -62,8 +62,8 @@ contract SourceTestUnit is DSTestPlus {
  */
 contract SourceTestForked is DSTestPlus {
   // Testnet Addresses
-  address public connext = 	0xB4C1340434920d70aD774309C75f9a4B679d801e;
-  address public promiseRouter = 	0xD25575eD38fa0F168c9Ba4E61d887B6b3433F350;
+  address public connext = 0xD9e8b18Db316d7736A3d0386C59CA3332810df3B;
+  address public promiseRouter = 0x570faC55A96bDEA6DE85632e4b2c7Fde4efFAD55;
   address private target = address(1);
 
   Source private source;
@@ -71,7 +71,7 @@ contract SourceTestForked is DSTestPlus {
   event UpdateInitiated(address to, uint256 newValue, bool authenticated);
 
   function setUp() public {
-    source = new Source(IConnextHandler(connext), promiseRouter);
+    source = new Source(IConnext(connext), promiseRouter);
 
     vm.label(connext, "Connext");
     vm.label(address(source), "Source");
