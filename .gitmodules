@@ -10,10 +10,3 @@
 [submodule "lib/openzeppelin-contracts"]
 	path = lib/openzeppelin-contracts
 	url = https://github.com/openzeppelin/openzeppelin-contracts
-[submodule "lib/nxtp"]
-	path = lib/nxtp
-	url = https://github.com/connext/nxtp
-	branch = main
-[submodule "lib/nfthashi"]
-	path = lib/nfthashi
-	url = https://github.com/nfthashi/monorepo
