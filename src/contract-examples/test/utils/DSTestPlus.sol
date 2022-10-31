@@ -10,14 +10,14 @@ contract DSTestPlus is Test {
   XConsole console = new XConsole();
 
   // Domain IDs for testnet
-  uint32 public goerliDomainId = 1735353714;
-  uint32 public optimismGoerliDomainId = 1735356532;
-  uint32 public polygonMumbaiDomainId = 9991;
-  uint32 public arbitrumGoerliDomainId = 1734439522;
+  uint32 public GOERLI_DOMAIN_ID = 1735353714;
+  uint32 public OPTIMISM_GOERLI_DOMAIN_ID = 1735356532;
+  uint32 public ARBITRUM_GOERLI_DOMAIN_ID = 1734439522;
+  uint32 public POLYGON_MUMBAI_DOMAIN_ID = 9991;
 
   // Chain IDs
-  uint32 public goerliChainId = 5;
-  uint32 public optimismGoerliChainId = 420;
-  uint32 public mumbaiChainId = 80001;
-  uint32 public arbitrumGoerliChainId = 421613;
+  uint32 public GOERLI_CHAIN_ID = 5;
+  uint32 public OPTIMISM_GOERLI_CHAIN_ID = 420;
+  uint32 public ARBITRUM_GOERLI_CHAIN_ID = 421613;
+  uint32 public POLYGON_MUMBAI_CHAIN_ID = 80001;
 }
