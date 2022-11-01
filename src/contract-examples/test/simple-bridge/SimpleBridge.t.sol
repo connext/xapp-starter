@@ -12,9 +12,9 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
  * @notice Unit tests for SimpleBridge.
  */
 contract SimpleBridgeTestUnit is DSTestPlus {
+  SimpleBridge public bridge;
   ERC20PresetMinterPauser public token;
   IConnext public connext = IConnext(address(1));
-  SimpleBridge public bridge;
   address public userChainA = address(0xA);
   address public userChainB = address(0xB);
 
@@ -30,7 +30,7 @@ contract SimpleBridgeTestUnit is DSTestPlus {
     vm.label(userChainB, "userChainB");
   }
 
-  function test_SimpleBridge_xTransferShouldTransferFromCaller(uint256 amount) public {
+  function test_xTransferShouldTransferFromCaller(uint256 amount) public {
     // Mint userChainA some tokens
     token.mint(userChainA, amount);
     console.log(
@@ -38,8 +38,9 @@ contract SimpleBridgeTestUnit is DSTestPlus {
       token.balanceOf(userChainA)
     );
 
+    vm.startPrank(userChainA);
+
     // userChainA must approve transfer to SimpleBridge contract
-    vm.prank(userChainA);
     token.approve(address(bridge), amount);
 
     // Mock the xcall
@@ -61,7 +62,6 @@ contract SimpleBridgeTestUnit is DSTestPlus {
       )
     );
 
-    vm.prank(userChainA);
     bridge.xTransfer(
       userChainB,
       OPTIMISM_GOERLI_DOMAIN_ID,
@@ -70,6 +70,8 @@ contract SimpleBridgeTestUnit is DSTestPlus {
       0,
       0
     );
+
+    vm.stopPrank();
   }
 }
 
@@ -81,6 +83,7 @@ contract SimpleBridgeTestForked is DSTestPlus {
   // Staging testnet addresses on Goerli
   IConnext public connext = IConnext(0x9590e2bB6a93e2a531b0269eE7396cECc3E5d6eA);
   IERC20 public token = IERC20(0x7ea6eA49B0b0Ae9c5db7907d139D9Cd3439862a1);
+
   address public userChainA = address(0xA);
   address public userChainB = address(0xB);
   address public whaleChainA = address(0x6d2A06543D23Cc6523AE5046adD8bb60817E0a94); 
@@ -99,7 +102,7 @@ contract SimpleBridgeTestForked is DSTestPlus {
     vm.label(whaleChainA, "whaleChainA");
   }
 
-  function test_SimpleBridge_xTransferShouldWork(uint256 amount) public {
+  function test_xTransferShouldWork(uint256 amount) public {
     // Whale should have enough funds for this test case
     vm.assume(token.balanceOf(whaleChainA) >= amount);
 
@@ -111,8 +114,9 @@ contract SimpleBridgeTestForked is DSTestPlus {
       token.balanceOf(userChainA)
     );
 
+    vm.startPrank(userChainA);
+
     // userChainA must approve transfer to SimpleBridge contract
-    vm.prank(userChainA);
     token.approve(address(bridge), amount);
 
     // Test that tokens are sent from userChainA to SimpleBridge contract
@@ -139,20 +143,21 @@ contract SimpleBridgeTestForked is DSTestPlus {
           address(token),
           userChainA,
           amount,
-          3,
+          9997,
           ""
         )
       )
     );
 
-    vm.prank(userChainA);
     bridge.xTransfer(
       userChainB,
       OPTIMISM_GOERLI_DOMAIN_ID,
       address(token),
       amount,
-      0,
+      9997,
       0
     );
+
+    vm.stopPrank();
   }
 }

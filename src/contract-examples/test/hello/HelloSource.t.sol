@@ -31,7 +31,7 @@ contract HelloSourceTestForked is DSTestPlus {
     vm.label(userChainB, "userChainB");
   }
 
-  function test_HelloSource_updateGreetingShouldWork(string memory newGreeting) public {
+  function test_updateGreetingShouldWork(string memory newGreeting) public {
     vm.startPrank(userChainA);
 
     uint256 cost = source.cost();
