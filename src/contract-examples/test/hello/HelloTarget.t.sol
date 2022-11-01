@@ -13,7 +13,7 @@ import "forge-std/Test.sol";
 contract HelloTargetTestUnit is DSTestPlus {
   address private connext = address(1);
   address private source = address(2);
-  address private erc20 = address(0xeDb95D8037f769B72AAab41deeC92903A98C9E16);
+  address private token = address(0xeDb95D8037f769B72AAab41deeC92903A98C9E16);
   HelloTarget private target;
 
   function setUp() public {
@@ -27,7 +27,7 @@ contract HelloTargetTestUnit is DSTestPlus {
 
   function test_xReceive_ShouldUpdateGreeting(bytes32 transferId, uint256 amount, uint32 domain, string memory newGreeting) public {
     vm.assume(amount >= target.cost());
-    target.xReceive(transferId, amount, erc20, address(this), domain, abi.encode(newGreeting));
+    target.xReceive(transferId, amount, token, address(this), domain, abi.encode(newGreeting));
     assertEq(target.greeting(), newGreeting);
   }
 }

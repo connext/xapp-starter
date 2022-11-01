@@ -2,7 +2,10 @@ pragma solidity ^0.8.15;
 
 import {IConnext} from "@connext/nxtp-contracts/contracts/core/connext/interfaces/IConnext.sol";
 
-
+/**
+ * @title HelloSourceAuthenticated
+ * @notice Example source contract that updates a greeting in HelloTargetAuthenticated.
+ */
 contract HelloSourceAuthenticated {
   // The connext contract on the origin domain.
   IConnext public immutable connext;
@@ -11,8 +14,8 @@ contract HelloSourceAuthenticated {
     connext = _connext;
   }
 
-  /** @dev Updates a greeting variable on the Target contract.
-    * @param target Address of the Target contract.
+  /** @notice Updates a greeting variable on the HelloTargetAuthenticated contract.
+    * @param target Address of the HelloTargetAuthenticated contract.
     * @param destinationDomain The destination domain ID.
     * @param newGreeting New greeting to update to.
     * @param relayerFee The fee offered to relayers. On testnet, this can be 0.
@@ -22,7 +25,7 @@ contract HelloSourceAuthenticated {
     uint32 destinationDomain,
     string memory newGreeting,
     uint256 relayerFee
-  ) external {
+  ) external payable {
     // Encode the data needed for the target contract call.
     bytes memory callData = abi.encode(newGreeting);
 
@@ -32,7 +35,7 @@ contract HelloSourceAuthenticated {
       address(0),        // _asset: use address zero for 0-value transfers
       msg.sender,        // _delegate: address that can revert or forceLocal on destination
       0,                 // _amount: 0 because no funds are being transferred
-      0,                 // _slippage: 0 because no funds are being transferred
+      0,                 // _slippage: can be anything between 0-10000 because no funds are being transferred
       callData           // _callData: the encoded calldata to send
     );
   }
