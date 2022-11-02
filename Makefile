@@ -23,29 +23,59 @@ update :; forge update
 build :; forge clean && forge build
 
 # Deployments
-deploy-and-verify-transfer-testnet :; @forge script script/${contract}.s.sol:Deploy${contract} --sig "run(address)" "${connext}" --rpc-url ${TESTNET_ORIGIN_RPC_URL} --private-key ${PRIVATE_KEY} --broadcast -vvvv
 
-deploy-transfertoken-testnet :; @forge script script/transfer-token/TransferToken.s.sol:DeployTransferToken --sig "run(address)" "${connext}" --rpc-url ${TESTNET_ORIGIN_RPC_URL} --private-key ${PRIVATE_KEY} --broadcast -vvvv
-deploy-hellosource-testnet :; @forge script script/hello-chain/HelloSource.s.sol:DeployHelloSource --sig "run(address)" "${connext}" --rpc-url ${TESTNET_ORIGIN_RPC_URL} --private-key ${PRIVATE_KEY} --broadcast -vvvv
-deploy-hellotarget-testnet :; @forge script script/hello-chain/HelloTarget.s.sol:DeployHelloTarget --sig "run()" --rpc-url ${TESTNET_ORIGIN_RPC_URL} --private-key ${PRIVATE_KEY} --broadcast -vvvv
-deploy-hellosource-auth-testnet :; @forge script script/authentication/HelloSourceAuthenticated.s.sol:DeployHelloSourceAuthenticated --sig "run(address)" "${connext}" --rpc-url ${TESTNET_ORIGIN_RPC_URL} --private-key ${PRIVATE_KEY} --broadcast -vvvv
-deploy-hellotarget-auth-testnet :; @forge script script/authentication/HelloTargetAuthenticated.s.sol:DeployHelloTargetAuthenticated --sig "run(uint32,address,address)" "${originDomain}" "${sourceContract}" "${connext}" --rpc-url ${TESTNET_ORIGIN_RPC_URL} --private-key ${PRIVATE_KEY} --broadcast -vvvv
+## Simple Bridge
+deploy-simplebridge :; @forge script script/simple-bridge/SimpleBridge.s.sol:DeploySimpleBridge --sig "run(address)" "${ORIGIN_CONNEXT}" --rpc-url ${ORIGIN_RPC_URL} --private-key ${PRIVATE_KEY} --broadcast --verify -vvvv
+deploy-simplebridge-anvil :; @forge script script/simple-bridge/SimpleBridge.s.sol:DeploySimpleBridge --sig "run(address)" "${ORIGIN_CONNEXT}" --rpc-url http://localhost:8545 --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 --broadcast
 
-deploy-transfer-anvil :; @forge script script/${contract}.s.sol:Deploy${contract} --sig "run(address)" "${connext}" --rpc-url http://localhost:8545 --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 --broadcast
-deploy-source-anvil :; @forge script script/${contract}.s.sol:Deploy${contract} --sig "run(address,address)" "${connext}" "${promiseRouter}" --rpc-url http://localhost:8545 --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 --broadcast
-deploy-source-testnet :; @forge script script/${contract}.s.sol:Deploy${contract} --sig "run(address,address)" "${connext}" "${promiseRouter}" --rpc-url ${TESTNET_ORIGIN_RPC_URL} --private-key ${PRIVATE_KEY} --broadcast -vvvv
-deploy-target-anvil :; forge script script/${contract}.s.sol:Deploy${contract} --sig "run(address,uint32,address)" "${source}" "${originDomain}" "${connext}" --rpc-url http://localhost:8545 --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 --broadcast
-deploy-target-testnet :; forge script script/${contract}.s.sol:Deploy${contract} --sig "run(uint32,address)" "${originDomain}" "${connext}" --rpc-url ${TESTNET_DESTINATION_RPC_URL} --private-key ${PRIVATE_KEY} --broadcast -vvvv
+## Hello
+deploy-hellosource :; @forge script script/hello/HelloSource.s.sol:DeployHelloSource --sig "run(address)" "${ORIGIN_CONNEXT}" --rpc-url ${ORIGIN_RPC_URL} --private-key ${PRIVATE_KEY} --broadcast --verify -vvvv
+deploy-hellosource-anvil :; @forge script script/hello/HelloSource.s.sol:DeployHelloSource --sig "run(address)" "${ORIGIN_CONNEXT}" --rpc-url http://localhost:8545 --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 --broadcast --verify -vvvv
+
+deploy-hellotarget :; @forge script script/hello/HelloTarget.s.sol:DeployHelloTarget --sig "run()" --rpc-url ${DESTINATION_RPC_URL} --private-key ${PRIVATE_KEY} --broadcast --verify -vvvv
+deploy-hellotarget-anvil :; @forge script script/hello/HelloTarget.s.sol:DeployHelloTarget --sig "run()" --rpc-url http://localhost:8545 --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 --broadcast --verify -vvvv
+
+## Hello Authenticated
+deploy-hellosource-auth :; @forge script script/hello-authenticated/HelloSourceAuthenticated.s.sol:DeployHelloSourceAuthenticated --sig "run(address)" "${ORIGIN_CONNEXT}" --rpc-url ${ORIGIN_RPC_URL} --private-key ${PRIVATE_KEY} --broadcast --verify -vvvv
+deploy-hellosource-auth-anvil :; @forge script script/hello-authenticated/HelloSourceAuthenticated.s.sol:DeployHelloSourceAuthenticated --sig "run(address)" "${ORIGIN_CONNEXT}" --rpc-url http://localhost:8545 --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 --broadcast --verify -vvvv
+
+deploy-hellotarget-auth :; @forge script script/hello-authenticated/HelloTargetAuthenticated.s.sol:DeployHelloTargetAuthenticated --sig "run(uint32,address,address)" "${ORIGIN_DOMAIN}" "${SOURCE_CONTRACT}" "${DESTINATION_CONNEXT}" --rpc-url ${DESTINATION_RPC_URL} --private-key ${PRIVATE_KEY} --broadcast -vvvv
+deploy-hellotarget-auth-anvil :; @forge script script/hello-authenticated/HelloTargetAuthenticated.s.sol:DeployHelloTargetAuthenticated --sig "run(uint32,address,address)" "${ORIGIN_DOMAIN}" "${SOURCE_CONTRACT}" "${DESTINATION_CONNEXT}" --rpc-url http://localhost:8545 --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 --broadcast -vvvv
+
+## Ping Pong
+deploy-ping :; @forge script script/ping-pong/Ping.s.sol:DeployPing --sig "run(address)" "${ORIGIN_CONNEXT}" --rpc-url ${ORIGIN_RPC_URL} --private-key ${PRIVATE_KEY} --broadcast --verify -vvvv
+deploy-ping-anvil :; @forge script script/ping-pong/Ping.s.sol:DeployPing --sig "run(address)" "${ORIGIN_CONNEXT}" --rpc-url http://localhost:8545 --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 --broadcast --verify -vvvv
+
+deploy-pong :; @forge script script/ping-pong/Pong.s.sol:DeployPong --sig "run(address)" "${DESTINATION_CONNEXT}" --rpc-url ${DESTINATION_RPC_URL} --private-key ${PRIVATE_KEY} --broadcast --verify -vvvv
+deploy-pong-anvil :; @forge script script/ping-pong/Pong.s.sol:DeployPong --sig "run(address)" "${DESTINATION_CONNEXT}" --rpc-url http://localhost:8545 --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 --broadcast --verify -vvvv
 
 # Tests
 test-unit-all :; forge clean && forge test --match-contract "TestUnit" -vvvv
-test-unit-transfertoken :; forge clean && forge test --match-contract "TransferTokenTestUnit" -vvvv
-test-forked-transfertoken :; forge clean && forge test --match-contract "TransferTokenTestForked" --fork-url ${TESTNET_ORIGIN_RPC_URL} -vvvv
-test-unit-source:; forge clean && forge test --match-contract "SourceTestUnit" -vvvv
-test-forked-source :; forge clean && forge test --match-contract "SourceTestForked" --fork-url ${TESTNET_ORIGIN_RPC_URL} -vvvv
-test-unit-target:; forge clean && forge test --match-contract "TargetTestUnit" -vvvv
-test-unit-nfthashi:; forge clean && forge test --match-contract "NFTHashiTestUnit" -vvvv
-test-forked-nfthashi:; forge clean && forge test --match-contract "NFTHashiTestForked" --fork-url ${TESTNET_ORIGIN_RPC_URL} -vvvv
+
+## Simple Bridge
+test-unit-simplebridge :; forge clean && forge test --match-contract "SimpleBridgeTestUnit" -vvvv
+test-forked-simplebridge :; forge clean && forge test --match-contract "SimpleBridgeTestForked" --fork-url ${ORIGIN_RPC_URL} -vvvv
+
+## Hello
+# test-unit-hellosource:; forge clean && forge test --match-contract "HelloSourceTestUnit" -vvvv
+test-forked-hellosource :; forge clean && forge test --match-contract "HelloSourceTestForked" --fork-url ${ORIGIN_RPC_URL} -vvvv
+
+test-unit-hellotarget:; forge clean && forge test --match-contract "HelloTargetTestUnit" -vvvv
+# test-forked-hellotarget:; forge clean && forge test --match-contract "HelloTargetTestForked" --fork-url ${ORIGIN_RPC_URL} -vvvv
+
+## Hello Authenticated
+# test-unit-hellosource-auth:; forge clean && forge test --match-contract "HelloSourceAuthenticatedTestUnit" -vvvv
+test-forked-hellosource-auth:; forge clean && forge test --match-contract "HelloSourceAuthenticatedTestForked" --fork-url ${ORIGIN_RPC_URL} -vvvv
+
+test-unit-hellotarget-auth:; forge clean && forge test --match-contract "HelloTargetAuthenticatedTestUnit" -vvvv
+# test-forked-hellotarget-auth:; forge clean && forge test --match-contract "HelloTargetAuthenticatedTestForked" --fork-url ${ORIGIN_RPC_URL} -vvvv
+
+## Ping Pong
+test-unit-ping :; forge clean && forge test --match-contract "PingTestUnit" -vvvv
+# test-forked-ping :; forge clean && forge test --match-contract "PingTestForked" --fork-url ${ORIGIN_RPC_URL} -vvvv
+
+test-unit-pong :; forge clean && forge test --match-contract "PongTestUnit" -vvvv
+# test-forked-ping :; forge clean && forge test --match-contract "PongTestForked" --fork-url ${ORIGIN_RPC_URL} -vvvv
 
 # Lints
 lint :; prettier --write src/**/*.sol && prettier --write src/**/*.sol
