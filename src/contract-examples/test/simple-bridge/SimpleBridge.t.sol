@@ -141,7 +141,7 @@ contract SimpleBridgeTestForked is DSTestPlus {
           OPTIMISM_GOERLI_DOMAIN_ID,
           userChainB,
           address(token),
-          userChainA,
+          userChainB,
           amount,
           9997,
           ""
