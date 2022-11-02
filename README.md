@@ -3,8 +3,8 @@
 Starter kit for cross-domain apps (xApps).
 # Overview
 
-With Connext's upgraded protocol, there are generally three types of bridging transactions that can be executed fully through smart contract integration.
-- Simple transfers
+There are generally three types of cross-chain bridge transactions that can be executed solely through smart contract integration.
+- Asset transfers
 - Unauthenticated calls
 - Authenticated calls
 
@@ -14,36 +14,36 @@ The high level flow is as follows:
 
 <img src="documentation/assets/xcall.png" alt="drawing" width="500"/>
 
-## Transfer
+## Simple Bridge
 
-Simple transfer from Sending Chain to Receiving Chain. Does not use calldata. 
+Simple asset transfer from Origin Chain to Destination Chain. Does not use calldata. 
 
 Example use cases:
 - Send funds across chains
 
 Contracts:
-- Transfer.sol
+- SimpleBridge.sol
 
-## Unauthenticated 
+## Unauthenticated Call
 
-Transfer funds and/or call a target contract with arbitrary calldata on the Receiving Chain. Assuming the receiving side is an unauthenticated call, this flow is essentially the same as a simple transfer except encoded calldata is included in the `xcall`. The call can simply use `amount: 0` if no transfer is required.
+Transfer funds and/or call a target contract with arbitrary calldata on the Destination Chain. Assuming the receiving side is an unauthenticated call, this flow is essentially the same as the simple bridge except encoded calldata is included in the `xcall`. The call can simply use `amount: 0` if no funds are being transferred.
 
 Example use cases:
-- Deposit funds into a liquidity pool on the Receiving Chain
-- Execute a token Swap on the Receiving Chain
+- Deposit funds into a liquidity pool on the Destination Chain
+- Execute a token Swap on the Destination Chain
 - Connecting DEX liquidity across chains in a single seamless transaction
 - Crosschain vault zaps and vault strategy management
 
 Contracts:
-- Source.sol
-- Target.sol
+- HelloSource.sol
+- HelloTarget.sol
 
-## Authenticated
+## Authenticated Call
 
-Like unauthenticated, call a target contract with arbitrary calldata on the Receiving Chain. Except, the target function is authenticated which means the contract owner must make sure to check the origin in order to uphold authentication requirements.
+Like unauthenticated, call a target contract with arbitrary calldata on the Destination Chain. Except, the target function is authenticated which means the contract must check the origin in order to uphold authentication requirements.
 
 Example use cases:
-- Hold a governance vote on Sending Chain and execute the outcome of it on the Receiving Chain (and other DAO operations)
+- Hold a governance vote on Origin Chain and execute the outcome of it on the Destination Chain (and other DAO operations)
 - Lock-and-mint or burn-and-mint token bridging
 - Critical protocol operations such as replicating/syncing global constants (e.g. PCV) across chains
 - Bringing UniV3 TWAPs to every chain without introducing oracles
@@ -51,8 +51,16 @@ Example use cases:
 - Metaverse-to-metaverse interoperability
 
 Contracts:
-- Source.sol
-- Target.sol
+- HelloSource.sol
+- HelloTargetAuthenticated.sol
+
+## Ping Pong
+
+An example of a nested `xcall`, allowing for calldata execution within another `xcall`.
+
+Contracts:
+- Ping.sol
+- Pong.sol
 
 # Development
 
@@ -69,15 +77,21 @@ This project uses Foundry for testing and deploying contracts. Hardhat tasks are
 
 ```ml
 src
-├─ contract-to-contract-interactions
-|  └─ transfer
-│    └─ Transfer.sol
-|  └─ with-calldata
-│    └─ Source.sol
-│    └─ Target.sol
+├─ contract-examples
+|  └─ simple-bridge
+│    └─ SimpleBridge.sol
+|  └─ hello
+│    └─ HelloSource.sol
+│    └─ HelloTarget.sol
+|  └─ hello-authenticated
+│    └─ HelloSourceAuthenticated.sol
+│    └─ HelloTargetAuthenticated.sol
+|  └─ ping-pong
+│    └─ Ping.sol
+│    └─ Pong.sol
 |  └─ tests
 │    └─ ...
-├─ sdk-interactions
+├─ sdk-examples
 │    └─ node-examples
 ```
 ## Setup
@@ -91,52 +105,78 @@ Copy the `.env.example` into `.env` and fill in the placeholders.
 
 ## Testing
 
+There are some starter test cases in the `src/tests` directory for each of the examples.
+
 ### Unit Tests
 
 ```bash
-make test-unit-all
-make test-unit-transfer
-make test-unit-source
-make test-unit-target
+make test-unit-simplebridge
+make test-unit-hellotarget
+make test-unit-hellotarget-auth
+make test-unit-ping
+make test-unit-pong
 ```
 
 ### Integration Tests
 
-This uses forge's `--forked` mode. Make sure you have `TESTNET_ORIGIN_RPC_URL` defined in your `.env` file.
+This uses forge's `--forked` mode. Make sure you have `ORIGIN_RPC_URL` defined in your `.env` file.
 ```bash
-make test-forked-transfer
-make test-forked-source
+make test-forked-simplebridge
+make test-forked-hellosource
+make test-forked-hellosource-auth
 ```
 
-### Deployment with Verification
+### Deployment
 
-Deploy contracts in this repository using the RPC provider of your choice (TESTNET_ORIGIN_RPC_URL in .env).
+Deploy contracts in this repository using the RPC provider of your choice (make sure to define `ORIGIN_RPC_URL` and `DESTINATION_RPC_URL` in .env).
 
-- Deployment order for Simple Transfer example
+- Deployment order for Simple Bridge
 
     ```bash
-    make deploy-transfer-testnet contract=Transfer connext=<address(origin_ConnextHandler)>
+    make deploy-simplebridge
     ```
 
 - Deployment order for HelloSource + HelloTarget
 
     ```bash
-    make deploy-hellosource-testnet connext=<address(origin_Connext)>
+    make deploy-hellosource
     ```
     
     ```bash
-    make deploy-hellotarget-testnet
+    make deploy-hellotarget
     ```
 
 - Deployment order for HelloSourceAuthenticated + HelloTargetAuthenticated
 
     ```bash
-    make deploy-hellosource-testnet connext=<address(origin_Connext)>
+    make deploy-hellosource-auth
+    ```
+    
+    Use the origin domain and deployed source contract address as values for `ORIGIN_DOMAIN` and `SOURCE_CONTRACT` in `.env` before deploying `HelloTargetAuthenticated`.
+
+    ```bash
+    make deploy-hellotarget-auth
+    ```
+
+- Deployment order for Ping + Pong
+
+    ```bash
+    make deploy-ping
     ```
     
     ```bash
-    make deploy-hellotarget-testnet
+    make deploy-pong
     ```
+
+### Verification
+
+It's much easier to read contract values after they're verified! We use another forge command to do this.
+
+For example, to verify `HelloTarget.sol`: 
+
+```bash
+forge verify-contract --chain 80001 <deployed_contract_address> src/contract-examples/hello/HelloTarget.sol:HelloTarget <polygonscan_api_key>                   
+```
 
 ### Live Testnet Testing
 
@@ -144,28 +184,30 @@ The core set of Connext contracts have already been deployed to testnet. For the
 
 There is a set of Hardhat tasks available for executing transactions on deployed contracts.
 
-- Execute Simple Transfer
+- Simple Bridge
 
   ```bash
-  yarn hardhat transfer --origin-domain <domainID> --destination-domain <domainID> --contract-address <address(Transfer)> --token-address <address(origin_TestERC20)> --amount <amount>
+  yarn hardhat simpleBridge --destination-domain <domainID> --contract-address <address(SimpleBridge)> --token-address <address(origin_TestERC20)> --amount <amount>
   ```
 
-- Execute Unauthenticated Update
+- Hello Chain 
 
   ```bash
-  yarn hardhat update --origin-domain <domainID> --destination-domain <domainID> --source-address <address(Source)> --target-address <address(Target)> --value <value> --authenticated false
+  yarn hardhat hello --destination-domain <domainID> --source-address <address(Source)> --target-address <address(Target)> --greeting <greeting>
   ```
 
-- Execute Authenticated Update
+- Authenticated Call
 
   ```bash
-  yarn hardhat update --origin-domain <domainID> --destination-domain <domainID> --source-address <address(Source)> --target-address <address(Target)> ---value <value> --authenticated true
+  yarn hardhat update --origin-domain <domainID> --destination-domain <domainID> --source-address <address(Source)> --target-address <address(Target)> --greeting <greeting>
   ```
+
+- Ping Pong
+
+```bash
+yarn hardhat pingPong --destination-domain <domainID> --ping-address <address(Ping)> --pong-address <address(Pong)> --token-address <address(origin_TestERC20)> --amount <amount>
+```
 
 ### Check Execution Results
 
-You can just check your wallet balance in the Simple Transfer case to see if the funds arrived at the destination address. For the unauthenticated/authenticated updates, you can either read the `value` from a verified Target contract on Etherscan or you can use the following `cast` command to read it directly from terminal.
-
-```bash
-cast call --chain <rinkeby|goerli|etc> <address(Target)> "value()" --rpc-url <destination_rpc_url>
-```
+You can just check your wallet balance in the Simple Bridge example to see if the funds arrived at the destination address. To check calldata results, you can read the updated variables on the target contract on Etherscan or use tools like Foundry's `cast` command.
