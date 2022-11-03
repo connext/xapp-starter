@@ -2,8 +2,10 @@
 import { HardhatUserConfig } from "hardhat/types";
 import { config as dotenvConfig } from "dotenv";
 
-import "./tasks/transfer";
-import "./tasks/update";
+import "./tasks/simpleBridge";
+import "./tasks/hello";
+import "./tasks/helloAuthenticated";
+import "./tasks/pingPong";
 
 dotenvConfig();
 
@@ -13,7 +15,12 @@ const config: HardhatUserConfig = {
   },
   defaultNetwork: "hardhat",
   networks: {
-    hardhat: {}
+    hardhat: {},
+    goerli: {
+      accounts: [ process.env.PRIVATE_KEY! ],
+      chainId: 5,
+      url: process.env.ORIGIN_RPC_URL,
+    },
   },
   paths: {
     sources: "./src",
