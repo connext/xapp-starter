@@ -16,6 +16,7 @@ const nxtpConfig: NxtpSdkConfig = {
   logLevel: "info",
   signerAddress: signerAddress,
   chains: {
+    // Goerli
     "1735353714": {
       providers: [process.env.GOERLI_RPC_URL],
       assets: [
@@ -26,6 +27,7 @@ const nxtpConfig: NxtpSdkConfig = {
         },
       ],
     },
+    // Optimism-Goerli
     "1735356532": {
       providers: [process.env.OPTIMISM_GOERLI_RPC_URL],
       assets: [
@@ -33,6 +35,17 @@ const nxtpConfig: NxtpSdkConfig = {
           name: "TEST",
           symbol: "TEST",
           address: "0x68Db1c8d85C09d546097C65ec7DCBFF4D6497CbF",
+        },
+      ],
+    },
+    // Polygon-Mumbai
+    "9991": {
+      providers: [process.env.MUMBAI_RPC_URL],
+      assets: [
+        {
+          name: "TEST",
+          symbol: "TEST",
+          address: "0xeDb95D8037f769B72AAab41deeC92903A98C9E16",
         },
       ],
     },
