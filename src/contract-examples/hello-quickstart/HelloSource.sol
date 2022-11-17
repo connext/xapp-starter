@@ -55,7 +55,7 @@ contract HelloSource {
       address(token),    // _asset: address of the token contract
       msg.sender,        // _delegate: address that can revert or forceLocal on destination
       cost,              // _amount: amount of tokens to transfer
-      30,                // _slippage: the maximum amount of slippage the user will accept in BPS, in this case 0.3%
+      30,                // _slippage: the max slippage the user will accept in BPS (0.3%)
       callData           // _callData: the encoded calldata to send
     );
   }

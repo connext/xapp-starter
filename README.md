@@ -80,7 +80,7 @@ src
 ├─ contract-examples
 |  └─ simple-bridge
 │    └─ SimpleBridge.sol
-|  └─ hello
+|  └─ hello-quickstart
 │    └─ HelloSource.sol
 │    └─ HelloTarget.sol
 |  └─ hello-authenticated
@@ -175,7 +175,7 @@ It's much easier to read contract values after they're verified! We use another 
 For example, to verify `HelloTarget.sol`: 
 
 ```bash
-forge verify-contract --chain 80001 <deployed_contract_address> src/contract-examples/hello/HelloTarget.sol:HelloTarget <polygonscan_api_key>                   
+forge verify-contract --chain 80001 <deployed_contract_address> src/contract-examples/hello-quickstart/HelloTarget.sol:HelloTarget <polygonscan_api_key>
 ```
 
 ### Live Testnet Testing
@@ -190,13 +190,13 @@ There is a set of Hardhat tasks available for executing transactions on deployed
   yarn hardhat simpleBridge --destination-domain <domainID> --contract-address <address(SimpleBridge)> --token-address <address(origin_TestERC20)> --amount <amount>
   ```
 
-- Hello Chain 
+- Hello Quickstart 
 
   ```bash
   yarn hardhat hello --destination-domain <domainID> --source-address <address(Source)> --target-address <address(Target)> --greeting <greeting>
   ```
 
-- Authenticated Call
+- Hello Authenticated
 
   ```bash
   yarn hardhat update --origin-domain <domainID> --destination-domain <domainID> --source-address <address(Source)> --target-address <address(Target)> --greeting <greeting>
