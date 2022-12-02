@@ -20,6 +20,7 @@
         "typescript": "^4.6.3"
     },
     "scripts": {
+        "build": "make install",
         "setup": "make clean && make build",
         "sync": "make install",
         "test": "make test-unit-all",
