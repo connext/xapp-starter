@@ -1,55 +1,29 @@
 import { config as dotEnvConfig } from "dotenv";
 dotEnvConfig();
 
-import { NxtpSdkConfig } from "@connext/nxtp-sdk";
+import { SdkConfig } from "@connext/sdk";
 import { ethers } from "ethers";
 
 // Create a Signer and connect it to a Provider on the sending chain
 const privateKey = process.env.PRIVATE_KEY;
 let signer = new ethers.Wallet(privateKey);
 
-const provider = new ethers.providers.JsonRpcProvider(process.env.GOERLI_RPC_URL);
+const provider = new ethers.providers.JsonRpcProvider(process.env.ORIGIN_RPC_URL);
 signer = signer.connect(provider);
 const signerAddress = await signer.getAddress();
 
-const nxtpConfig: NxtpSdkConfig = {
+const sdkConfig: SdkConfig = {
   logLevel: "info",
   signerAddress: signerAddress,
+  network: "testnet",
   chains: {
-    // Goerli
-    "1735353714": {
-      providers: [process.env.GOERLI_RPC_URL],
-      assets: [
-        {
-          name: "TEST",
-          symbol: "TEST",
-          address: "0x7ea6eA49B0b0Ae9c5db7907d139D9Cd3439862a1",
-        },
-      ],
+    1735353714: {
+      providers: ["https://goerli.infura.io/v3/d2560cac8f5645fba802260cf1f8c777"],
     },
-    // Optimism-Goerli
-    "1735356532": {
-      providers: [process.env.OPTIMISM_GOERLI_RPC_URL],
-      assets: [
-        {
-          name: "TEST",
-          symbol: "TEST",
-          address: "0x68Db1c8d85C09d546097C65ec7DCBFF4D6497CbF",
-        },
-      ],
-    },
-    // Polygon-Mumbai
-    "9991": {
-      providers: [process.env.MUMBAI_RPC_URL],
-      assets: [
-        {
-          name: "TEST",
-          symbol: "TEST",
-          address: "0xeDb95D8037f769B72AAab41deeC92903A98C9E16",
-        },
-      ],
+    9991: {
+      providers: ["https://polygon-mumbai.infura.io/v3/d2560cac8f5645fba802260cf1f8c777"],
     },
   },
 };
 
-export { signer, nxtpConfig };
+export { signer, sdkConfig };

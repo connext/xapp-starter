@@ -5,7 +5,8 @@
   "license": "MIT",
   "type": "module",
   "dependencies": {
-    "@connext/nxtp-sdk": "^0.2.1-beta.1",
+    "@connext/sdk": "^0.2.1-rc.20",
+    "@eth-optimism/sdk": "^1.7.0",
     "@types/mocha": "^9.1.1",
     "@types/node": "^17.0.31",
     "ethers": "^5.6.8",
