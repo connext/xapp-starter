@@ -36,8 +36,8 @@ Example use cases:
 - Crosschain vault zaps and vault strategy management
 
 Contracts:
-- HelloSource.sol
-- HelloTarget.sol
+- SourceGreeter.sol
+- DestinationGreeter.sol
 
 ## Authenticated Call
 
@@ -52,8 +52,8 @@ Example use cases:
 - Metaverse-to-metaverse interoperability
 
 Contracts:
-- HelloSource.sol
-- HelloTargetAuthenticated.sol
+- SourceGreeter.sol
+- DestinationGreeterAuthenticated.sol
 
 ## Ping Pong
 
@@ -81,12 +81,12 @@ src
 ├─ contract-examples
 |  └─ simple-bridge
 │    └─ SimpleBridge.sol
-|  └─ hello-quickstart
-│    └─ HelloSource.sol
-│    └─ HelloTarget.sol
-|  └─ hello-authenticated
-│    └─ HelloSourceAuthenticated.sol
-│    └─ HelloTargetAuthenticated.sol
+|  └─ greeter
+│    └─ SourceGreeter.sol
+│    └─ DestinationGreeter.sol
+|  └─ greeter-authenticated
+│    └─ SourceGreeterAuthenticated.sol
+│    └─ DestinationGreeterAuthenticated.sol
 |  └─ ping-pong
 │    └─ Ping.sol
 │    └─ Pong.sol
@@ -99,6 +99,7 @@ src
 ```bash
 make install
 yarn
+foundryup
 ```
 
 ## Set up environment variables
@@ -111,9 +112,9 @@ There are some starter test cases in the `src/tests` directory for each of the e
 ### Unit Tests
 
 ```bash
-make test-unit-simplebridge
-make test-unit-hellotarget
-make test-unit-hellotarget-auth
+make test-unit-simple-bridge
+make test-unit-destination-greeter
+make test-unit-destination-greeter-auth
 make test-unit-ping
 make test-unit-pong
 ```
@@ -122,9 +123,9 @@ make test-unit-pong
 
 This uses forge's `--forked` mode. Make sure you have `ORIGIN_RPC_URL` defined in your `.env` file.
 ```bash
-make test-forked-simplebridge
-make test-forked-hellosource
-make test-forked-hellosource-auth
+make test-forked-simple-bridge
+make test-forked-source-greeter
+make test-forked-source-greeter-auth
 ```
 
 ### Deployment
@@ -134,29 +135,29 @@ Deploy contracts in this repository using the RPC provider of your choice (make 
 - Deployment order for Simple Bridge
 
     ```bash
-    make deploy-simplebridge
+    make deploy-simple-bridge
     ```
 
-- Deployment order for HelloSource + HelloTarget
+- Deployment order for SourceGreeter + DestinationGreeter
 
     ```bash
-    make deploy-hellosource
-    ```
-    
-    ```bash
-    make deploy-hellotarget
-    ```
-
-- Deployment order for HelloSourceAuthenticated + HelloTargetAuthenticated
-
-    ```bash
-    make deploy-hellosource-auth
+    make deploy-source-greeter
     ```
     
-    Use the origin domain and deployed source contract address as values for `ORIGIN_DOMAIN` and `SOURCE_CONTRACT` in `.env` before deploying `HelloTargetAuthenticated`.
+    ```bash
+    make deploy-destination-greeter
+    ```
+
+- Deployment order for SourceGreeterAuthenticated + DestinationGreeterAuthenticated
+
+    ```h
+    make deploy-source-greeter-auth
+    ```
+    
+    Use the origin domain and deployed source contract address as values for `ORIGIN_DOMAIN` and `SOURCE_CONTRACT` in `.env` before deploying `DestinationGreeterAuthenticated`.
 
     ```bash
-    make deploy-hellotarget-auth
+    make deploy-destination-greeter-auth
     ```
 
 - Deployment order for Ping + Pong
@@ -173,10 +174,10 @@ Deploy contracts in this repository using the RPC provider of your choice (make 
 
 It's much easier to read contract values after they're verified! We use another forge command to do this.
 
-For example, to verify `HelloTarget.sol`: 
+For example, to verify `DestinationGreeter.sol`: 
 
 ```bash
-forge verify-contract --chain 80001 <deployed_contract_address> src/contract-examples/hello-quickstart/HelloTarget.sol:HelloTarget <polygonscan_api_key>
+forge verify-contract --chain 80001 <deployed_contract_address> src/contract-examples/greeter/DestinationGreeter.sol:DestinationGreeter <polygonscan_api_key>
 ```
 
 ### Live Testnet Testing
@@ -200,7 +201,7 @@ There is a set of Hardhat tasks available for executing transactions on deployed
 - Hello Authenticated
 
   ```bash
-  yarn hardhat update --origin-domain <domainID> --destination-domain <domainID> --source-address <address(Source)> --target-address <address(Target)> --greeting <greeting>
+  yarn hardhat helloAuthenticated --destination-domain <domainID> --source-address <address(Source)> --target-address <address(Target)> --greeting <greeting>
   ```
 
 - Ping Pong
