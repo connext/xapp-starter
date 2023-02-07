@@ -11,7 +11,7 @@ dotenvConfig();
 
 const config: HardhatUserConfig = {
   solidity: {
-    version: "0.8.11",
+    version: "0.8.17",
   },
   defaultNetwork: "hardhat",
   networks: {
@@ -19,7 +19,7 @@ const config: HardhatUserConfig = {
     goerli: {
       accounts: [ process.env.PRIVATE_KEY! ],
       chainId: 5,
-      url: process.env.ORIGIN_RPC_URL,
+      url: process.env.ORIGIN_RPC_URL
     },
   },
   paths: {
