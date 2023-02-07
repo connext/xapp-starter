@@ -3,14 +3,18 @@ pragma solidity ^0.8.15;
 import {IXReceiver} from "@connext/nxtp-contracts/contracts/core/connext/interfaces/IXReceiver.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-contract HelloTarget is IXReceiver {
+contract DestinationGreeter is IXReceiver {
   string public greeting;
+
+  // The token expected to be paid
+  IERC20 public immutable token;
 
   // Hardcoded cost to update the greeting, in wei units
   uint256 public cost = 1e18;
 
-  // The TEST Token on Mumbai
-  IERC20 public token = IERC20(0xeDb95D8037f769B72AAab41deeC92903A98C9E16);
+  constructor(address _token) {
+    token = IERC20(_token);
+  }
 
   /** @notice The receiver function as required by the IXReceiver interface.
     * @dev The Connext bridge contract will call this function.

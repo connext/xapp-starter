@@ -3,7 +3,7 @@ pragma solidity ^0.8.15;
 
 import {IXReceiver} from "@connext/nxtp-contracts/contracts/core/connext/interfaces/IXReceiver.sol";
 
-contract HelloTargetAuthenticated is IXReceiver {
+contract DestinationGreeterAuthenticated is IXReceiver {
   string public greeting;
 
   // The Domain ID where the source contract is deployed

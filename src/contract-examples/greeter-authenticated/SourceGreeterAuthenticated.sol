@@ -2,11 +2,20 @@ pragma solidity ^0.8.15;
 
 import {IConnext} from "@connext/nxtp-contracts/contracts/core/connext/interfaces/IConnext.sol";
 
+interface ISourceGreeterAuthenticated {
+  function updateGreeting (
+    address target, 
+    uint32 destinationDomain,
+    string memory newGreeting,
+    uint256 relayerFee
+  ) external payable;
+}
+
 /**
- * @title HelloSourceAuthenticated
- * @notice Example source contract that updates a greeting in HelloTargetAuthenticated.
+ * @title SourceGreeterAuthenticated
+ * @notice Example source contract that updates a greeting in DestinationGreeterAuthenticated.
  */
-contract HelloSourceAuthenticated {
+contract SourceGreeterAuthenticated {
   // The connext contract on the origin domain.
   IConnext public immutable connext;
 
@@ -14,8 +23,8 @@ contract HelloSourceAuthenticated {
     connext = _connext;
   }
 
-  /** @notice Updates a greeting variable on the HelloTargetAuthenticated contract.
-    * @param target Address of the HelloTargetAuthenticated contract.
+  /** @notice Updates a greeting variable on the DestinationGreeterAuthenticated contract.
+    * @param target Address of the DestinationGreeterAuthenticated contract.
     * @param destinationDomain The destination domain ID.
     * @param newGreeting New greeting to update to.
     * @param relayerFee The fee offered to relayers. On testnet, this can be 0.

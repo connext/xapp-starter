@@ -1,31 +1,31 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.15;
 
-import {HelloSource} from "../../hello-quickstart/HelloSource.sol";
+import {SourceGreeter} from "../../greeter/SourceGreeter.sol";
 import {IConnext} from "@connext/nxtp-contracts/contracts/core/connext/interfaces/IConnext.sol";
 import {DSTestPlus} from "../utils/DSTestPlus.sol";
 import {ERC20PresetMinterPauser} from "@openzeppelin/contracts/token/ERC20/presets/ERC20PresetMinterPauser.sol";
 
 /**
- * @title HelloSourceTestForked
- * @notice Integration tests for HelloSource. Should be run with forked testnet (Goerli).
+ * @title SourceGreeterTestForked
+ * @notice Integration tests for SourceGreeter. Should be run with forked testnet (Goerli).
  */
-contract HelloSourceTestForked is DSTestPlus {
+contract SourceGreeterTestForked is DSTestPlus {
   // Addresses on Goerli
   IConnext public connext = IConnext(0x99A784d082476E551E5fc918ce3d849f2b8e89B6);
   ERC20PresetMinterPauser public token = ERC20PresetMinterPauser(0x7ea6eA49B0b0Ae9c5db7907d139D9Cd3439862a1);
 
-  HelloSource private source;
+  SourceGreeter private source;
   address private target = address(1);
   address public userChainA = address(0xA);
   address public userChainB = address(0xB);
 
   function setUp() public {
-    source = new HelloSource(connext);
+    source = new SourceGreeter(connext);
 
     vm.label(address(connext), "Connext");
-    vm.label(address(source), "HelloSource");
-    vm.label(target, "HelloTarget");
+    vm.label(address(source), "SourceGreeter");
+    vm.label(target, "DestinationGreeter");
     vm.label(address(this), "TestContract");
     vm.label(userChainA, "userChainA");
     vm.label(userChainB, "userChainB");
@@ -39,7 +39,7 @@ contract HelloSourceTestForked is DSTestPlus {
     // Mint userChainA some TEST
     token.mint(userChainA, cost);
 
-    // Approve the amount to HelloSource
+    // Approve the amount to SourceGreeter
     token.approve(address(source), cost);
 
     // Test that xcall is called
@@ -60,9 +60,11 @@ contract HelloSourceTestForked is DSTestPlus {
     );
 
     source.updateGreeting(
+      address(token),
       target,
       POLYGON_MUMBAI_DOMAIN_ID,
       newGreeting,
+      10000,
       0
     );
     vm.stopPrank();

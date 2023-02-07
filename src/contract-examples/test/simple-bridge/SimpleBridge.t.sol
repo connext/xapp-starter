@@ -30,7 +30,7 @@ contract SimpleBridgeTestUnit is DSTestPlus {
     vm.label(userChainB, "userChainB");
   }
 
-  function test_xTransferShouldTransferFromCaller(uint256 amount) public {
+  function test_transferShouldTransferFromCaller(uint256 amount) public {
     // Mint userChainA some tokens
     token.mint(userChainA, amount);
     console.log(
@@ -62,12 +62,12 @@ contract SimpleBridgeTestUnit is DSTestPlus {
       )
     );
 
-    bridge.xTransfer(
-      userChainB,
-      OPTIMISM_GOERLI_DOMAIN_ID,
+    bridge.transfer(
       address(token),
       amount,
-      0,
+      userChainB,
+      OPTIMISM_GOERLI_DOMAIN_ID,
+      100000,
       0
     );
 
@@ -102,7 +102,7 @@ contract SimpleBridgeTestForked is DSTestPlus {
     vm.label(whaleChainA, "whaleChainA");
   }
 
-  function test_xTransferShouldWork(uint256 amount) public {
+  function test_transferShouldWork(uint256 amount) public {
     // Whale should have enough funds for this test case
     vm.assume(token.balanceOf(whaleChainA) >= amount);
 
@@ -149,12 +149,12 @@ contract SimpleBridgeTestForked is DSTestPlus {
       )
     );
 
-    bridge.xTransfer(
-      userChainB,
-      OPTIMISM_GOERLI_DOMAIN_ID,
+    bridge.transfer(
       address(token),
       amount,
-      9997,
+      userChainB,
+      OPTIMISM_GOERLI_DOMAIN_ID,
+      10000,
       0
     );
 
