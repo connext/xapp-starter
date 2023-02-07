@@ -3,6 +3,7 @@ out/
 dist/
 node_modules/
 broadcast/
+.DS_Store
 
 # Ignore Environment Variables!
 .env
