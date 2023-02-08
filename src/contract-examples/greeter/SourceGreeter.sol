@@ -35,7 +35,7 @@ contract SourceGreeter {
     * @param target Address of the DestinationGreeter contract.
     * @param destinationDomain The destination domain ID.
     * @param newGreeting New greeting to update to.
-    * @param relayerFee The fee offered to relayers. On testnet, this can be 0.
+    * @param relayerFee The fee offered to relayers.
     */
   function updateGreeting (
     address token,
@@ -64,7 +64,7 @@ contract SourceGreeter {
     connext.xcall{value: relayerFee}(
       destinationDomain, // _destination: Domain ID of the destination chain
       target,            // _to: address of the target contract
-      token,            // _asset: address of the token contract
+      token,             // _asset: address of the token contract
       msg.sender,        // _delegate: address that can revert or forceLocal on destination
       cost,              // _amount: amount of tokens to transfer
       slippage,          // _slippage: the maximum amount of slippage the user will accept in BPS (e.g. 30 = 0.3%)

@@ -30,9 +30,9 @@ contract DestinationGreeterAuthenticatedTestUnit is DSTestPlus {
     vm.label(address(target), "DestinationGreeterAuthenticated");
   }
 
-  // function test_xReceive_ShouldUpdateGreeting(bytes32 transferId, uint256 amount, string memory newGreeting) public {
-  //   vm.prank(connext);
-  //   target.xReceive(transferId, amount, token, source, GOERLI_DOMAIN_ID, abi.encode(newGreeting));
-  //   assertEq(target.greeting(), newGreeting);
-  // }
+  function test_xReceive_ShouldUpdateGreeting(bytes32 transferId, uint256 amount, string memory newGreeting) public {
+    vm.prank(connext);
+    target.xReceive(transferId, amount, token, source, GOERLI_DOMAIN_ID, abi.encode(newGreeting));
+    assertEq(target.greeting(), newGreeting);
+  }
 }

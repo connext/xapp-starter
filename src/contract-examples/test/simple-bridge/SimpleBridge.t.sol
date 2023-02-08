@@ -13,13 +13,12 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
  */
 contract SimpleBridgeTestUnit is DSTestPlus {
   SimpleBridge public bridge;
-  ERC20PresetMinterPauser public token;
-  IConnext public connext = IConnext(address(1));
+  ERC20PresetMinterPauser public token = new ERC20PresetMinterPauser("TestToken", "TEST");
+  IConnext public connext = IConnext(address(0xC));
   address public userChainA = address(0xA);
   address public userChainB = address(0xB);
 
   function setUp() public {
-    token = new ERC20PresetMinterPauser("TestToken", "TEST");
     bridge = new SimpleBridge(connext);
 
     vm.label(address(connext), "Connext");
@@ -31,16 +30,19 @@ contract SimpleBridgeTestUnit is DSTestPlus {
   }
 
   function test_transferShouldTransferFromCaller(uint256 amount) public {
-    // Mint userChainA some tokens
+    uint256 relayerFee = 1e16;
+    uint256 slippage = 10000;
+    bytes memory callData = abi.encode("");
+
+    // Deal userChainA some native tokens to cover relayerFee
+    vm.deal(userChainA, relayerFee);
+
+    // Mint userChainA some TEST
     token.mint(userChainA, amount);
-    console.log(
-      "userChainA TestToken balance",
-      token.balanceOf(userChainA)
-    );
 
     vm.startPrank(userChainA);
 
-    // userChainA must approve transfer to SimpleBridge contract
+    // userChainA must approve the amount to SimpleBridge contract
     token.approve(address(bridge), amount);
 
     // Mock the xcall
@@ -62,13 +64,31 @@ contract SimpleBridgeTestUnit is DSTestPlus {
       )
     );
 
-    bridge.transfer(
+    // Test that xcall is called
+    vm.expectCall(
+      address(connext), 
+      relayerFee,
+      abi.encodeCall(
+        IConnext.xcall, 
+        (
+          OPTIMISM_GOERLI_DOMAIN_ID,
+          userChainB,
+          address(token),
+          userChainB,
+          amount,
+          slippage,
+          callData
+        )
+      )
+    );
+
+    bridge.transfer{value: relayerFee}(
       address(token),
       amount,
       userChainB,
       OPTIMISM_GOERLI_DOMAIN_ID,
-      100000,
-      0
+      slippage,
+      relayerFee
     );
 
     vm.stopPrank();
@@ -80,15 +100,13 @@ contract SimpleBridgeTestUnit is DSTestPlus {
  * @notice Integration tests for SimpleBridge. Should be run with forked testnet.
  */
 contract SimpleBridgeTestForked is DSTestPlus {
-  // Staging testnet addresses on Goerli
-  IConnext public connext = IConnext(0x9590e2bB6a93e2a531b0269eE7396cECc3E5d6eA);
-  IERC20 public token = IERC20(0x7ea6eA49B0b0Ae9c5db7907d139D9Cd3439862a1);
-
-  address public userChainA = address(0xA);
-  address public userChainB = address(0xB);
-  address public whaleChainA = address(0x6d2A06543D23Cc6523AE5046adD8bb60817E0a94); 
+  // Testnet addresses on Goerli
+  IConnext public connext = IConnext(0xFCa08024A6D4bCc87275b1E4A1E22B71fAD7f649);
+  ERC20PresetMinterPauser public token = ERC20PresetMinterPauser(0x7ea6eA49B0b0Ae9c5db7907d139D9Cd3439862a1);
 
   SimpleBridge private bridge;
+  address public userChainA = address(0xA);
+  address public userChainB = address(0xB);
 
   function setUp() public {
     bridge = new SimpleBridge(connext);
@@ -99,24 +117,22 @@ contract SimpleBridgeTestForked is DSTestPlus {
     vm.label(address(this), "TestContract");
     vm.label(userChainA, "userChainA");
     vm.label(userChainB, "userChainB");
-    vm.label(whaleChainA, "whaleChainA");
   }
 
   function test_transferShouldWork(uint256 amount) public {
-    // Whale should have enough funds for this test case
-    vm.assume(token.balanceOf(whaleChainA) >= amount);
+    uint256 relayerFee = 1e16;
+    uint256 slippage = 10000;
+    bytes memory callData = abi.encode("");
+    
+    // Deal userChainA some native tokens to cover relayerFee
+    vm.deal(userChainA, relayerFee);
 
-    // Send userChainA some tokens
-    vm.prank(whaleChainA);
-    token.transfer(userChainA, amount);
-    console.log(
-      "userChainA TestToken balance",
-      token.balanceOf(userChainA)
-    );
+    // Mint userChainA some TEST
+    token.mint(userChainA, amount);
 
     vm.startPrank(userChainA);
 
-    // userChainA must approve transfer to SimpleBridge contract
+    // userChainA must approve the amount to SimpleBridge
     token.approve(address(bridge), amount);
 
     // Test that tokens are sent from userChainA to SimpleBridge contract
@@ -135,6 +151,7 @@ contract SimpleBridgeTestForked is DSTestPlus {
     // Test that xcall is called
     vm.expectCall(
       address(connext), 
+      relayerFee,
       abi.encodeCall(
         IConnext.xcall, 
         (
@@ -143,19 +160,19 @@ contract SimpleBridgeTestForked is DSTestPlus {
           address(token),
           userChainB,
           amount,
-          9997,
-          ""
+          slippage,
+          callData
         )
       )
     );
 
-    bridge.transfer(
+    bridge.transfer{value: relayerFee}(
       address(token),
       amount,
       userChainB,
       OPTIMISM_GOERLI_DOMAIN_ID,
-      10000,
-      0
+      slippage,
+      relayerFee
     );
 
     vm.stopPrank();

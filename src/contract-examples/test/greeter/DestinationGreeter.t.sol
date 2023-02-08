@@ -13,7 +13,7 @@ import "forge-std/Test.sol";
 contract DestinationGreeterTestUnit is DSTestPlus {
   address private connext = address(1);
   address private source = address(2);
-  address private token = address(0xeDb95D8037f769B72AAab41deeC92903A98C9E16);
+  address private token = address(3);
   DestinationGreeter private target;
 
   function setUp() public {

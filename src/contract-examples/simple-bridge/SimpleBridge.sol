@@ -19,7 +19,7 @@ interface ISimpleBridge {
  * @notice Example of a cross-domain token transfer.
  */
 contract SimpleBridge {
-  // The connext contract on the origin domain.
+  // The connext contract on the origin domain
   IConnext public immutable connext;
 
   constructor(IConnext _connext) {
@@ -33,7 +33,7 @@ contract SimpleBridge {
    * @param recipient The destination address (e.g. a wallet).
    * @param destinationDomain The destination domain ID.
    * @param slippage The maximum amount of slippage the user will accept in BPS.
-   * @param relayerFee The fee offered to relayers. On testnet, this can be 0.
+   * @param relayerFee The fee offered to relayers.
    */
   function transfer(
     address token,
@@ -56,6 +56,9 @@ contract SimpleBridge {
     // This contract approves transfer to Connext
     _token.approve(address(connext), amount);
 
+    // Encode calldata as empty bytes
+    bytes memory callData = abi.encode("");
+
     connext.xcall{value: relayerFee}(
       destinationDomain, // _destination: Domain ID of the destination chain
       recipient,         // _to: address receiving the funds on the destination
@@ -63,7 +66,7 @@ contract SimpleBridge {
       msg.sender,        // _delegate: address that can revert or forceLocal on destination
       amount,            // _amount: amount of tokens to transfer
       slippage,          // _slippage: the maximum amount of slippage the user will accept in BPS (e.g. 30 = 0.3%)
-      "0x"               // _callData: empty bytes because we're only sending funds
+      callData           // _callData: empty bytes because we're only sending funds
     );  
   }
 }

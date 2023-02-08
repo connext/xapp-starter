@@ -27,7 +27,7 @@ contract SourceGreeterAuthenticated {
     * @param target Address of the DestinationGreeterAuthenticated contract.
     * @param destinationDomain The destination domain ID.
     * @param newGreeting New greeting to update to.
-    * @param relayerFee The fee offered to relayers. On testnet, this can be 0.
+    * @param relayerFee The fee offered to relayers.
     */
   function updateGreeting (
     address target, 
