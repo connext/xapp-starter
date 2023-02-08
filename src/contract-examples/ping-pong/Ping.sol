@@ -4,6 +4,14 @@ import {IConnext} from "@connext/nxtp-contracts/contracts/core/connext/interface
 import {IXReceiver} from "@connext/nxtp-contracts/contracts/core/connext/interfaces/IXReceiver.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
+interface IPing {
+  function sendPing(
+    address target, 
+    uint32 destinationDomain, 
+    uint256 relayerFee
+  ) external payable;
+}
+
 /**
  * @title Ping
  * @notice Ping side of a PingPong example.
@@ -23,42 +31,30 @@ contract Ping is IXReceiver {
    * @notice Sends a ping to the Pong contract.
    * @param destinationDomain The destination domain ID. 
    * @param target Address of the Pong contract on the destination domain.
-   * @param token Address of the token on this domain.
-   * @param amount The amount to transfer.
-   * @param relayerFee The fee offered to relayers. On testnet, this can be 0.
+   * @param relayerFee The fee offered to relayers.
    */
   function sendPing(
-    uint32 destinationDomain, 
     address target, 
-    address token,
-    uint256 amount, 
+    uint32 destinationDomain, 
     uint256 relayerFee
   ) external payable {
-    IERC20 _token = IERC20(token);
-
     require(
-      _token.allowance(msg.sender, address(this)) >= amount,
-      "User must approve amount"
+      msg.value == relayerFee,
+      "Must send gas equal to the specified relayer fee"
     );
-
-    // User sends funds to this contract
-    _token.transferFrom(msg.sender, address(this), amount);
-
-    // This contract approves transfer to Connext
-    _token.approve(address(connext), amount);
 
     // Include the relayerFee so Pong will use the same fee 
     // Include the address of this contract so Pong will know where to send the "callback"
-    bytes memory _callData = abi.encode(pongs, address(this), relayerFee);
+    bytes memory callData = abi.encode(pongs, address(this), relayerFee);
 
     connext.xcall{value: relayerFee}(
       destinationDomain, // _destination: domain ID of the destination chain
       target,            // _to: address of the target contract (Pong)
-      token,             // _asset: address of the token contract
+      address(0),        // _asset: use address zero for 0-value transfers
       msg.sender,        // _delegate: address that can revert or forceLocal on destination
-      amount,            // _amount: amount of tokens to transfer
-      30,                // _slippage: the maximum amount of slippage the user will accept in BPS, in this case 0.3%
-      _callData          // _callData: the encoded calldata to send
+      0,                 // _amount: 0 because no funds are being transferred
+      0,                 // _slippage: can be anything between 0-10000 because no funds are being transferred
+      callData           // _callData: the encoded calldata to send
     );
   }
 

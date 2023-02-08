@@ -14,8 +14,8 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 contract PongTestUnit is DSTestPlus {
   Pong public pong;
   ERC20PresetMinterPauser public token;
-  IConnext public connext = IConnext(address(1));
-  address public ping = address(2);
+  IConnext public connext = IConnext(address(0xC));
+  address public ping = address(0xD);
   address public userChainA = address(0xA);
   address public userChainB = address(0xB);
 
@@ -32,54 +32,14 @@ contract PongTestUnit is DSTestPlus {
     vm.label(userChainB, "userChainB");
   }
 
-  function test_sendPongShouldWork(uint256 amount) public {
-    // Assume pong received tokens from Ping's xcall
-    token.mint(address(pong), amount);
-
-    // sendPong will be executed by Connext
-    vm.startPrank(address(connext));
-
-    // Mock the xcall
-    bytes memory xcall = abi.encodeWithSelector(
-      IConnext.xcall.selector
-    );
-    vm.mockCall(address(connext), xcall, abi.encode(1));
-
-    // Test that xcall is called
-    vm.expectCall(
-      address(connext), 
-      abi.encodeCall(
-        IConnext.xcall, 
-        (
-          POLYGON_MUMBAI_DOMAIN_ID,
-          ping,
-          address(token),
-          address(connext),
-          amount,
-          30,
-          abi.encode(0)
-        )
-      )
-    );
-
-    pong.sendPong(
-      POLYGON_MUMBAI_DOMAIN_ID,
-      ping,
-      address(token),
-      amount,
-      0
-    );
-
-    vm.stopPrank();
-  }
-
   function test_xReceive_ShouldUpdatePings(
     bytes32 transferId, 
-    uint256 amount, 
     uint32 domain, 
-    uint256 pongs, 
-    uint256 relayerFee
+    uint256 pongs
   ) public {
+    uint256 relayerFee = 1e16;
+    vm.deal(address(pong), relayerFee);
+
     // Mock the nested xcall
     bytes memory xcall = abi.encodeWithSelector(
       IConnext.xcall.selector
@@ -88,7 +48,33 @@ contract PongTestUnit is DSTestPlus {
 
     uint256 pings = 0;
 
-    pong.xReceive(transferId, amount, address(token), ping, domain, abi.encode(pongs, address(ping), relayerFee));
+    pong.xReceive(
+      transferId, 
+      0, 
+      address(0), 
+      ping, 
+      OPTIMISM_GOERLI_DOMAIN_ID, 
+      abi.encode(pongs, address(ping), relayerFee)
+    );
+
     assertEq(pong.pings(), pings + 1);
+  }
+
+  function test_xReceive_ShouldRevertIfNotEnoughGasForRelayerFee(
+    bytes32 transferId, 
+    uint256 pongs
+  ) public {
+    uint256 relayerFee = 1e16;
+
+    vm.expectRevert(bytes("Not enough gas to pay for relayer fee"));
+
+    pong.xReceive(
+      transferId, 
+      0, 
+      address(0), 
+      ping, 
+      OPTIMISM_GOERLI_DOMAIN_ID, 
+      abi.encode(pongs, address(ping), relayerFee)
+    );
   }
 }
