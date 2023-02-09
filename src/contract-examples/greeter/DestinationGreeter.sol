@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.15;
 
 import {IXReceiver} from "@connext/nxtp-contracts/contracts/core/connext/interfaces/IXReceiver.sol";
@@ -12,8 +13,8 @@ contract DestinationGreeter is IXReceiver {
   // Hardcoded cost to update the greeting, in wei units
   uint256 public cost = 1e18;
 
-  constructor(address _token) {
-    token = IERC20(_token);
+  constructor(IERC20 _token) {
+    token = _token;
   }
 
   /** @notice The receiver function as required by the IXReceiver interface.

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.15;
 
 import {IConnext} from "@connext/nxtp-contracts/contracts/core/connext/interfaces/IConnext.sol";
@@ -37,7 +38,7 @@ contract Pong is IXReceiver {
     uint32 destinationDomain, 
     address target,
     uint256 relayerFee
-  ) private {
+  ) internal {
     // Include some data we can use back on Ping
     bytes memory callData = abi.encode(pings);
 
