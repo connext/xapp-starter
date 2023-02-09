@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.15;
 
-import "forge-std/Script.sol";
+import "@std/Script.sol";
 import {IConnext} from "@connext/nxtp-contracts/contracts/core/connext/interfaces/IConnext.sol";
 import {ERC20PresetMinterPauser} from "@openzeppelin/contracts/token/ERC20/presets/ERC20PresetMinterPauser.sol";
 import {ISourceGreeter, SourceGreeter} from "../../src/contract-examples/greeter/SourceGreeter.sol";
@@ -30,7 +30,6 @@ contract UpdateGreeting is Script {
     tokenContract.mint(address(this), amount);
     tokenContract.approve(source, amount);
     sourceContract.updateGreeting{value: relayerFee}(
-      token, 
       target, 
       destinationDomain, 
       newGreeting, 
