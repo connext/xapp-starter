@@ -31,7 +31,7 @@ contract SourceGreeterAuthenticatedTestUnit is TestHelper {
   function test_SimpleBridge__updateGreeting_shouldWork(string memory newGreeting) public {
     bytes memory callData = abi.encode(newGreeting);
 
-    // Deal USER_CHAIN_A native gas to cover relayerFee
+    // Give USER_CHAIN_A native gas to cover relayerFee
     vm.deal(USER_CHAIN_A, relayerFee);
 
     vm.startPrank(USER_CHAIN_A);
@@ -106,7 +106,7 @@ contract SourceGreeterAuthenticatedTestForked is ForkTestHelper {
   }
 
   function test_SourceGreeterAuthenticated_updateGreetingShouldWork(string memory newGreeting) public {
-    // Deal USER_CHAIN_A native gas to cover relayerFee
+    // Give USER_CHAIN_A native gas to cover relayerFee
     vm.deal(USER_CHAIN_A, relayerFee);
 
     vm.startPrank(USER_CHAIN_A);

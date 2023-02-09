@@ -7,7 +7,7 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 contract DestinationGreeter is IXReceiver {
   string public greeting;
 
-  // The token expected to be paid
+  // The token expected to be paid on the destination domain
   IERC20 public immutable token;
 
   // Hardcoded cost to update the greeting, in wei units

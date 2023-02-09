@@ -21,7 +21,7 @@ contract SourceGreeterTestUnit is TestHelper {
   function setUp() public override {
     super.setUp();
     
-    source = new SourceGreeter(IConnext(MOCK_CONNEXT));
+    source = new SourceGreeter(IConnext(MOCK_CONNEXT), IERC20(MOCK_ERC20));
     cost = source.cost();
 
     vm.label(address(source), "SourceGreeter");
@@ -31,7 +31,7 @@ contract SourceGreeterTestUnit is TestHelper {
   function test_SourceGreeter__updateGreeting_shouldWork(string memory newGreeting) public {
     bytes memory callData = abi.encode(newGreeting);
 
-    // Deal USER_CHAIN_A native gas to cover relayerFee
+    // Give USER_CHAIN_A native gas to cover relayerFee
     vm.deal(USER_CHAIN_A, relayerFee);
 
     vm.startPrank(USER_CHAIN_A);
@@ -92,7 +92,6 @@ contract SourceGreeterTestUnit is TestHelper {
     );
 
     source.updateGreeting{value: relayerFee}(
-      MOCK_ERC20,
       target,
       OPTIMISM_GOERLI_DOMAIN_ID,
       newGreeting,
@@ -118,7 +117,7 @@ contract SourceGreeterTestForked is ForkTestHelper {
   function setUp() public override {
     super.setUp();
     
-    source = new SourceGreeter(IConnext(CONNEXT_GOERLI));
+    source = new SourceGreeter(IConnext(CONNEXT_GOERLI), IERC20(TEST_ERC20_GOERLI));
     cost = source.cost();
 
     vm.label(address(source), "SourceGreeter");
@@ -170,7 +169,6 @@ contract SourceGreeterTestForked is ForkTestHelper {
     );
 
     source.updateGreeting{value: relayerFee}(
-      address(TEST_ERC20_GOERLI),
       target,
       OPTIMISM_GOERLI_DOMAIN_ID,
       newGreeting,

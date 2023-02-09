@@ -26,7 +26,7 @@ contract SimpleBridgeTestUnit is TestHelper {
   }
 
   function test_SimpleBridge__transfer_shouldWork(uint256 amount) public {
-    // Deal USER_CHAIN_A native gas to cover relayerFee
+    // Give USER_CHAIN_A native gas to cover relayerFee
     vm.deal(USER_CHAIN_A, relayerFee);
 
     vm.startPrank(USER_CHAIN_A);
@@ -121,7 +121,7 @@ contract SimpleBridgeTestForked is ForkTestHelper {
     // Prevent underflow/overflow
     amount = bound(amount, 0, 1e36);
     
-    // Deal USER_CHAIN_A native gas to cover relayerFee
+    // Give USER_CHAIN_A native gas to cover relayerFee
     vm.deal(USER_CHAIN_A, relayerFee);
 
     // Mint USER_CHAIN_A some TEST
