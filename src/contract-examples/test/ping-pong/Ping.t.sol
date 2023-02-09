@@ -1,42 +1,47 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.15;
 
+import {TestHelper} from "../utils/TestHelper.sol";
 import {Ping} from "../../ping-pong/Ping.sol";
 import {IConnext} from "@connext/nxtp-contracts/contracts/core/connext/interfaces/IConnext.sol";
-import {DSTestPlus} from "../utils/DSTestPlus.sol";
 
 /**
  * @title PingTestUnit
  * @notice Unit tests for Ping.
  */
-contract PingTestUnit is DSTestPlus {
+contract PingTestUnit is TestHelper {
   Ping public ping;
-  IConnext public connext = IConnext(address(0xC));
-  address public pong = address(0xD);
-  address public userChainA = address(0xA);
-  address public userChainB = address(0xB);
+  address public pong = address(bytes20(keccak256("pong")));
+  uint256 public amount = 0;
+  bytes32 public transferId = keccak256("12345");
+  uint256 public relayerFee = 1e16;
+  address public asset = address(0);
 
-  function setUp() public {
-    ping = new Ping(connext);
+  function setUp() public override {
+    super.setUp();
+    
+    ping = new Ping(IConnext(MOCK_CONNEXT));
 
-    vm.label(address(connext), "Connext");
     vm.label(address(ping), "Ping");
-    vm.label(pong, "Pong");
-    vm.label(address(this), "TestContract");
-    vm.label(userChainA, "userChainA");
-    vm.label(userChainB, "userChainB");
+    vm.label(pong, "Mock Pong");
   }
 
-  function test_xReceive_ShouldUpdatePongs(bytes32 transferId, uint256 pings) public {
+  function test_Ping__xReceive_shouldUpdatePongs(uint256 pings) public {
     uint256 pongs = 0;
 
-    ping.xReceive(transferId, 0, address(0), pong, OPTIMISM_GOERLI_DOMAIN_ID, abi.encode(pings));
+    ping.xReceive(
+      transferId, 
+      amount, 
+      asset, 
+      pong, 
+      OPTIMISM_GOERLI_DOMAIN_ID, 
+      abi.encode(pings)
+    );
 
     assertEq(ping.pongs(), pongs + 1);
   }
 
-  function test_sendPing_ShouldRevertIfInsufficientRelayerFee() public {
-    uint256 relayerFee = 1e16;
+  function test_Ping__sendPing_shouldRevertIfInsufficientRelayerFee() public {
 
     vm.expectRevert(bytes("Must send gas equal to the specified relayer fee"));
 

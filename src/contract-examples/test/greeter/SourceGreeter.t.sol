@@ -1,66 +1,72 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.15;
 
+import {TestHelper} from "../utils/TestHelper.sol";
+import {ForkTestHelper} from "../utils/ForkTestHelper.sol";
 import {SourceGreeter} from "../../greeter/SourceGreeter.sol";
 import {IConnext} from "@connext/nxtp-contracts/contracts/core/connext/interfaces/IConnext.sol";
-import {DSTestPlus} from "../utils/DSTestPlus.sol";
-import {ERC20PresetMinterPauser} from "@openzeppelin/contracts/token/ERC20/presets/ERC20PresetMinterPauser.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 /**
  * @title SourceGreeterTestUnit
  * @notice Unit tests for SourceGreeter.
  */
-contract SourceGreeterTestUnit is DSTestPlus {
+contract SourceGreeterTestUnit is TestHelper {
   SourceGreeter public source;
-  ERC20PresetMinterPauser public token = new ERC20PresetMinterPauser("TestToken", "TEST");
-  IConnext public connext = IConnext(address(0xC));
-  address private target = address(0xD);
-  address public userChainA = address(0xA);
-  address public userChainB = address(0xB);
+  address public target = address(bytes20(keccak256("target")));
+  uint256 public cost;
+  uint256 public relayerFee = 1e16;
+  uint256 public slippage = 10000;
 
-  function setUp() public {
-    source = new SourceGreeter(connext);
+  function setUp() public override {
+    super.setUp();
+    
+    source = new SourceGreeter(IConnext(MOCK_CONNEXT));
+    cost = source.cost();
 
-    vm.label(address(connext), "Connext");
     vm.label(address(source), "SourceGreeter");
-    vm.label(address(token), "TestToken");
-    vm.label(target, "DestinationGreeter");
-    vm.label(address(this), "TestContract");
-    vm.label(userChainA, "userChainA");
-    vm.label(userChainB, "userChainB");
+    vm.label(target, "Mock DestinationGreeter");
   }
 
-  function test_updateGreetingShouldWork(string memory newGreeting) public {
-    uint256 relayerFee = 1e16;
-    uint256 slippage = 10000;
-    uint256 cost = source.cost();
+  function test_SourceGreeter__updateGreeting_shouldWork(string memory newGreeting) public {
     bytes memory callData = abi.encode(newGreeting);
 
-    // Deal userChainA some native tokens to cover relayerFee
-    vm.deal(userChainA, relayerFee);
+    // Deal USER_CHAIN_A native gas to cover relayerFee
+    vm.deal(USER_CHAIN_A, relayerFee);
 
-    // Mint userChainA some TEST
-    token.mint(userChainA, cost);
+    vm.startPrank(USER_CHAIN_A);
 
-    vm.startPrank(userChainA);
-
-    // userChainA must approve the amount to SourceGreeter
-    token.approve(address(source), cost);
+    // Mock all calls to ERC20
+    vm.mockCall(MOCK_ERC20, abi.encodeWithSelector(IERC20.allowance.selector), abi.encode(cost));
+    vm.mockCall(MOCK_ERC20, abi.encodeWithSelector(IERC20.transferFrom.selector), abi.encode(true));
+    vm.mockCall(MOCK_ERC20, abi.encodeWithSelector(IERC20.approve.selector), abi.encode(true));
 
     // Mock the xcall
-    bytes memory xcall = abi.encodeWithSelector(
-      IConnext.xcall.selector
+    vm.mockCall(
+      MOCK_CONNEXT, 
+      relayerFee,
+      abi.encodeCall(
+        IConnext.xcall, 
+        (
+          OPTIMISM_GOERLI_DOMAIN_ID,
+          target,
+          MOCK_ERC20,
+          USER_CHAIN_A,
+          cost,
+          slippage,
+          callData
+        )
+      ),
+      abi.encode()
     );
-    vm.mockCall(address(connext), xcall, abi.encode(1));
 
-    // Test that tokens are sent from userChainA to SourceGreeter contract
+    // Test that MOCK_ERC20s are sent from USER_CHAIN_A to SourceGreeter contract
     vm.expectCall(
-      address(token), 
+      MOCK_ERC20, 
       abi.encodeCall(
         IERC20.transferFrom, 
         (
-          userChainA, 
+          USER_CHAIN_A, 
           address(source),
           cost
         )
@@ -69,15 +75,15 @@ contract SourceGreeterTestUnit is DSTestPlus {
 
     // Test that xcall is called
     vm.expectCall(
-      address(connext), 
+      MOCK_CONNEXT, 
       relayerFee,
       abi.encodeCall(
         IConnext.xcall, 
         (
           OPTIMISM_GOERLI_DOMAIN_ID,
           target,
-          address(token),
-          userChainA,
+          MOCK_ERC20,
+          USER_CHAIN_A,
           cost,
           slippage,
           callData
@@ -86,7 +92,7 @@ contract SourceGreeterTestUnit is DSTestPlus {
     );
 
     source.updateGreeting{value: relayerFee}(
-      address(token),
+      MOCK_ERC20,
       target,
       OPTIMISM_GOERLI_DOMAIN_ID,
       newGreeting,
@@ -102,52 +108,43 @@ contract SourceGreeterTestUnit is DSTestPlus {
  * @title SourceGreeterTestForked
  * @notice Integration tests for SourceGreeter. Should be run with forked testnet (Goerli).
  */
-contract SourceGreeterTestForked is DSTestPlus {
-  // Testnet addresses on Goerli
-  IConnext public connext = IConnext(0xFCa08024A6D4bCc87275b1E4A1E22B71fAD7f649);
-  ERC20PresetMinterPauser public token = ERC20PresetMinterPauser(0x7ea6eA49B0b0Ae9c5db7907d139D9Cd3439862a1);
-
+contract SourceGreeterTestForked is ForkTestHelper {
   SourceGreeter public source;
-  address public target = address(0xD);
-  address public userChainA = address(0xA);
-  address public userChainB = address(0xB);
+  address public target = address(bytes20(keccak256("Mock DestinationGreeter")));
+  uint256 public relayerFee = 1e16;
+  uint256 public slippage = 10000;
+  uint256 public cost;
 
-  function setUp() public {
-    source = new SourceGreeter(connext);
+  function setUp() public override {
+    super.setUp();
+    
+    source = new SourceGreeter(IConnext(CONNEXT_GOERLI));
+    cost = source.cost();
 
-    vm.label(address(connext), "Connext");
     vm.label(address(source), "SourceGreeter");
-    vm.label(address(token), "TestToken");
-    vm.label(target, "DestinationGreeter");
-    vm.label(address(this), "TestContract");
-    vm.label(userChainA, "userChainA");
-    vm.label(userChainB, "userChainB");
+    vm.label(target, "Mock DestinationGreeter");
   }
 
-  function test_updateGreetingShouldWork(string memory newGreeting) public {
-    uint256 relayerFee = 1e16;
-    uint256 slippage = 10000;
-    uint256 cost = source.cost();
+  function test_SourceGreeter__updateGreeting_shouldWork(string memory newGreeting) public {
     bytes memory callData = abi.encode(newGreeting);
 
-    // Deal userChainA some native tokens to cover relayerFee
-    vm.deal(userChainA, relayerFee);
+    // Deal USER_CHAIN_A some native tokens to cover relayerFee
+    vm.deal(USER_CHAIN_A, relayerFee);
 
-    // Mint userChainA some TEST
-    token.mint(userChainA, cost);
+    // Mint USER_CHAIN_A some TEST
+    TEST_ERC20_GOERLI.mint(USER_CHAIN_A, cost);
 
-    vm.startPrank(userChainA);
+    vm.startPrank(USER_CHAIN_A);
 
-    // userChainA must approve the amount to SourceGreeter
-    token.approve(address(source), cost);
+    TEST_ERC20_GOERLI.approve(address(source), cost);
 
-    // Test that tokens are sent from userChainA to SourceGreeter contract
+    // Test that tokens are sent from USER_CHAIN_A to SourceGreeter contract
     vm.expectCall(
-      address(token), 
+      address(TEST_ERC20_GOERLI), 
       abi.encodeCall(
         IERC20.transferFrom, 
         (
-          userChainA, 
+          USER_CHAIN_A, 
           address(source),
           cost
         )
@@ -156,15 +153,15 @@ contract SourceGreeterTestForked is DSTestPlus {
 
     // Test that xcall is called
     vm.expectCall(
-      address(connext), 
+      address(CONNEXT_GOERLI), 
       relayerFee,
       abi.encodeCall(
         IConnext.xcall, 
         (
           OPTIMISM_GOERLI_DOMAIN_ID,
           target,
-          address(token),
-          userChainA,
+          address(TEST_ERC20_GOERLI),
+          USER_CHAIN_A,
           cost,
           slippage,
           callData
@@ -173,7 +170,7 @@ contract SourceGreeterTestForked is DSTestPlus {
     );
 
     source.updateGreeting{value: relayerFee}(
-      address(token),
+      address(TEST_ERC20_GOERLI),
       target,
       OPTIMISM_GOERLI_DOMAIN_ID,
       newGreeting,

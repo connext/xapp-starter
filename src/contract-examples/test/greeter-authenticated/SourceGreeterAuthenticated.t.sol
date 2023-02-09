@@ -1,59 +1,139 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.15;
 
+import {TestHelper} from "../utils/TestHelper.sol";
+import {ForkTestHelper} from "../utils/ForkTestHelper.sol";
 import {SourceGreeterAuthenticated} from "../../greeter-authenticated/SourceGreeterAuthenticated.sol";
 import {IConnext} from "@connext/nxtp-contracts/contracts/core/connext/interfaces/IConnext.sol";
-import {DSTestPlus} from "../utils/DSTestPlus.sol";
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+
+/**
+ * @title SourceGreeterAuthenticatedTestUnit
+ * @notice Unit tests for SourceGreeter.
+ */
+contract SourceGreeterAuthenticatedTestUnit is TestHelper {
+  SourceGreeterAuthenticated public source;
+  address public target = address(bytes20(keccak256("Mock DestinationGreeterAuthenticated")));
+  uint256 public amount = 0;
+  uint256 public slippage = 0;
+  address public asset = address(0);
+  uint256 public relayerFee = 1e16;
+
+  function setUp() public override {
+    super.setUp();
+    
+    source = new SourceGreeterAuthenticated(IConnext(MOCK_CONNEXT));
+
+    vm.label(address(source), "SourceGreeterAuthenticated");
+    vm.label(target, "Mock DestinationGreeterAuthenticated");
+  }
+
+  function test_SimpleBridge__updateGreeting_shouldWork(string memory newGreeting) public {
+    bytes memory callData = abi.encode(newGreeting);
+
+    // Deal USER_CHAIN_A native gas to cover relayerFee
+    vm.deal(USER_CHAIN_A, relayerFee);
+
+    vm.startPrank(USER_CHAIN_A);
+
+    // Mock the xcall
+    vm.mockCall(
+      MOCK_CONNEXT, 
+      relayerFee,
+      abi.encodeCall(
+        IConnext.xcall, 
+        (
+          OPTIMISM_GOERLI_DOMAIN_ID,
+          target,
+          asset,
+          USER_CHAIN_A,
+          amount,
+          slippage,
+          callData
+        )
+      ),
+      abi.encode(keccak256(abi.encode(1)))
+    );
+
+    // Test that xcall is called
+    vm.expectCall(
+      MOCK_CONNEXT, 
+      relayerFee,
+      abi.encodeCall(
+        IConnext.xcall, 
+        (
+          OPTIMISM_GOERLI_DOMAIN_ID,
+          target,
+          asset,
+          USER_CHAIN_A,
+          amount,
+          slippage,
+          callData
+        )
+      )
+    );
+
+    source.updateGreeting{value: relayerFee}(
+      target,
+      OPTIMISM_GOERLI_DOMAIN_ID,
+      newGreeting,
+      relayerFee
+    );
+
+    vm.stopPrank();
+  }
+}
 
 /**
  * @title SourceGreeterAuthenticatedTestForked
  * @notice Integration tests for SourceGreeterAuthenticated. Should be run with forked testnet (Goerli).
  */
-contract SourceGreeterAuthenticatedTestForked is DSTestPlus {
-  // Addresses on Goerli
-  IConnext public connext = IConnext(0x99A784d082476E551E5fc918ce3d849f2b8e89B6);
-
+contract SourceGreeterAuthenticatedTestForked is ForkTestHelper {
   SourceGreeterAuthenticated private source;
-  address private target = address(1);
-  address public userChainA = address(0xA);
-  address public userChainB = address(0xB);
+  address public target = address(bytes20(keccak256("target")));
+  uint256 public amount = 0;
+  uint256 public slippage = 0;
+  address public asset = address(0);
+  uint256 public relayerFee = 1e16;
 
-  function setUp() public {
-    source = new SourceGreeterAuthenticated(connext);
+  function setUp() public override {
+    super.setUp();
 
-    vm.label(address(connext), "Connext");
+    source = new SourceGreeterAuthenticated(IConnext(CONNEXT_GOERLI));
+
     vm.label(address(source), "SourceGreeterAuthenticated");
     vm.label(target, "DestinationGreeterAuthenticated");
-    vm.label(address(this), "TestContract");
-    vm.label(userChainA, "userChainA");
-    vm.label(userChainB, "userChainB");
   }
 
   function test_SourceGreeterAuthenticated_updateGreetingShouldWork(string memory newGreeting) public {
-    vm.startPrank(userChainA);
+    // Deal USER_CHAIN_A native gas to cover relayerFee
+    vm.deal(USER_CHAIN_A, relayerFee);
+
+    vm.startPrank(USER_CHAIN_A);
 
     // Test that xcall is called
     vm.expectCall(
-      address(connext), 
+      address(CONNEXT_GOERLI), 
+      relayerFee,
       abi.encodeCall(
         IConnext.xcall, 
         (
-          POLYGON_MUMBAI_DOMAIN_ID,
+          OPTIMISM_GOERLI_DOMAIN_ID,
           target,
-          address(0),
-          userChainA,
-          0,
-          0,
+          asset,
+          USER_CHAIN_A,
+          amount,
+          slippage,
           abi.encode(newGreeting)
         )
       )
     );
 
-    source.updateGreeting(
+    source.updateGreeting{value: relayerFee}(
       target,
-      POLYGON_MUMBAI_DOMAIN_ID,
+      OPTIMISM_GOERLI_DOMAIN_ID,
       newGreeting,
-      0
+      relayerFee
     );
     vm.stopPrank();
   }
