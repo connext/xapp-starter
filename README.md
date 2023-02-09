@@ -3,7 +3,6 @@
 Starter kit for cross-domain apps (xApps).
 # Overview
 
-- Simple XCall Integration using SDK And
 There are generally three types of cross-chain bridge transactions that can be executed solely through smart contract integration.
 - Asset transfers
 - Unauthenticated calls
@@ -52,12 +51,12 @@ Example use cases:
 - Metaverse-to-metaverse interoperability
 
 Contracts:
-- SourceGreeter.sol
+- SourceGreeterAuthenticated.sol
 - DestinationGreeterAuthenticated.sol
 
 ## Ping Pong
 
-An example of a nested `xcall`, allowing for calldata execution within another `xcall`.
+An example of a nested `xcall`, when another `xcall` is executed in the destination receiver contract. 
 
 Contracts:
 - Ping.sol
@@ -69,7 +68,7 @@ Contracts:
 
 ## Getting Started
 
-This project uses Foundry for testing and deploying contracts. Hardhat tasks are used for interacting with deployed contracts.
+This project uses Foundry for testing, deploying, and interacting with contracts. Fully compatible hardhat support will be added in the near future.
 
 - See the official Foundry installation [instructions](https://github.com/gakonst/foundry/blob/master/README.md#installation).
 - Also, download [make](https://askubuntu.com/questions/161104/how-do-i-install-make) if you don't already have it.
@@ -95,6 +94,7 @@ src
 ├─ sdk-examples
 │    └─ node-examples
 ```
+
 ## Setup
 ```bash
 make install
@@ -103,7 +103,7 @@ foundryup
 ```
 
 ## Set up environment variables
-Copy the `.env.example` into `.env` and fill in the placeholders.
+Copy the `.env.example` into `.env` and fill in all the placeholder variables under the `GENERAL` section.
 
 ## Testing
 
@@ -121,7 +121,7 @@ make test-unit-pong
 
 ### Integration Tests
 
-This uses forge's `--forked` mode. Make sure you have `ORIGIN_RPC_URL` defined in your `.env` file.
+This uses forge's `--forked` mode. Make sure you have `GOERLI_RPC_URL` defined in your `.env` file as all the integration tests currently fork Goerli.
 ```bash
 make test-forked-simple-bridge
 make test-forked-source-greeter
@@ -130,7 +130,7 @@ make test-forked-source-greeter-auth
 
 ### Deployment
 
-Deploy contracts in this repository using the RPC provider of your choice (make sure to define `ORIGIN_RPC_URL` and `DESTINATION_RPC_URL` in .env).
+Deploy contracts in this repository using the RPC provider of your choice (make sure all the variables under `GENERAL` are set in `.env`).
 
 - Deployment order for Simple Bridge
 
@@ -184,7 +184,40 @@ forge verify-contract --chain 80001 <deployed_contract_address> src/contract-exa
 
 The core set of Connext contracts have already been deployed to testnet. For the most up-to-date contracts, please reference the [Connext deployments](https://github.com/connext/nxtp/tree/main/packages/deployments/contracts/deployments).
 
-There is a set of Hardhat tasks available for executing transactions on deployed contracts.
+- Execute `transfer` on SimpleBridge
+
+  After deploying SimpleBridge, set the `SIMPLE_BRIDGE` and `RECIPIENT` variables in `.env` and run:
+
+  ```
+  make transfer
+  ```
+
+- Execute `updateGreeting` on SourceGreeter
+
+  After deploying SourceGreeter and DestinationGreeter, set the `SOURCE_GREETER`, `DESTINATION_GREETER`, `DESTINATION_TOKEN`, and `NEW_GREETING` variables in `.env` and run:
+
+  ```
+  make update-greeting
+  ```
+
+- Execute `updateGreeting` on SourceGreeterAuthenticated
+
+  After deploying SourceGreeterAuthenticated and DestinationGreeterAuthenticated, set the `SOURCE_GREETER_AUTHENTICATED` and `DESTINATION_GREETER_AUTHENTICATED` variables in `.env` and run:
+
+  ```
+  make update-greeting-auth
+  ```
+
+- Execute `sendPing` on Ping
+
+  After deploying Ping and Pong, set the `PING` and `PONG` variables in `.env` and run:
+
+  ```
+  make send-ping
+  ```
+
+
+There is also a set of Hardhat tasks available for executing transactions on deployed contracts.
 
 - Simple Bridge
 
