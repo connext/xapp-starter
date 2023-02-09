@@ -77,23 +77,23 @@ test-unit-all :; forge clean && forge test --match-contract "TestUnit"
 
 ## Simple Bridge
 test-unit-simple-bridge :; forge clean && forge test --match-contract "SimpleBridgeTestUnit" -vvvv
-test-forked-simple-bridge :; forge clean && forge test --match-contract "SimpleBridgeTestForked" --fork-url ${ORIGIN_RPC_URL} -vvvv
+test-forked-simple-bridge :; forge clean && forge test --match-contract "SimpleBridgeTestForked" --fork-url ${GOERLI_RPC_URL} -vvvv
 
 ## Greeter
 test-unit-source-greeter:; forge clean && forge test --match-contract "SourceGreeterTestUnit" -vvvv
-test-forked-source-greeter :; forge clean && forge test --match-contract "SourceGreeterTestForked" --fork-url ${ORIGIN_RPC_URL} -vvvv
+test-forked-source-greeter :; forge clean && forge test --match-contract "SourceGreeterTestForked" --fork-url ${GOERLI_RPC_URL} -vvvv
 test-unit-destination-greeter:; forge clean && forge test --match-contract "DestinationGreeterTestUnit" -vvvv
-# [TODO] test-forked-destination-greeter:; forge clean && forge test --match-contract "DestinationGreeterTestForked" --fork-url ${ORIGIN_RPC_URL} -vvvv
+# [TODO] test-forked-destination-greeter:; forge clean && forge test --match-contract "DestinationGreeterTestForked" --fork-url ${GOERLI_RPC_URL} -vvvv
 
 ## Greeter Authenticated
-# [TODO] test-unit-source-greeter-auth:; forge clean && forge test --match-contract "SourceGreeterAuthenticatedTestUnit" -vvvv
-test-forked-source-greeter-auth:; forge clean && forge test --match-contract "SourceGreeterAuthenticatedTestForked" --fork-url ${ORIGIN_RPC_URL} -vvvv
+test-unit-source-greeter-auth:; forge clean && forge test --match-contract "SourceGreeterAuthenticatedTestUnit" -vvvv
+test-forked-source-greeter-auth:; forge clean && forge test --match-contract "SourceGreeterAuthenticatedTestForked" --fork-url ${GOERLI_RPC_URL} -vvvv
 test-unit-destination-greeter-auth:; forge clean && forge test --match-contract "DestinationGreeterAuthenticatedTestUnit" -vvvv
-# [TODO] test-forked-destination-greeter-auth:; forge clean && forge test --match-contract "DestinationGreeterAuthenticatedTestForked" --fork-url ${ORIGIN_RPC_URL} -vvvv
+# [TODO] test-forked-destination-greeter-auth:; forge clean && forge test --match-contract "DestinationGreeterAuthenticatedTestForked" --fork-url ${GOERLI_RPC_URL} -vvvv
 
 ## Ping Pong
 test-unit-ping :; forge clean && forge test --match-contract "PingTestUnit" -vvvv
-# test-forked-ping :; forge clean && forge test --match-contract "PingTestForked" --fork-url ${ORIGIN_RPC_URL} -vvvv
+# [TODO] test-forked-ping :; forge clean && forge test --match-contract "PingTestForked" --fork-url ${GOERLI_RPC_URL} -vvvv
 
 test-unit-pong :; forge clean && forge test --match-contract "PongTestUnit" -vvvv
-# test-forked-ping :; forge clean && forge test --match-contract "PongTestForked" --fork-url ${ORIGIN_RPC_URL} -vvvv
+# [TODO] test-forked-ping :; forge clean && forge test --match-contract "PongTestForked" --fork-url ${GOERLI_RPC_URL} -vvvv
