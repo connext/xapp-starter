@@ -39,7 +39,7 @@ deploy-simple-bridge :; @forge script script/simple-bridge/SimpleBridge.s.sol:De
 # deploy-simple-bridge-anvil :; @forge script script/simple-bridge/SimpleBridge.s.sol:DeploySimpleBridge --sig "run(address)" "${ORIGIN_CONNEXT}" --rpc-url http://localhost:8545 --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 --broadcast
 
 # Greeter
-deploy-source-greeter :; @forge script script/greeter/SourceGreeter.s.sol:DeploySourceGreeter --sig "run(address)" "${ORIGIN_CONNEXT}" --rpc-url ${ORIGIN_RPC_URL} --private-key ${PRIVATE_KEY} --broadcast --verify -vvvv
+deploy-source-greeter :; @forge script script/greeter/SourceGreeter.s.sol:DeploySourceGreeter --sig "run(address,address)" "${ORIGIN_CONNEXT}" "${ORIGIN_TOKEN}" --rpc-url ${ORIGIN_RPC_URL} --private-key ${PRIVATE_KEY} --broadcast --verify -vvvv
 # deploy-source-greeter-anvil :; @forge script script/greeter/SourceGreeter.s.sol:DeploySourceGreeter --sig "run(address)" "${ORIGIN_CONNEXT}" --rpc-url http://localhost:8545 --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 --broadcast --verify -vvvv
 deploy-destination-greeter :; @forge script script/greeter/DestinationGreeter.s.sol:DeployDestinationGreeter --sig "run(address)" "${DESTINATION_TOKEN}" --rpc-url ${DESTINATION_RPC_URL} --private-key ${PRIVATE_KEY} --broadcast --verify -vvvv
 # deploy-destination-greeter-anvil :; @forge script script/greeter/DestinationGreeter.s.sol:DeployDestinationGreeter --sig "run()" --rpc-url http://localhost:8545 --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 --broadcast --verify -vvvv
