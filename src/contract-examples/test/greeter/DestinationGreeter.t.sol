@@ -20,7 +20,7 @@ contract DestinationGreeterTestUnit is TestHelper {
   function setUp() public override {
     super.setUp();
 
-    target = new DestinationGreeter(IERC20(MOCK_ERC20));
+    target = new DestinationGreeter(MOCK_ERC20);
 
     vm.label(address(target), "DestinationGreeter");
     vm.label(source, "Mock SourceGreeter");
@@ -32,30 +32,29 @@ contract DestinationGreeterTestUnit is TestHelper {
   ) public {
     amount = bound(amount, 1e18, 1e36);
 
-    target.xReceive(transferId, amount, MOCK_ERC20, address(this), GOERLI_DOMAIN_ID, abi.encode(newGreeting));
+    target.xReceive(transferId, amount, MOCK_ERC20, source, GOERLI_DOMAIN_ID, abi.encode(newGreeting));
 
     assertEq(target.greeting(), newGreeting);
   }
 
   function test_DestinationGreeter__xReceive_shouldRevertIfAmountUnderCost(
-    uint256 amount, 
     string memory newGreeting
   ) public {
-    amount = bound(amount, 0, 1e18 - 1);
+    uint256 amount = 0;
 
-    vm.expectRevert(abi.encodePacked("Must pay at least 1 TEST"));
+    vm.expectRevert(abi.encodePacked("Must pay at least 1 wei"));
 
-    target.xReceive(transferId, amount, MOCK_ERC20, address(this), GOERLI_DOMAIN_ID, abi.encode(newGreeting));
+    target.xReceive(transferId, amount, MOCK_ERC20, source, GOERLI_DOMAIN_ID, abi.encode(newGreeting));
   }
 
   function test_DestinationGreeter__xReceive_shouldRevertIfWrongAsset(
     uint256 amount, 
     string memory newGreeting
   ) public {
-    amount = bound(amount, 1e18, 1e36);
+    amount = bound(amount, 1, 1e36);
 
-    vm.expectRevert(abi.encodePacked("Must pay at least 1 TEST"));
+    vm.expectRevert(abi.encodePacked("Wrong asset received"));
 
-    target.xReceive(transferId, amount, wrongAsset, address(this), GOERLI_DOMAIN_ID, abi.encode(newGreeting));
+    target.xReceive(transferId, amount, wrongAsset, source, GOERLI_DOMAIN_ID, abi.encode(newGreeting));
   }
 }

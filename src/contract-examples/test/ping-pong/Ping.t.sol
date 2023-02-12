@@ -20,14 +20,14 @@ contract PingTestUnit is TestHelper {
   function setUp() public override {
     super.setUp();
     
-    ping = new Ping(IConnext(MOCK_CONNEXT));
+    ping = new Ping(MOCK_CONNEXT);
 
     vm.label(address(ping), "Ping");
     vm.label(pong, "Mock Pong");
   }
 
-  function test_Ping__xReceive_shouldUpdatePongs(uint256 pings) public {
-    uint256 pongs = 0;
+  function test_Ping__xReceive_shouldUpdatePings(uint256 pongs) public {
+    uint256 pings = 0;
 
     ping.xReceive(
       transferId, 
@@ -35,16 +35,16 @@ contract PingTestUnit is TestHelper {
       asset, 
       pong, 
       OPTIMISM_GOERLI_DOMAIN_ID, 
-      abi.encode(pings)
+      abi.encode(pongs)
     );
 
-    assertEq(ping.pongs(), pongs + 1);
+    assertEq(ping.pings(), pings + 1);
   }
 
-  function test_Ping__sendPing_shouldRevertIfInsufficientRelayerFee() public {
+  function test_Ping__startPingPong_shouldRevertIfInsufficientRelayerFee() public {
 
     vm.expectRevert(bytes("Must send gas equal to the specified relayer fee"));
 
-    ping.sendPing{value: relayerFee - 1}(pong, OPTIMISM_GOERLI_DOMAIN_ID, relayerFee);
+    ping.startPingPong{value: relayerFee - 1}(pong, OPTIMISM_GOERLI_DOMAIN_ID, relayerFee);
   }
 }

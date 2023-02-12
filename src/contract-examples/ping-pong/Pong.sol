@@ -18,14 +18,14 @@ interface IPong {
  * @notice Pong side of a PingPong example.
  */
 contract Pong is IXReceiver {
-  // Number of pings this contract has received from the Ping contract
-  uint256 public pings;
-
-  // The connext contract deployed on the same domain as this contract
+  // The Connext contract on this domain
   IConnext public immutable connext;
 
-  constructor(IConnext _connext) {
-    connext = _connext;
+  // Number of pongs this contract has received
+  uint256 public pongs;
+
+  constructor(address _connext) {
+    connext = IConnext(_connext);
   }
 
   /** 
@@ -40,7 +40,7 @@ contract Pong is IXReceiver {
     uint256 relayerFee
   ) internal {
     // Include some data we can use back on Ping
-    bytes memory callData = abi.encode(pings);
+    bytes memory callData = abi.encode(pongs);
 
     connext.xcall{value: relayerFee}(
       destinationDomain, // _destination: Domain ID of the destination chain
@@ -68,12 +68,12 @@ contract Pong is IXReceiver {
     // Because this call is *not* authenticated, the _originSender will be the Zero Address
     // Ping's address was sent with the xcall so it can be decoded and used for the nested xcall
     (
-      uint256 _pongs, 
+      uint256 _pings, 
       address _pingContract, 
       uint256 _relayerFee
     ) = abi.decode(_callData, (uint256, address, uint256));
     
-    pings++;
+    pongs++;
 
     // This contract sends a nested xcall with the same relayerFee value used for Ping. That means
     // it must own at least that much in native gas to pay for the next xcall.

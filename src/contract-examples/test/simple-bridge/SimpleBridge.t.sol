@@ -13,9 +13,10 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
  */
 contract SimpleBridgeTestUnit is TestHelper {
   SimpleBridge public bridge;
+  bytes32 public transferId = keccak256("12345");
   uint256 public relayerFee = 1e16;
   uint256 public slippage = 10000;
-  bytes public callData = abi.encode("");
+  bytes public callData = bytes("");
 
   function setUp() public override {
     super.setUp();
@@ -52,7 +53,7 @@ contract SimpleBridgeTestUnit is TestHelper {
           callData
         )
       ),
-      abi.encode(keccak256(abi.encode(1)))
+      abi.encode(transferId)
     );
 
     // Test that MOCK_ERC20s are sent from USER_CHAIN_A to SimpleBridge contract
@@ -86,7 +87,7 @@ contract SimpleBridgeTestUnit is TestHelper {
       )
     );
 
-    bridge.transfer{value: relayerFee}(
+    bridge.xTransfer{value: relayerFee}(
       MOCK_ERC20,
       amount,
       USER_CHAIN_B,
@@ -107,7 +108,7 @@ contract SimpleBridgeTestForked is ForkTestHelper {
   SimpleBridge private bridge;
   uint256 public relayerFee = 1e16;
   uint256 public slippage = 10000;
-  bytes public callData = abi.encode("");
+  bytes public callData = bytes("");
 
   function setUp() public override {
     super.setUp();
@@ -162,7 +163,7 @@ contract SimpleBridgeTestForked is ForkTestHelper {
       )
     );
 
-    bridge.transfer{value: relayerFee}(
+    bridge.xTransfer{value: relayerFee}(
       address(TEST_ERC20_GOERLI),
       amount,
       USER_CHAIN_B,

@@ -15,6 +15,7 @@ contract SourceGreeterAuthenticatedTestUnit is TestHelper {
   SourceGreeterAuthenticated public source;
   address public target = address(bytes20(keccak256("Mock DestinationGreeterAuthenticated")));
   uint256 public amount = 0;
+  bytes32 public transferId = keccak256("12345");
   uint256 public slippage = 0;
   address public asset = address(0);
   uint256 public relayerFee = 1e16;
@@ -22,7 +23,7 @@ contract SourceGreeterAuthenticatedTestUnit is TestHelper {
   function setUp() public override {
     super.setUp();
     
-    source = new SourceGreeterAuthenticated(IConnext(MOCK_CONNEXT));
+    source = new SourceGreeterAuthenticated(MOCK_CONNEXT);
 
     vm.label(address(source), "SourceGreeterAuthenticated");
     vm.label(target, "Mock DestinationGreeterAuthenticated");
@@ -52,7 +53,7 @@ contract SourceGreeterAuthenticatedTestUnit is TestHelper {
           callData
         )
       ),
-      abi.encode(keccak256(abi.encode(1)))
+      abi.encode(transferId)
     );
 
     // Test that xcall is called
@@ -73,7 +74,7 @@ contract SourceGreeterAuthenticatedTestUnit is TestHelper {
       )
     );
 
-    source.updateGreeting{value: relayerFee}(
+    source.xUpdateGreeting{value: relayerFee}(
       target,
       OPTIMISM_GOERLI_DOMAIN_ID,
       newGreeting,
@@ -99,7 +100,7 @@ contract SourceGreeterAuthenticatedTestForked is ForkTestHelper {
   function setUp() public override {
     super.setUp();
 
-    source = new SourceGreeterAuthenticated(IConnext(CONNEXT_GOERLI));
+    source = new SourceGreeterAuthenticated(address(CONNEXT_GOERLI));
 
     vm.label(address(source), "SourceGreeterAuthenticated");
     vm.label(target, "DestinationGreeterAuthenticated");
@@ -129,7 +130,7 @@ contract SourceGreeterAuthenticatedTestForked is ForkTestHelper {
       )
     );
 
-    source.updateGreeting{value: relayerFee}(
+    source.xUpdateGreeting{value: relayerFee}(
       target,
       OPTIMISM_GOERLI_DOMAIN_ID,
       newGreeting,

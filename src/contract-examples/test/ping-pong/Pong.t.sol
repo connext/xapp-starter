@@ -21,13 +21,13 @@ contract PongTestUnit is TestHelper {
   function setUp() public override {
     super.setUp();
     
-    pong = new Pong(IConnext(MOCK_CONNEXT));
+    pong = new Pong(MOCK_CONNEXT);
 
     vm.label(address(pong), "Pong");
     vm.label(ping, "Mock Ping");
   }
 
-  function test_Pong__xReceive_shouldUpdatePings() public {
+  function test_Pong__xReceive_shouldUpdatePongs() public {
     // Deal Pong native gas to cover relayerFee
     vm.deal(address(pong), relayerFee);
 
@@ -47,7 +47,7 @@ contract PongTestUnit is TestHelper {
           address(this),
           amount,
           slippage,
-          abi.encode(pings + 1)
+          abi.encode(pongs + 1)
         )
       ),
       abi.encode(transferId)
@@ -59,14 +59,14 @@ contract PongTestUnit is TestHelper {
       asset, 
       ping, 
       GOERLI_DOMAIN_ID, 
-      abi.encode(pongs, ping, relayerFee)
+      abi.encode(pings, ping, relayerFee)
     );
 
-    assertEq(pong.pings(), pings + 1);
+    assertEq(pong.pongs(), pongs + 1);
   }
 
   function test_Pong__xReceive_shouldRevertIfNotEnoughGasForRelayerFee(
-    uint256 pongs
+    uint256 pings
   ) public {
     vm.expectRevert(bytes("Not enough gas to pay for relayer fee"));
 
@@ -76,7 +76,7 @@ contract PongTestUnit is TestHelper {
       asset, 
       ping, 
       GOERLI_DOMAIN_ID, 
-      abi.encode(pongs, address(ping), relayerFee)
+      abi.encode(pings, address(ping), relayerFee)
     );
   }
 }

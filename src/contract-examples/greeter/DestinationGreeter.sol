@@ -7,14 +7,11 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 contract DestinationGreeter is IXReceiver {
   string public greeting;
 
-  // The token expected to be paid on the destination domain
+  // The token to be paid on this domain
   IERC20 public immutable token;
 
-  // Hardcoded cost to update the greeting, in wei units
-  uint256 public cost = 1e18;
-
-  constructor(IERC20 _token) {
-    token = _token;
+  constructor(address _token) {
+    token = IERC20(_token);
   }
 
   /** @notice The receiver function as required by the IXReceiver interface.
@@ -28,10 +25,15 @@ contract DestinationGreeter is IXReceiver {
     uint32 _origin,
     bytes memory _callData
   ) external returns (bytes memory) {
-    // Enforce the cost to update the greeting
+    // Check for the right token
     require(
-      _asset == address(token) && _amount >= cost,
-      "Must pay at least 1 TEST"
+      _asset == address(token),
+      "Wrong asset received"
+    );
+    // Enforce a cost to update the greeting
+    require(
+      _amount > 0,
+      "Must pay at least 1 wei"
     );
 
     // Unpack the _callData

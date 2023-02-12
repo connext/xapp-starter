@@ -5,7 +5,7 @@ import {IConnext} from "@connext/nxtp-contracts/contracts/core/connext/interface
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 interface ISimpleBridge {
-  function transfer (
+  function xTransfer (
     address token,
     uint256 amount, 
     address recipient, 
@@ -36,7 +36,7 @@ contract SimpleBridge {
    * @param slippage The maximum amount of slippage the user will accept in BPS.
    * @param relayerFee The fee offered to relayers.
    */
-  function transfer(
+  function xTransfer(
     address token,
     uint256 amount,
     address recipient,
@@ -57,9 +57,6 @@ contract SimpleBridge {
     // This contract approves transfer to Connext
     _token.approve(address(connext), amount);
 
-    // Encode calldata as empty bytes
-    bytes memory callData = abi.encode("");
-
     connext.xcall{value: relayerFee}(
       destinationDomain, // _destination: Domain ID of the destination chain
       recipient,         // _to: address receiving the funds on the destination
@@ -67,7 +64,7 @@ contract SimpleBridge {
       msg.sender,        // _delegate: address that can revert or forceLocal on destination
       amount,            // _amount: amount of tokens to transfer
       slippage,          // _slippage: the maximum amount of slippage the user will accept in BPS (e.g. 30 = 0.3%)
-      callData           // _callData: empty bytes because we're only sending funds
+      bytes("")          // _callData: empty bytes because we're only sending funds
     );  
   }
 }

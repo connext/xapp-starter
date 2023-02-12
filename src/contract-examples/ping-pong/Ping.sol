@@ -6,7 +6,7 @@ import {IXReceiver} from "@connext/nxtp-contracts/contracts/core/connext/interfa
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 interface IPing {
-  function sendPing(
+  function startPingPong(
     address target, 
     uint32 destinationDomain, 
     uint256 relayerFee
@@ -18,23 +18,23 @@ interface IPing {
  * @notice Ping side of a PingPong example.
  */
 contract Ping is IXReceiver {
-  // Number of pongs this contract has received from the Pong contract
-  uint256 public pongs;
-
-  // The connext contract deployed on the same domain as this contract
+  // The Connext contract on this domain
   IConnext public immutable connext;
 
-  constructor(IConnext _connext) {
-    connext = _connext;
+  // Number of pings this contract has received
+  uint256 public pings;
+
+  constructor(address _connext) {
+    connext = IConnext(_connext);
   }
 
   /** 
-   * @notice Sends a ping to the Pong contract.
+   * @notice Starts the ping pong sequence.
    * @param destinationDomain The destination domain ID. 
    * @param target Address of the Pong contract on the destination domain.
    * @param relayerFee The fee offered to relayers.
    */
-  function sendPing(
+  function startPingPong(
     address target, 
     uint32 destinationDomain, 
     uint256 relayerFee
@@ -46,7 +46,7 @@ contract Ping is IXReceiver {
 
     // Include the relayerFee so Pong will use the same fee 
     // Include the address of this contract so Pong will know where to send the "callback"
-    bytes memory callData = abi.encode(pongs, address(this), relayerFee);
+    bytes memory callData = abi.encode(pings, address(this), relayerFee);
 
     connext.xcall{value: relayerFee}(
       destinationDomain, // _destination: domain ID of the destination chain
@@ -70,8 +70,8 @@ contract Ping is IXReceiver {
     uint32 _origin,
     bytes memory _callData
   ) external returns (bytes memory) {
-    uint256 _pings = abi.decode(_callData, (uint256));
+    uint256 _pongs = abi.decode(_callData, (uint256));
 
-    pongs++;
+    pings++;
   }
 }

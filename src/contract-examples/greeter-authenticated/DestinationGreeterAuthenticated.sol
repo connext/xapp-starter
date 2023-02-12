@@ -4,16 +4,16 @@ pragma solidity ^0.8.15;
 import {IXReceiver} from "@connext/nxtp-contracts/contracts/core/connext/interfaces/IXReceiver.sol";
 
 contract DestinationGreeterAuthenticated is IXReceiver {
-  string public greeting;
+  // The Connext contract on this domain
+  address public immutable connext;
 
-  // The Domain ID where the source contract is deployed
-  uint32 public originDomain;
+  // The domain ID where the source contract is deployed
+  uint32 public immutable originDomain;
 
   // The address of the source contract
-  address public source;
+  address public immutable source;
 
-  // The address of the Connext contract on the destination domain
-  address public connext;
+  string public greeting;
 
   /** @notice A modifier for authenticated calls.
    * This is an important security consideration. If the target contract

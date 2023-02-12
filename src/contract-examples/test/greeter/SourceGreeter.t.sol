@@ -13,22 +13,26 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
  */
 contract SourceGreeterTestUnit is TestHelper {
   SourceGreeter public source;
-  address public target = address(bytes20(keccak256("target")));
-  uint256 public cost;
+  address public target = address(bytes20(keccak256("Mock DestinationGreeter")));
+  bytes32 public transferId = keccak256("12345");
   uint256 public relayerFee = 1e16;
-  uint256 public slippage = 10000;
+  uint256 public slippage;
 
   function setUp() public override {
     super.setUp();
     
-    source = new SourceGreeter(IConnext(MOCK_CONNEXT), IERC20(MOCK_ERC20));
-    cost = source.cost();
+    source = new SourceGreeter(MOCK_CONNEXT, MOCK_ERC20);
+    slippage = source.slippage();
 
     vm.label(address(source), "SourceGreeter");
     vm.label(target, "Mock DestinationGreeter");
   }
 
-  function test_SourceGreeter__updateGreeting_shouldWork(string memory newGreeting) public {
+  function test_SourceGreeter__updateGreeting_shouldWork(
+    uint256 amount,
+    string memory newGreeting
+  ) public {
+    amount = bound(amount, 0, 1e36);
     bytes memory callData = abi.encode(newGreeting);
 
     // Give USER_CHAIN_A native gas to cover relayerFee
@@ -37,7 +41,7 @@ contract SourceGreeterTestUnit is TestHelper {
     vm.startPrank(USER_CHAIN_A);
 
     // Mock all calls to ERC20
-    vm.mockCall(MOCK_ERC20, abi.encodeWithSelector(IERC20.allowance.selector), abi.encode(cost));
+    vm.mockCall(MOCK_ERC20, abi.encodeWithSelector(IERC20.allowance.selector), abi.encode(amount));
     vm.mockCall(MOCK_ERC20, abi.encodeWithSelector(IERC20.transferFrom.selector), abi.encode(true));
     vm.mockCall(MOCK_ERC20, abi.encodeWithSelector(IERC20.approve.selector), abi.encode(true));
 
@@ -52,12 +56,12 @@ contract SourceGreeterTestUnit is TestHelper {
           target,
           MOCK_ERC20,
           USER_CHAIN_A,
-          cost,
+          amount,
           slippage,
           callData
         )
       ),
-      abi.encode()
+      abi.encode(transferId)
     );
 
     // Test that MOCK_ERC20s are sent from USER_CHAIN_A to SourceGreeter contract
@@ -68,7 +72,7 @@ contract SourceGreeterTestUnit is TestHelper {
         (
           USER_CHAIN_A, 
           address(source),
-          cost
+          amount
         )
       )
     );
@@ -84,18 +88,18 @@ contract SourceGreeterTestUnit is TestHelper {
           target,
           MOCK_ERC20,
           USER_CHAIN_A,
-          cost,
+          amount,
           slippage,
           callData
         )
       )
     );
 
-    source.updateGreeting{value: relayerFee}(
+    source.xUpdateGreeting{value: relayerFee}(
       target,
       OPTIMISM_GOERLI_DOMAIN_ID,
       newGreeting,
-      slippage,
+      amount,
       relayerFee
     );
 
@@ -112,30 +116,32 @@ contract SourceGreeterTestForked is ForkTestHelper {
   address public target = address(bytes20(keccak256("Mock DestinationGreeter")));
   uint256 public relayerFee = 1e16;
   uint256 public slippage = 10000;
-  uint256 public cost;
 
   function setUp() public override {
     super.setUp();
     
-    source = new SourceGreeter(IConnext(CONNEXT_GOERLI), IERC20(TEST_ERC20_GOERLI));
-    cost = source.cost();
+    source = new SourceGreeter(address(CONNEXT_GOERLI), address(TEST_ERC20_GOERLI));
 
     vm.label(address(source), "SourceGreeter");
     vm.label(target, "Mock DestinationGreeter");
   }
 
-  function test_SourceGreeter__updateGreeting_shouldWork(string memory newGreeting) public {
+  function test_SourceGreeter__updateGreeting_shouldWork(
+    uint256 amount,
+    string memory newGreeting
+  ) public {
+    amount = bound(amount, 0, 1e36);
     bytes memory callData = abi.encode(newGreeting);
 
     // Deal USER_CHAIN_A some native tokens to cover relayerFee
     vm.deal(USER_CHAIN_A, relayerFee);
 
     // Mint USER_CHAIN_A some TEST
-    TEST_ERC20_GOERLI.mint(USER_CHAIN_A, cost);
+    TEST_ERC20_GOERLI.mint(USER_CHAIN_A, amount);
 
     vm.startPrank(USER_CHAIN_A);
 
-    TEST_ERC20_GOERLI.approve(address(source), cost);
+    TEST_ERC20_GOERLI.approve(address(source), amount);
 
     // Test that tokens are sent from USER_CHAIN_A to SourceGreeter contract
     vm.expectCall(
@@ -145,7 +151,7 @@ contract SourceGreeterTestForked is ForkTestHelper {
         (
           USER_CHAIN_A, 
           address(source),
-          cost
+          amount
         )
       )
     );
@@ -161,18 +167,18 @@ contract SourceGreeterTestForked is ForkTestHelper {
           target,
           address(TEST_ERC20_GOERLI),
           USER_CHAIN_A,
-          cost,
+          amount,
           slippage,
           callData
         )
       )
     );
 
-    source.updateGreeting{value: relayerFee}(
+    source.xUpdateGreeting{value: relayerFee}(
       target,
       OPTIMISM_GOERLI_DOMAIN_ID,
       newGreeting,
-      slippage,
+      amount,
       relayerFee
     );
 

@@ -4,7 +4,7 @@ pragma solidity ^0.8.15;
 import {IConnext} from "@connext/nxtp-contracts/contracts/core/connext/interfaces/IConnext.sol";
 
 interface ISourceGreeterAuthenticated {
-  function updateGreeting (
+  function xUpdateGreeting (
     address target, 
     uint32 destinationDomain,
     string memory newGreeting,
@@ -20,8 +20,8 @@ contract SourceGreeterAuthenticated {
   // The connext contract on the origin domain.
   IConnext public immutable connext;
 
-  constructor(IConnext _connext) {
-    connext = _connext;
+  constructor(address _connext) {
+    connext = IConnext(_connext);
   }
 
   /** @notice Updates a greeting variable on the DestinationGreeterAuthenticated contract.
@@ -30,7 +30,7 @@ contract SourceGreeterAuthenticated {
     * @param newGreeting New greeting to update to.
     * @param relayerFee The fee offered to relayers.
     */
-  function updateGreeting (
+  function xUpdateGreeting (
     address target, 
     uint32 destinationDomain,
     string memory newGreeting,

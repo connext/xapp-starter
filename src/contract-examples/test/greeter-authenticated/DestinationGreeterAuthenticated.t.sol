@@ -12,9 +12,9 @@ import {TestHelper} from "../utils/TestHelper.sol";
 contract DestinationGreeterAuthenticatedTestUnit is TestHelper {
   DestinationGreeterAuthenticated public target;
   address public source = address(bytes20(keccak256("Mock SourceGreeterAuthenticated")));
-
-  bytes4 public originSenderSelector = bytes4(keccak256("originSender(bytes)"));
-  bytes4 public originSelector = bytes4(keccak256("origin(bytes)"));
+  address public notOriginSender = address(bytes20(keccak256("NotOriginSender")));
+  bytes32 public transferId = keccak256("12345");
+  uint32 public amount = 0;
 
   function setUp() public override {
     super.setUp();
@@ -25,11 +25,31 @@ contract DestinationGreeterAuthenticatedTestUnit is TestHelper {
     vm.label(source, "Mock SourceGreeterAuthenticated");
   }
 
-  function test_DestinationGreeterAuthenticated__xReceive_shouldUpdateGreeting(bytes32 transferId, uint256 amount, string memory newGreeting) public {
+  function test_DestinationGreeterAuthenticated__xReceive_shouldUpdateGreeting(string memory newGreeting) public {
     vm.prank(MOCK_CONNEXT);
 
     target.xReceive(transferId, amount, MOCK_ERC20, source, GOERLI_DOMAIN_ID, abi.encode(newGreeting));
 
     assertEq(target.greeting(), newGreeting);
+  }
+
+  function test_DestinationGreeterAuthenticated__xReceive_shouldRevertIfNotFromOriginSender(
+    string memory newGreeting
+  ) public {
+    vm.prank(MOCK_CONNEXT);
+
+    vm.expectRevert("Expected original caller to be source contract on origin domain and this to be called by Connext");
+
+    target.xReceive(transferId, amount, MOCK_ERC20, notOriginSender, GOERLI_DOMAIN_ID, abi.encode(newGreeting));
+  }
+
+  function test_DestinationGreeterAuthenticated__xReceive_shouldRevertIfNotFromOrigin(
+    string memory newGreeting
+  ) public {
+    vm.prank(MOCK_CONNEXT);
+
+    vm.expectRevert("Expected original caller to be source contract on origin domain and this to be called by Connext");
+
+    target.xReceive(transferId, amount, MOCK_ERC20, source, POLYGON_MUMBAI_DOMAIN_ID, abi.encode(newGreeting));
   }
 }
