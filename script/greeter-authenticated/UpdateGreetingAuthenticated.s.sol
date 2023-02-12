@@ -16,15 +16,13 @@ contract UpdateGreetingAuthenticated is Script {
     string memory newGreeting,
     uint256 relayerFee
   ) external {
-    uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
-
     ISourceGreeterAuthenticated sourceContract = ISourceGreeterAuthenticated(source);
 
     vm.label(source, "Source Greeter");
 
-    vm.startBroadcast(deployerPrivateKey);
+    vm.startBroadcast();
 
-    sourceContract.updateGreeting{value: relayerFee}(target, destinationDomain, newGreeting, relayerFee);
+    sourceContract.xUpdateGreeting{value: relayerFee}(target, destinationDomain, newGreeting, relayerFee);
 
     vm.stopBroadcast();
   }

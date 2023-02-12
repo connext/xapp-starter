@@ -14,26 +14,24 @@ contract UpdateGreeting is Script {
     address target, 
     uint32 destinationDomain,
     string memory newGreeting,
-    uint256 slippage,
     uint256 relayerFee
   ) external {
-    uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
-
     ERC20PresetMinterPauser tokenContract = ERC20PresetMinterPauser(token);
     ISourceGreeter sourceContract = ISourceGreeter(source);
 
     vm.label(source, "Source Greeter");
     vm.label(token, "Token");
 
-    vm.startBroadcast(deployerPrivateKey);
+    vm.startBroadcast();
 
     tokenContract.mint(address(this), amount);
     tokenContract.approve(source, amount);
-    sourceContract.updateGreeting{value: relayerFee}(
-      target, 
+
+    sourceContract.xUpdateGreeting{value: relayerFee}(
+      target,
       destinationDomain, 
       newGreeting, 
-      slippage, 
+      amount,
       relayerFee
     );
 

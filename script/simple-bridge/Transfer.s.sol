@@ -16,19 +16,17 @@ contract Transfer is Script {
     uint256 slippage,
     uint256 relayerFee
   ) external {
-    uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
-
     ERC20PresetMinterPauser tokenContract = ERC20PresetMinterPauser(token);
     ISimpleBridge sourceContract = ISimpleBridge(source);
 
     vm.label(source, "Simple Bridge");
     vm.label(token, "Token");
 
-    vm.startBroadcast(deployerPrivateKey);
+    vm.startBroadcast();
 
     tokenContract.mint(address(this), amount);
     tokenContract.approve(source, amount);
-    sourceContract.transfer{value: relayerFee}(token, amount, recipient, destinationDomain, slippage, relayerFee);
+    sourceContract.xTransfer{value: relayerFee}(token, amount, recipient, destinationDomain, slippage, relayerFee);
 
     vm.stopBroadcast();
   }

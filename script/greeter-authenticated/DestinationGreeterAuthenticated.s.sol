@@ -2,14 +2,13 @@
 pragma solidity ^0.8.15;
 
 import "@std/Script.sol";
-import {IConnext} from "@connext/nxtp-contracts/contracts/core/connext/interfaces/IConnext.sol";
 import {DestinationGreeterAuthenticated} from "../../src/contract-examples/greeter-authenticated/DestinationGreeterAuthenticated.sol";
 
 contract DeployDestinationGreeterAuthenticated is Script {
-  function run(uint32 _originDomain, address _sourceContract, address _connext) external {
+  function run(uint32 originDomain, address sourceContract, address connext) external {
     vm.startBroadcast();
 
-    new DestinationGreeterAuthenticated(_originDomain, _sourceContract, _connext);
+    new DestinationGreeterAuthenticated(originDomain, sourceContract, connext);
 
     vm.stopBroadcast();
   }

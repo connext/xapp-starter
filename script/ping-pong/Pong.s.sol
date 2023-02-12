@@ -2,14 +2,12 @@
 pragma solidity ^0.8.15;
 
 import "@std/Script.sol";
-import {IConnext} from "@connext/nxtp-contracts/contracts/core/connext/interfaces/IConnext.sol";
 import {Pong} from "../../src/contract-examples/ping-pong/Pong.sol";
 
 contract DeployPong is Script {
-  function run(address _connext) external {
+  function run(address connext) external {
     vm.startBroadcast();
 
-    IConnext connext = IConnext(_connext);
     new Pong(connext);
 
     vm.stopBroadcast();
