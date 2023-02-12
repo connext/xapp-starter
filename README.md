@@ -3,46 +3,62 @@
 Starter kit for cross-domain apps (xApps).
 # Overview
 
-There are generally three types of cross-chain bridge transactions that can be executed solely through smart contract integration.
+Connext's `xcall` is a single interface that can be used to send assets and arbitrary calldata from one chain to another. 
+
+In general, there are three types of information that can be bridged between chains.
 - Asset transfers
 - Unauthenticated calls
 - Authenticated calls
 
-This starter repo contains contracts that demonstrate how to use each type of transaction.
+This starter repo contains example contracts that demonstrate how these can be construted with `xcall`.
 
-The high level flow is as follows:
+At a high level, this is the call flow between contracts:
 
 <img src="documentation/assets/xcall.png" alt="drawing" width="500"/>
 
-## Simple Bridge
+## Simple Bridge (asset transfer)
 
-Simple asset transfer from Origin Chain to Destination Chain. Does not use calldata. 
+The `SimpleBridge` transfers tokens from a user on the origin chain to a specified address on the destination domain.
 
-Example use cases:
-- Send funds across chains
+Since no calldata is involved, no target contract is needed.
 
-Contracts:
+Note that when sending tokens, the user will first have to call `approve` on the ERC20 to set a spending allowance for the `SimpleBridge` contract.
+
+Tokens will move from the user's wallet => SimpleBridge => Connext => recipient.
+
+### Contracts
 - SimpleBridge.sol
 
-## Unauthenticated Call
+### Use cases for this pattern
+- Send funds across chains
 
-Transfer funds and/or call a target contract with arbitrary calldata on the Destination Chain. Assuming the receiving side is an unauthenticated call, this flow is essentially the same as the simple bridge except encoded calldata is included in the `xcall`. The call can simply use `amount: 0` if no funds are being transferred.
+## Greeter (asset transfer + unauthenticated call)
 
-Example use cases:
-- Deposit funds into a liquidity pool on the Destination Chain
-- Execute a token Swap on the Destination Chain
-- Connecting DEX liquidity across chains in a single seamless transaction
-- Crosschain vault zaps and vault strategy management
+The `DestinationGreeter` contract on the destination chain has an `updateGreeting` function that changes a stored `greeting` variable. The `SourceGreeter` contract on the origin chain uses `xcall` to send encoded calldata for `updateGreeting`.
 
-Contracts:
+To demonstrate a combination of an asset transfer and an arbitrary call in a single `xcall`, the `updateGreeting` function will require a payment to update the greeting. For this example, the contract will be okay with any amount greater than 0. 
+
+`updateGreeting` is implemented as an unauthenticated call (there are no checks to determine *who* is calling the function). And so, this flow is essentially the same as the simple bridge except encoded calldata is also included in the `xcall`.
+
+### Contracts
 - SourceGreeter.sol
 - DestinationGreeter.sol
 
-## Authenticated Call
+### Use cases for this pattern
+- Deposit funds into a liquidity pool on the destination chain
+- Execute a token swap on the destination chain
+- Connect DEX liquidity across chains in a single seamless transaction
+- Zap into a vault from any chain
 
-Like unauthenticated, call a target contract with arbitrary calldata on the Destination Chain. Except, the target function is authenticated which means the contract must check the origin in order to uphold authentication requirements.
+## Greeter Authenticated (authenticated call)
 
-Example use cases:
+The `DestinationGreeterAuthenticated` contract now sets some permissioning constraints. It only allows `updateGreeting` to be called from `SourceGreeterAuthenticated`. In order to enforce this, the contract checks that the caller is the original sender from the origin domain.
+
+### Contracts
+- SourceGreeterAuthenticated.sol
+- DestinationGreeterAuthenticated.sol
+
+### Use cases for this pattern
 - Hold a governance vote on Origin Chain and execute the outcome of it on the Destination Chain (and other DAO operations)
 - Lock-and-mint or burn-and-mint token bridging
 - Critical protocol operations such as replicating/syncing global constants (e.g. PCV) across chains
@@ -50,17 +66,16 @@ Example use cases:
 - Chain-agnostic veToken governance
 - Metaverse-to-metaverse interoperability
 
-Contracts:
-- SourceGreeterAuthenticated.sol
-- DestinationGreeterAuthenticated.sol
-
 ## Ping Pong
 
 An example of a nested `xcall`, when another `xcall` is executed in the destination receiver contract. 
 
-Contracts:
+### Contracts
 - Ping.sol
 - Pong.sol
+
+### Use cases for this pattern
+- Implement JS-style "callbacks" to respond asynchronously between chains
 
 # Development
 
@@ -89,7 +104,7 @@ src
 |  └─ ping-pong
 │    └─ Ping.sol
 │    └─ Pong.sol
-|  └─ tests
+|  └─ test
 │    └─ ...
 ├─ sdk-examples
 │    └─ node-examples
@@ -103,7 +118,7 @@ foundryup
 ```
 
 ## Set up environment variables
-Copy the `.env.example` into `.env` and fill in all the placeholder variables under the `GENERAL` section.
+Copy the `.env.example` into `.env` and fill in all the placeholders under the `GENERAL` section. Initial values are provided for Goerli as origin and Optimism-Goerli as destination.
 
 ## Testing
 
@@ -121,7 +136,7 @@ make test-unit-pong
 
 ### Integration Tests
 
-This uses forge's `--forked` mode. Make sure you have `GOERLI_RPC_URL` defined in your `.env` file as all the integration tests currently fork Goerli.
+This uses forge's `--forked` mode. Make sure you have `GOERLI_RPC_URL` defined in your `.env` file as these tests currently fork Goerli.
 ```bash
 make test-forked-simple-bridge
 make test-forked-source-greeter
@@ -132,13 +147,13 @@ make test-forked-source-greeter-auth
 
 Deploy contracts in this repository using the RPC provider of your choice (make sure all the variables under `GENERAL` are set in `.env`).
 
-- Deployment order for Simple Bridge
+#### Deployment order for Simple Bridge
 
     ```bash
     make deploy-simple-bridge
     ```
 
-- Deployment order for SourceGreeter + DestinationGreeter
+#### Deployment order for SourceGreeter + DestinationGreeter
 
     ```bash
     make deploy-source-greeter
@@ -148,19 +163,19 @@ Deploy contracts in this repository using the RPC provider of your choice (make 
     make deploy-destination-greeter
     ```
 
-- Deployment order for SourceGreeterAuthenticated + DestinationGreeterAuthenticated
+#### Deployment order for SourceGreeterAuthenticated + DestinationGreeterAuthenticated
 
     ```h
     make deploy-source-greeter-auth
     ```
     
-    Use the origin domain and deployed source contract address as values for `ORIGIN_DOMAIN` and `SOURCE_CONTRACT` in `.env` before deploying `DestinationGreeterAuthenticated`.
+    Use the origin domain and address of `SourceGreeterAuthenticated` contract address as values for `ORIGIN_DOMAIN` and `SOURCE_CONTRACT` in `.env` before deploying `DestinationGreeterAuthenticated`.
 
     ```bash
     make deploy-destination-greeter-auth
     ```
 
-- Deployment order for Ping + Pong
+#### Deployment order for Ping + Pong
 
     ```bash
     make deploy-ping
@@ -177,7 +192,7 @@ It's much easier to read contract values after they're verified! We use another 
 For example, to verify `DestinationGreeter.sol`: 
 
 ```bash
-forge verify-contract --chain 80001 <deployed_contract_address> src/contract-examples/greeter/DestinationGreeter.sol:DestinationGreeter <polygonscan_api_key>
+forge verify-contract --chain 1735356532 <CONTRACT_ADDRESS> src/contract-examples/greeter/DestinationGreeter.sol:DestinationGreeter <ETHERSCAN_KEY>
 ```
 
 ### Live Testnet Testing
@@ -208,12 +223,12 @@ The core set of Connext contracts have already been deployed to testnet. For the
   make update-greeting-auth
   ```
 
-- Execute `sendPing` on Ping
+- Execute `startPingPong` on Ping
 
   After deploying Ping and Pong, set the `PING` and `PONG` variables in `.env` and run:
 
   ```
-  make send-ping
+  make start-ping-pong
   ```
 
 
