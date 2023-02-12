@@ -32,48 +32,150 @@ snapshot :; forge clean && forge snapshot --optimize --optimizer-runs 1000000
 rename :; chmod +x ./scripts/* && ./scripts/rename.sh
 
 
-############################# Deployments #############################
+### --------------------------------------------------------------------
+### DEPLOYMENTS
+### --------------------------------------------------------------------
 
 # Simple Bridge
-deploy-simple-bridge :; @forge script script/simple-bridge/SimpleBridge.s.sol:DeploySimpleBridge --sig "run(address)" "${ORIGIN_CONNEXT}" --rpc-url ${ORIGIN_RPC_URL} --private-key ${PRIVATE_KEY} --broadcast --verify -vvvv
-# deploy-simple-bridge-anvil :; @forge script script/simple-bridge/SimpleBridge.s.sol:DeploySimpleBridge --sig "run(address)" "${ORIGIN_CONNEXT}" --rpc-url http://localhost:8545 --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 --broadcast
+deploy-simple-bridge :; @forge script script/simple-bridge/SimpleBridge.s.sol:DeploySimpleBridge \
+	--sig "run(address)" "${ORIGIN_CONNEXT}" \
+	--rpc-url ${ORIGIN_RPC_URL} \
+	--private-key ${PRIVATE_KEY} \
+	--broadcast \
+	--verify -vvvv
+deploy-simple-bridge-anvil :; @forge script script/simple-bridge/SimpleBridge.s.sol:DeploySimpleBridge \
+	--sig "run(address)" "${ORIGIN_CONNEXT}" \
+	--rpc-url ${LOCALHOST} \
+	--private-key ${ANVIL_PRIVATE_KEY} \
+	--broadcast
 
 # Greeter
-deploy-source-greeter :; @forge script script/greeter/SourceGreeter.s.sol:DeploySourceGreeter --sig "run(address,address)" "${ORIGIN_CONNEXT}" "${ORIGIN_TOKEN}" --rpc-url ${ORIGIN_RPC_URL} --private-key ${PRIVATE_KEY} --broadcast --verify -vvvv
-# deploy-source-greeter-anvil :; @forge script script/greeter/SourceGreeter.s.sol:DeploySourceGreeter --sig "run(address)" "${ORIGIN_CONNEXT}" --rpc-url http://localhost:8545 --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 --broadcast --verify -vvvv
-deploy-destination-greeter :; @forge script script/greeter/DestinationGreeter.s.sol:DeployDestinationGreeter --sig "run(address)" "${DESTINATION_TOKEN}" --rpc-url ${DESTINATION_RPC_URL} --private-key ${PRIVATE_KEY} --broadcast --verify -vvvv
-# deploy-destination-greeter-anvil :; @forge script script/greeter/DestinationGreeter.s.sol:DeployDestinationGreeter --sig "run()" --rpc-url http://localhost:8545 --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 --broadcast --verify -vvvv
+deploy-source-greeter :; @forge script script/greeter/SourceGreeter.s.sol:DeploySourceGreeter \
+	--sig "run(address,address)" "${ORIGIN_CONNEXT}" "${ORIGIN_TOKEN}" \
+	--rpc-url ${ORIGIN_RPC_URL} \
+	--private-key ${PRIVATE_KEY} \
+	--broadcast \
+	--verify -vvvv
+deploy-source-greeter-anvil :; @forge script script/greeter/SourceGreeter.s.sol:DeploySourceGreeter \
+	--sig "run(address,address)" "${ORIGIN_CONNEXT}" "${ORIGIN_TOKEN}" \
+	--rpc-url ${LOCALHOST} \
+	--private-key ${ANVIL_PRIVATE_KEY} \
+	--broadcast
+deploy-destination-greeter :; @forge script script/greeter/DestinationGreeter.s.sol:DeployDestinationGreeter \
+	--sig "run(address)" "${DESTINATION_TOKEN}" \
+	--rpc-url ${DESTINATION_RPC_URL} \
+	--private-key ${PRIVATE_KEY} \
+	--broadcast \
+	--verify -vvvv
+deploy-destination-greeter-anvil :; @forge script script/greeter/DestinationGreeter.s.sol:DeployDestinationGreeter \
+	--sig "run(address)" "${DESTINATION_TOKEN}" \
+	--rpc-url ${LOCALHOST} \
+	--private-key ${ANVIL_PRIVATE_KEY} \
+	--broadcast
 
 # Greeter Authenticated
-deploy-source-greeter-auth :; @forge script script/greeter-authenticated/SourceGreeterAuthenticated.s.sol:DeploySourceGreeterAuthenticated --sig "run(address)" "${ORIGIN_CONNEXT}" --rpc-url ${ORIGIN_RPC_URL} --private-key ${PRIVATE_KEY} --broadcast --verify -vvvv
-# deploy-source-greeter-auth-anvil :; @forge script script/greeter-authenticated/SourceGreeterAuthenticated.s.sol:DeploySourceGreeterAuthenticated --sig "run(address)" "${ORIGIN_CONNEXT}" --rpc-url http://localhost:8545 --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 --broadcast --verify -vvvv
-deploy-destination-greeter-auth :; @forge script script/greeter-authenticated/DestinationGreeterAuthenticated.s.sol:DeployDestinationGreeterAuthenticated --sig "run(uint32,address,address)" "${ORIGIN_DOMAIN}" "${SOURCE_GREETER_AUTHENTICATED}" "${DESTINATION_CONNEXT}" --rpc-url ${DESTINATION_RPC_URL} --private-key ${PRIVATE_KEY} --broadcast -vvvv
-# deploy-destination-greeter-auth-anvil :; @forge script script/greeter-authenticated/DestinationGreeterAuthenticated.s.sol:DeployDestinationGreeterAuthenticated --sig "run(uint32,address,address)" "${ORIGIN_DOMAIN}" "${SOURCE_GREETER_AUTHENTICATED}" "${DESTINATION_CONNEXT}" --rpc-url http://localhost:8545 --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 --broadcast -vvvv
+deploy-source-greeter-auth :; @forge script script/greeter-authenticated/SourceGreeterAuthenticated.s.sol:DeploySourceGreeterAuthenticated \
+	--sig "run(address)" "${ORIGIN_CONNEXT}" \
+	--rpc-url ${ORIGIN_RPC_URL} \
+	--private-key ${PRIVATE_KEY} \
+	--broadcast \
+	--verify -vvvv
+deploy-source-greeter-auth-anvil :; @forge script script/greeter-authenticated/SourceGreeterAuthenticated.s.sol:DeploySourceGreeterAuthenticated \
+	--sig "run(address)" "${ORIGIN_CONNEXT}" \
+	--rpc-url ${LOCALHOST} \
+	--private-key ${ANVIL_PRIVATE_KEY} \
+	--broadcast
+deploy-destination-greeter-auth :; @forge script script/greeter-authenticated/DestinationGreeterAuthenticated.s.sol:DeployDestinationGreeterAuthenticated \
+	--sig "run(uint32,address,address)" "${ORIGIN_DOMAIN}" "${SOURCE_GREETER_AUTHENTICATED}" "${DESTINATION_CONNEXT}" \
+	--rpc-url ${DESTINATION_RPC_URL} \
+	--private-key ${PRIVATE_KEY} \
+	--broadcast \
+	--verify -vvvv
+deploy-destination-greeter-auth-anvil :; @forge script script/greeter-authenticated/DestinationGreeterAuthenticated.s.sol:DeployDestinationGreeterAuthenticated \
+	--sig "run(uint32,address,address)" "${ORIGIN_DOMAIN}" "${SOURCE_GREETER_AUTHENTICATED}" "${DESTINATION_CONNEXT}" \
+	--rpc-url ${LOCALHOST} \
+	--private-key ${ANVIL_PRIVATE_KEY} \
+	--broadcast
 
 # Ping Pong
-deploy-ping :; @forge script script/ping-pong/Ping.s.sol:DeployPing --sig "run(address)" "${ORIGIN_CONNEXT}" --rpc-url ${ORIGIN_RPC_URL} --private-key ${PRIVATE_KEY} --broadcast -vvvv
-# deploy-ping-anvil :; @forge script script/greeter-authenticated/DestinationGreeterAuthenticated.s.sol:DeployDestinationGreeterAuthenticated --sig "run(uint32,address,address)" "${ORIGIN_DOMAIN}" "${SOURCE_GREETER_AUTHENTICATED}" "${DESTINATION_CONNEXT}" --rpc-url http://localhost:8545 --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 --broadcast -vvvv
-deploy-pong :; @forge script script/ping-pong/Pong.s.sol:DeployPong --sig "run(address)" "${DESTINATION_CONNEXT}" --rpc-url ${DESTINATION_RPC_URL} --private-key ${PRIVATE_KEY} --broadcast -vvvv
-# deploy-ping-anvil :; @forge script script/greeter-authenticated/DestinationGreeterAuthenticated.s.sol:DeployDestinationGreeterAuthenticated --sig "run(uint32,address,address)" "${ORIGIN_DOMAIN}" "${SOURCE_GREETER_AUTHENTICATED}" "${DESTINATION_CONNEXT}" --rpc-url http://localhost:8545 --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 --broadcast -vvvv
+deploy-ping :; @forge script script/ping-pong/Ping.s.sol:DeployPing \
+	--sig "run(address)" "${ORIGIN_CONNEXT}" \
+	--rpc-url ${ORIGIN_RPC_URL} \
+	--private-key ${PRIVATE_KEY} \
+	--broadcast -vvvv
+deploy-ping-anvil :; @forge script script/ping-pong/Ping.s.sol:DeployPing \
+	--sig "run(address)" "${ORIGIN_CONNEXT}" \
+	--rpc-url ${LOCALHOST} \
+	--private-key ${ANVIL_PRIVATE_KEY} \
+	--broadcast
+deploy-pong :; @forge script script/ping-pong/Pong.s.sol:DeployPong \
+	--sig "run(address)" "${DESTINATION_CONNEXT}" \
+	--rpc-url ${DESTINATION_RPC_URL} \
+	--private-key ${PRIVATE_KEY} \
+	--broadcast -vvvv
+deploy-pong-anvil :; @forge script script/ping-pong/Pong.s.sol:DeployPong \
+	--sig "run(address)" "${DESTINATION_CONNEXT}" \
+	--rpc-url ${LOCALHOST} \
+	--private-key ${ANVIL_PRIVATE_KEY} \
+	--broadcast
 
 
-############################# Scripts #############################
+### --------------------------------------------------------------------
+### SCRIPTS
+### --------------------------------------------------------------------
 
-## Simple Bridge
-transfer :; @forge script script/simple-bridge/Transfer.s.sol:Transfer --sig "run(address,address,uint256,address,uint32,uint256,uint256)" "${SIMPLE_BRIDGE}" "${ORIGIN_TOKEN}" "${AMOUNT}" "${RECIPIENT}"  "${DESTINATION_DOMAIN}" "${MAX_SLIPPAGE}" "${RELAYER_FEE}" --rpc-url ${ORIGIN_RPC_URL} --broadcast
+# SimpleBridge.transfer()
+transfer :; @forge script script/simple-bridge/Transfer.s.sol:Transfer \
+	--sig "run(address,address,uint256,address,uint32,uint256,uint256)" "${SIMPLE_BRIDGE}" "${ORIGIN_TOKEN}" "${AMOUNT}" "${RECIPIENT}"  "${DESTINATION_DOMAIN}" "${MAX_SLIPPAGE}" "${RELAYER_FEE}" \
+	--rpc-url ${ORIGIN_RPC_URL} \
+	--private-key ${PRIVATE_KEY} \
+	--broadcast
 
-## Greeter
-update-greeting :; @forge script script/greeter/UpdateGreeting.s.sol:UpdateGreeting --sig "run(address,address,uint256,address,uint32,string,uint256,uint256)" "${SOURCE_GREETER}" "${ORIGIN_TOKEN}" "${AMOUNT}" "${DESTINATION_GREETER}" "${DESTINATION_DOMAIN}" "${NEW_GREETING}" "${MAX_SLIPPAGE}" "${RELAYER_FEE}" --rpc-url ${ORIGIN_RPC_URL} --broadcast
+# SourceGreeter.xUpdateGreeting()
+update-greeting :; @forge script script/greeter/UpdateGreeting.s.sol:UpdateGreeting \
+	--sig "run(address,address,uint256,address,uint32,string,uint256)" "${SOURCE_GREETER}" "${ORIGIN_TOKEN}" "${AMOUNT}" "${DESTINATION_GREETER}" "${DESTINATION_DOMAIN}" "${NEW_GREETING}" "${RELAYER_FEE}" \
+	--rpc-url ${ORIGIN_RPC_URL} \
+	--private-key ${PRIVATE_KEY} \
+	--broadcast
 
-## Greeter Authenticated
-update-greeting-auth :; @forge script script/greeter-authenticated/UpdateGreetingAuthenticated.s.sol:UpdateGreetingAuthenticated --sig "run(address,address,uint32,string,uint256)" "${SOURCE_GREETER_AUTHENTICATED}" "${DESTINATION_GREETER_AUTHENTICATED}" "${DESTINATION_DOMAIN}" "${NEW_GREETING_AUTHENTICATED}" "${RELAYER_FEE}" --rpc-url ${ORIGIN_RPC_URL} --broadcast
+# SourceGreeterAuthenticated.xUpdateGreeting()
+update-greeting-auth :; @forge script script/greeter-authenticated/UpdateGreetingAuthenticated.s.sol:UpdateGreetingAuthenticated \
+	--sig "run(address,address,uint32,string,uint256)" "${SOURCE_GREETER_AUTHENTICATED}" "${DESTINATION_GREETER_AUTHENTICATED}" "${DESTINATION_DOMAIN}" "${NEW_GREETING_AUTHENTICATED}" "${RELAYER_FEE}" \
+	--rpc-url ${ORIGIN_RPC_URL} \
+	--private-key ${PRIVATE_KEY} \
+	--broadcast
 
-## Ping Pong
-send-ping :; @forge script script/ping-pong/SendPing.s.sol:SendPing --sig "run(address,address,uint32,uint256)" "${PING}" "${PONG}" "${DESTINATION_DOMAIN}" "${RELAYER_FEE}" --rpc-url ${ORIGIN_RPC_URL} --private-key ${PRIVATE_KEY} --broadcast --verify -vvvv
+# Ping.startpingPong()
+start-ping-pong :; @forge script script/ping-pong/StartPingPong.s.sol:StartPingPong \
+	--sig "run(address,address,uint32,uint256)" "${PING}" "${PONG}" "${DESTINATION_DOMAIN}" "${RELAYER_FEE}" \
+	--rpc-url ${ORIGIN_RPC_URL} \
+	--private-key ${PRIVATE_KEY} \
+	--broadcast
 
 
-############################# Tests #############################
+### --------------------------------------------------------------------
+### CASTS
+### --------------------------------------------------------------------
+
+# Read greeting variable of DestinationGreeter
+read-greeting :; @cast call "${DESTINATION_GREETER}" "greeting()(string)" --rpc-url ${DESTINATION_RPC_URL}
+
+# Read greeting variable of DestinationGreeterAuthenticated
+read-greeting-auth :; @cast call "${DESTINATION_GREETER_AUTHENTICATED}" "greeting()(string)" --rpc-url ${DESTINATION_RPC_URL}
+
+# Read pings variable of Ping
+read-pings :; @cast call "${PING}" "pings()(uint)" --rpc-url ${ORIGIN_RPC_URL}
+
+# Read pongs variable of Pong
+read-pongs :; @cast call "${PONG}" "pongs()(uint)" --rpc-url ${DESTINATION_RPC_URL}
+
+
+### --------------------------------------------------------------------
+### TESTS
+### --------------------------------------------------------------------
+
 test-unit-all :; forge clean && forge test --match-contract "TestUnit"
+test-forked-all :; forge clean && forge test --match-contract "TestForked" --fork-url ${GOERLI_RPC_URL}
 
 ## Simple Bridge
 test-unit-simple-bridge :; forge clean && forge test --match-contract "SimpleBridgeTestUnit" -vvvv
@@ -94,6 +196,5 @@ test-unit-destination-greeter-auth:; forge clean && forge test --match-contract 
 ## Ping Pong
 test-unit-ping :; forge clean && forge test --match-contract "PingTestUnit" -vvvv
 # [TODO] test-forked-ping :; forge clean && forge test --match-contract "PingTestForked" --fork-url ${GOERLI_RPC_URL} -vvvv
-
 test-unit-pong :; forge clean && forge test --match-contract "PongTestUnit" -vvvv
 # [TODO] test-forked-ping :; forge clean && forge test --match-contract "PongTestForked" --fork-url ${GOERLI_RPC_URL} -vvvv
