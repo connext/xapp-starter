@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.15;
 
-import {IConnext} from "@connext/nxtp-contracts/contracts/core/connext/interfaces/IConnext.sol";
+import {IConnext} from "@connext/smart-contracts/contracts/core/connext/interfaces/IConnext.sol";
 
 interface ISourceGreeterAuthenticated {
   function xUpdateGreeting (
