@@ -21,7 +21,7 @@ contract SimpleBridgeTestUnit is TestHelper {
   function setUp() public override {
     super.setUp();
 
-    bridge = new SimpleBridge(IConnext(MOCK_CONNEXT));
+    bridge = new SimpleBridge(MOCK_CONNEXT);
 
     vm.label(address(bridge), "SimpleBridge");
   }
@@ -113,7 +113,7 @@ contract SimpleBridgeTestForked is ForkTestHelper {
   function setUp() public override {
     super.setUp();
 
-    bridge = new SimpleBridge(IConnext(CONNEXT_GOERLI));
+    bridge = new SimpleBridge(address(CONNEXT_GOERLI));
 
     vm.label(address(bridge), "SimpleBridge");
   }

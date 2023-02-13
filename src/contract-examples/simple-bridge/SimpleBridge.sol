@@ -23,8 +23,8 @@ contract SimpleBridge {
   // The connext contract on the origin domain
   IConnext public immutable connext;
 
-  constructor(IConnext _connext) {
-    connext = _connext;
+  constructor(address _connext) {
+    connext = IConnext(_connext);
   }
 
   /**

@@ -52,7 +52,7 @@ To demonstrate a combination of an asset transfer and an arbitrary call in a sin
 
 ## Greeter Authenticated (authenticated call)
 
-The `DestinationGreeterAuthenticated` contract now sets some permissioning constraints. It only allows `updateGreeting` to be called from `SourceGreeterAuthenticated`. In order to enforce this, the contract checks that the caller is the original sender from the origin domain.
+The `DestinationGreeterAuthenticated` contract sets some permissioning constraints. It only allows `greeting` to be updated from `SourceGreeterAuthenticated`. In order to enforce this, the contract checks that the caller is the original sender from the origin domain.
 
 ### Contracts
 - SourceGreeterAuthenticated.sol
