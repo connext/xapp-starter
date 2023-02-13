@@ -2,10 +2,10 @@
 import { HardhatUserConfig } from "hardhat/types";
 import { config as dotenvConfig } from "dotenv";
 
-import "./tasks/simpleBridge";
-import "./tasks/hello";
-import "./tasks/helloAuthenticated";
-import "./tasks/pingPong";
+import "./tasks/transfer";
+import "./tasks/updateGreeting";
+import "./tasks/updateGreetingAuthenticated";
+import "./tasks/startPingPong";
 
 dotenvConfig();
 

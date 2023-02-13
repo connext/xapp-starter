@@ -203,60 +203,57 @@ The core set of Connext contracts have already been deployed to testnet. For the
 
   After deploying SimpleBridge, set the `SIMPLE_BRIDGE` and `RECIPIENT` variables in `.env` and run:
 
+  With Forge:
   ```
   make transfer
+  ```
+
+  With Hardhat:
+  ```bash
+  yarn hardhat transfer
   ```
 
 - Execute `updateGreeting` on SourceGreeter
 
   After deploying SourceGreeter and DestinationGreeter, set the `SOURCE_GREETER`, `DESTINATION_GREETER`, `DESTINATION_TOKEN`, and `NEW_GREETING` variables in `.env` and run:
 
+  With Forge:
   ```
   make update-greeting
+  ```
+
+  With Hardhat:
+  ```bash
+  yarn hardhat update-greeting
   ```
 
 - Execute `updateGreeting` on SourceGreeterAuthenticated
 
   After deploying SourceGreeterAuthenticated and DestinationGreeterAuthenticated, set the `SOURCE_GREETER_AUTHENTICATED` and `DESTINATION_GREETER_AUTHENTICATED` variables in `.env` and run:
 
+  With Forge:
   ```
   make update-greeting-auth
+  ```
+
+  With Hardhat:
+  ```bash
+  yarn hardhat update-greeting-auth
   ```
 
 - Execute `startPingPong` on Ping
 
   After deploying Ping and Pong, set the `PING` and `PONG` variables in `.env` and run:
 
+  With Forge:
   ```
   make start-ping-pong
   ```
 
-
-There is also a set of Hardhat tasks available for executing transactions on deployed contracts.
-
-- Simple Bridge
-
+  With Hardhat:
   ```bash
-  yarn hardhat simpleBridge --destination-domain <domainID> --contract-address <address(SimpleBridge)> --token-address <address(origin_TestERC20)> --amount <amount>
+  yarn hardhat start-ping-pong
   ```
-
-- Hello Quickstart 
-
-  ```bash
-  yarn hardhat hello --destination-domain <domainID> --source-address <address(Source)> --target-address <address(Target)> --greeting <greeting>
-  ```
-
-- Hello Authenticated
-
-  ```bash
-  yarn hardhat helloAuthenticated --destination-domain <domainID> --source-address <address(Source)> --target-address <address(Target)> --greeting <greeting>
-  ```
-
-- Ping Pong
-
-```bash
-yarn hardhat pingPong --destination-domain <domainID> --ping-address <address(Ping)> --pong-address <address(Pong)> --token-address <address(origin_TestERC20)> --amount <amount>
-```
 
 ### Check Execution Results
 
