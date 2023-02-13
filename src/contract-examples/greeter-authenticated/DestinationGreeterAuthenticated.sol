@@ -3,6 +3,10 @@ pragma solidity ^0.8.15;
 
 import {IXReceiver} from "@connext/smart-contracts/contracts/core/connext/interfaces/IXReceiver.sol";
 
+/**
+ * @title DestinationGreeterAuthenticated
+ * @notice Example destination contract that stores a greeting and only allows source to update it.
+ */
 contract DestinationGreeterAuthenticated is IXReceiver {
   // The Connext contract on this domain
   address public immutable connext;

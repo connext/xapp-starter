@@ -4,6 +4,10 @@ pragma solidity ^0.8.15;
 import {IXReceiver} from "@connext/smart-contracts/contracts/core/connext/interfaces/IXReceiver.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
+/**
+ * @title DestinationGreeter
+ * @notice Example destination contract that stores a greeting.
+ */
 contract DestinationGreeter is IXReceiver {
   string public greeting;
 

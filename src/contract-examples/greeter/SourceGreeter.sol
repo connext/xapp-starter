@@ -16,7 +16,7 @@ interface ISourceGreeter {
 
 /**
  * @title SourceGreeter
- * @notice Example source contract that updates a greeting on DestinationGreeter. Requires 1 TEST to update.
+ * @notice Example source contract that updates a greeting on DestinationGreeter.
  */
 contract SourceGreeter {
   // The Connext contract on this domain
