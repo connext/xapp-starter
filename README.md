@@ -3,47 +3,62 @@
 Starter kit for cross-domain apps (xApps).
 # Overview
 
-- Simple XCall Integration using SDK And
-There are generally three types of cross-chain bridge transactions that can be executed solely through smart contract integration.
+Connext's `xcall` is a single interface that can be used to send assets and arbitrary calldata from one chain to another. 
+
+In general, there are three types of information that can be bridged between chains.
 - Asset transfers
 - Unauthenticated calls
 - Authenticated calls
 
-This starter repo contains contracts that demonstrate how to use each type of transaction.
+This starter repo contains example contracts that demonstrate how these can be construted with `xcall`.
 
-The high level flow is as follows:
+At a high level, this is the call flow between contracts:
 
 <img src="documentation/assets/xcall.png" alt="drawing" width="500"/>
 
-## Simple Bridge
+## Simple Bridge (asset transfer)
 
-Simple asset transfer from Origin Chain to Destination Chain. Does not use calldata. 
+The `SimpleBridge` transfers tokens from a user on the origin chain to a specified address on the destination domain.
 
-Example use cases:
-- Send funds across chains
+Since no calldata is involved, no target contract is needed.
 
-Contracts:
+Note that when sending tokens, the user will first have to call `approve` on the ERC20 to set a spending allowance for the `SimpleBridge` contract.
+
+Tokens will move from the user's wallet => SimpleBridge => Connext => recipient.
+
+### Contracts
 - SimpleBridge.sol
 
-## Unauthenticated Call
+### Use cases for this pattern
+- Send funds across chains
 
-Transfer funds and/or call a target contract with arbitrary calldata on the Destination Chain. Assuming the receiving side is an unauthenticated call, this flow is essentially the same as the simple bridge except encoded calldata is included in the `xcall`. The call can simply use `amount: 0` if no funds are being transferred.
+## Greeter (asset transfer + unauthenticated call)
 
-Example use cases:
-- Deposit funds into a liquidity pool on the Destination Chain
-- Execute a token Swap on the Destination Chain
-- Connecting DEX liquidity across chains in a single seamless transaction
-- Crosschain vault zaps and vault strategy management
+The `DestinationGreeter` contract on the destination chain has an `updateGreeting` function that changes a stored `greeting` variable. The `SourceGreeter` contract on the origin chain uses `xcall` to send encoded calldata for `updateGreeting`.
 
-Contracts:
-- HelloSource.sol
-- HelloTarget.sol
+To demonstrate a combination of an asset transfer and an arbitrary call in a single `xcall`, the `updateGreeting` function will require a payment to update the greeting. For this example, the contract will be okay with any amount greater than 0. 
 
-## Authenticated Call
+`updateGreeting` is implemented as an unauthenticated call (there are no checks to determine *who* is calling the function). And so, this flow is essentially the same as the simple bridge except encoded calldata is also included in the `xcall`.
 
-Like unauthenticated, call a target contract with arbitrary calldata on the Destination Chain. Except, the target function is authenticated which means the contract must check the origin in order to uphold authentication requirements.
+### Contracts
+- SourceGreeter.sol
+- DestinationGreeter.sol
 
-Example use cases:
+### Use cases for this pattern
+- Deposit funds into a liquidity pool on the destination chain
+- Execute a token swap on the destination chain
+- Connect DEX liquidity across chains in a single seamless transaction
+- Zap into a vault from any chain
+
+## Greeter Authenticated (authenticated call)
+
+The `DestinationGreeterAuthenticated` contract sets some permissioning constraints. It only allows `greeting` to be updated from `SourceGreeterAuthenticated`. In order to enforce this, the contract checks that the caller is the original sender from the origin domain.
+
+### Contracts
+- SourceGreeterAuthenticated.sol
+- DestinationGreeterAuthenticated.sol
+
+### Use cases for this pattern
 - Hold a governance vote on Origin Chain and execute the outcome of it on the Destination Chain (and other DAO operations)
 - Lock-and-mint or burn-and-mint token bridging
 - Critical protocol operations such as replicating/syncing global constants (e.g. PCV) across chains
@@ -51,17 +66,16 @@ Example use cases:
 - Chain-agnostic veToken governance
 - Metaverse-to-metaverse interoperability
 
-Contracts:
-- HelloSource.sol
-- HelloTargetAuthenticated.sol
-
 ## Ping Pong
 
-An example of a nested `xcall`, allowing for calldata execution within another `xcall`.
+An example of a nested `xcall`, when another `xcall` is executed in the destination receiver contract. 
 
-Contracts:
+### Contracts
 - Ping.sol
 - Pong.sol
+
+### Use cases for this pattern
+- Implement JS-style "callbacks" to respond asynchronously between chains
 
 # Development
 
@@ -69,7 +83,7 @@ Contracts:
 
 ## Getting Started
 
-This project uses Foundry for testing and deploying contracts. Hardhat tasks are used for interacting with deployed contracts.
+This project uses Foundry for testing, deploying, and interacting with contracts. Fully compatible hardhat support will be added in the near future.
 
 - See the official Foundry installation [instructions](https://github.com/gakonst/foundry/blob/master/README.md#installation).
 - Also, download [make](https://askubuntu.com/questions/161104/how-do-i-install-make) if you don't already have it.
@@ -81,28 +95,30 @@ src
 ├─ contract-examples
 |  └─ simple-bridge
 │    └─ SimpleBridge.sol
-|  └─ hello-quickstart
-│    └─ HelloSource.sol
-│    └─ HelloTarget.sol
-|  └─ hello-authenticated
-│    └─ HelloSourceAuthenticated.sol
-│    └─ HelloTargetAuthenticated.sol
+|  └─ greeter
+│    └─ SourceGreeter.sol
+│    └─ DestinationGreeter.sol
+|  └─ greeter-authenticated
+│    └─ SourceGreeterAuthenticated.sol
+│    └─ DestinationGreeterAuthenticated.sol
 |  └─ ping-pong
 │    └─ Ping.sol
 │    └─ Pong.sol
-|  └─ tests
+|  └─ test
 │    └─ ...
 ├─ sdk-examples
 │    └─ node-examples
 ```
+
 ## Setup
 ```bash
 make install
 yarn
+foundryup
 ```
 
 ## Set up environment variables
-Copy the `.env.example` into `.env` and fill in the placeholders.
+Copy the `.env.example` into `.env` and fill in all the placeholders under the `GENERAL` section. Initial values are provided for Goerli as origin and Optimism-Goerli as destination.
 
 ## Testing
 
@@ -111,55 +127,55 @@ There are some starter test cases in the `src/tests` directory for each of the e
 ### Unit Tests
 
 ```bash
-make test-unit-simplebridge
-make test-unit-hellotarget
-make test-unit-hellotarget-auth
+make test-unit-simple-bridge
+make test-unit-destination-greeter
+make test-unit-destination-greeter-auth
 make test-unit-ping
 make test-unit-pong
 ```
 
 ### Integration Tests
 
-This uses forge's `--forked` mode. Make sure you have `ORIGIN_RPC_URL` defined in your `.env` file.
+This uses forge's `--forked` mode. Make sure you have `GOERLI_RPC_URL` defined in your `.env` file as these tests currently fork Goerli.
 ```bash
-make test-forked-simplebridge
-make test-forked-hellosource
-make test-forked-hellosource-auth
+make test-forked-simple-bridge
+make test-forked-source-greeter
+make test-forked-source-greeter-auth
 ```
 
 ### Deployment
 
-Deploy contracts in this repository using the RPC provider of your choice (make sure to define `ORIGIN_RPC_URL` and `DESTINATION_RPC_URL` in .env).
+Deploy contracts in this repository using the RPC provider of your choice (make sure all the variables under `GENERAL` are set in `.env`).
 
-- Deployment order for Simple Bridge
+#### Deployment order for Simple Bridge
 
     ```bash
-    make deploy-simplebridge
+    make deploy-simple-bridge
     ```
 
-- Deployment order for HelloSource + HelloTarget
+#### Deployment order for SourceGreeter + DestinationGreeter
 
     ```bash
-    make deploy-hellosource
-    ```
-    
-    ```bash
-    make deploy-hellotarget
-    ```
-
-- Deployment order for HelloSourceAuthenticated + HelloTargetAuthenticated
-
-    ```bash
-    make deploy-hellosource-auth
+    make deploy-source-greeter
     ```
     
-    Use the origin domain and deployed source contract address as values for `ORIGIN_DOMAIN` and `SOURCE_CONTRACT` in `.env` before deploying `HelloTargetAuthenticated`.
-
     ```bash
-    make deploy-hellotarget-auth
+    make deploy-destination-greeter
     ```
 
-- Deployment order for Ping + Pong
+#### Deployment order for SourceGreeterAuthenticated + DestinationGreeterAuthenticated
+
+    ```h
+    make deploy-source-greeter-auth
+    ```
+    
+    Use the origin domain and address of `SourceGreeterAuthenticated` contract address as values for `ORIGIN_DOMAIN` and `SOURCE_CONTRACT` in `.env` before deploying `DestinationGreeterAuthenticated`.
+
+    ```bash
+    make deploy-destination-greeter-auth
+    ```
+
+#### Deployment order for Ping + Pong
 
     ```bash
     make deploy-ping
@@ -173,41 +189,71 @@ Deploy contracts in this repository using the RPC provider of your choice (make 
 
 It's much easier to read contract values after they're verified! We use another forge command to do this.
 
-For example, to verify `HelloTarget.sol`: 
+For example, to verify `DestinationGreeter.sol`: 
 
 ```bash
-forge verify-contract --chain 80001 <deployed_contract_address> src/contract-examples/hello-quickstart/HelloTarget.sol:HelloTarget <polygonscan_api_key>
+forge verify-contract --chain 1735356532 <CONTRACT_ADDRESS> src/contract-examples/greeter/DestinationGreeter.sol:DestinationGreeter <ETHERSCAN_KEY>
 ```
 
 ### Live Testnet Testing
 
 The core set of Connext contracts have already been deployed to testnet. For the most up-to-date contracts, please reference the [Connext deployments](https://github.com/connext/nxtp/tree/main/packages/deployments/contracts/deployments).
 
-There is a set of Hardhat tasks available for executing transactions on deployed contracts.
+- Execute `transfer` on SimpleBridge
 
-- Simple Bridge
+  After deploying SimpleBridge, set the `SIMPLE_BRIDGE` and `RECIPIENT` variables in `.env` and run:
 
-  ```bash
-  yarn hardhat simpleBridge --destination-domain <domainID> --contract-address <address(SimpleBridge)> --token-address <address(origin_TestERC20)> --amount <amount>
+  With Forge:
+  ```
+  make transfer
   ```
 
-- Hello Quickstart 
-
+  With Hardhat:
   ```bash
-  yarn hardhat hello --destination-domain <domainID> --source-address <address(Source)> --target-address <address(Target)> --greeting <greeting>
+  yarn hardhat transfer
   ```
 
-- Hello Authenticated
+- Execute `updateGreeting` on SourceGreeter
 
-  ```bash
-  yarn hardhat update --origin-domain <domainID> --destination-domain <domainID> --source-address <address(Source)> --target-address <address(Target)> --greeting <greeting>
+  After deploying SourceGreeter and DestinationGreeter, set the `SOURCE_GREETER`, `DESTINATION_GREETER`, `DESTINATION_TOKEN`, and `NEW_GREETING` variables in `.env` and run:
+
+  With Forge:
+  ```
+  make update-greeting
   ```
 
-- Ping Pong
+  With Hardhat:
+  ```bash
+  yarn hardhat update-greeting
+  ```
 
-```bash
-yarn hardhat pingPong --destination-domain <domainID> --ping-address <address(Ping)> --pong-address <address(Pong)> --token-address <address(origin_TestERC20)> --amount <amount>
-```
+- Execute `updateGreeting` on SourceGreeterAuthenticated
+
+  After deploying SourceGreeterAuthenticated and DestinationGreeterAuthenticated, set the `SOURCE_GREETER_AUTHENTICATED` and `DESTINATION_GREETER_AUTHENTICATED` variables in `.env` and run:
+
+  With Forge:
+  ```
+  make update-greeting-auth
+  ```
+
+  With Hardhat:
+  ```bash
+  yarn hardhat update-greeting-auth
+  ```
+
+- Execute `startPingPong` on Ping
+
+  After deploying Ping and Pong, set the `PING` and `PONG` variables in `.env` and run:
+
+  With Forge:
+  ```
+  make start-ping-pong
+  ```
+
+  With Hardhat:
+  ```bash
+  yarn hardhat start-ping-pong
+  ```
 
 ### Check Execution Results
 

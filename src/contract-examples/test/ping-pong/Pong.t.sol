@@ -1,94 +1,82 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.15;
 
+import {TestHelper} from "../utils/TestHelper.sol";
 import {Pong} from "../../ping-pong/Pong.sol";
-import {IConnext} from "@connext/nxtp-contracts/contracts/core/connext/interfaces/IConnext.sol";
-import {DSTestPlus} from "../utils/DSTestPlus.sol";
-import {ERC20PresetMinterPauser} from "@openzeppelin/contracts/token/ERC20/presets/ERC20PresetMinterPauser.sol";
-import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {IConnext} from "@connext/smart-contracts/contracts/core/connext/interfaces/IConnext.sol";
 
 /**
  * @title PongTestUnit
  * @notice Unit tests for Pong.
  */
-contract PongTestUnit is DSTestPlus {
+contract PongTestUnit is TestHelper {
   Pong public pong;
-  ERC20PresetMinterPauser public token;
-  IConnext public connext = IConnext(address(1));
-  address public ping = address(2);
-  address public userChainA = address(0xA);
-  address public userChainB = address(0xB);
+  address public ping = address(bytes20(keccak256("Mock Ping")));
+  uint256 public amount = 0;
+  uint256 public slippage = 0;
+  bytes32 public transferId = keccak256("12345");
+  uint256 public relayerFee = 1e16;
+  address public asset = address(0);
 
-  function setUp() public {
-    token = new ERC20PresetMinterPauser("TestToken", "TEST");
-    pong = new Pong(connext);
+  function setUp() public override {
+    super.setUp();
+    
+    pong = new Pong(MOCK_CONNEXT);
 
-    vm.label(address(connext), "Connext");
     vm.label(address(pong), "Pong");
-    vm.label(ping, "Ping");
-    vm.label(address(token), "TestToken");
-    vm.label(address(this), "TestContract");
-    vm.label(userChainA, "userChainA");
-    vm.label(userChainB, "userChainB");
+    vm.label(ping, "Mock Ping");
   }
 
-  function test_sendPongShouldWork(uint256 amount) public {
-    // Assume pong received tokens from Ping's xcall
-    token.mint(address(pong), amount);
+  function test_Pong__xReceive_shouldUpdatePongs() public {
+    // Deal Pong native gas to cover relayerFee
+    vm.deal(address(pong), relayerFee);
 
-    // sendPong will be executed by Connext
-    vm.startPrank(address(connext));
+    uint256 pings = 0;
+    uint256 pongs = 0;
 
-    // Mock the xcall
-    bytes memory xcall = abi.encodeWithSelector(
-      IConnext.xcall.selector
-    );
-    vm.mockCall(address(connext), xcall, abi.encode(1));
-
-    // Test that xcall is called
-    vm.expectCall(
-      address(connext), 
+    // Mock the nested xcall
+    vm.mockCall(
+      MOCK_CONNEXT, 
+      relayerFee,
       abi.encodeCall(
         IConnext.xcall, 
         (
-          POLYGON_MUMBAI_DOMAIN_ID,
+          GOERLI_DOMAIN_ID,
           ping,
-          address(token),
-          address(connext),
+          asset,
+          address(this),
           amount,
-          30,
-          abi.encode(0)
+          slippage,
+          abi.encode(pongs + 1)
         )
-      )
+      ),
+      abi.encode(transferId)
     );
 
-    pong.sendPong(
-      POLYGON_MUMBAI_DOMAIN_ID,
-      ping,
-      address(token),
-      amount,
-      0
+    pong.xReceive(
+      transferId, 
+      amount, 
+      asset, 
+      ping, 
+      GOERLI_DOMAIN_ID, 
+      abi.encode(pings, ping, relayerFee)
     );
 
-    vm.stopPrank();
+    assertEq(pong.pongs(), pongs + 1);
   }
 
-  function test_xReceive_ShouldUpdatePings(
-    bytes32 transferId, 
-    uint256 amount, 
-    uint32 domain, 
-    uint256 pongs, 
-    uint256 relayerFee
+  function test_Pong__xReceive_shouldRevertIfNotEnoughGasForRelayerFee(
+    uint256 pings
   ) public {
-    // Mock the nested xcall
-    bytes memory xcall = abi.encodeWithSelector(
-      IConnext.xcall.selector
+    vm.expectRevert(bytes("Not enough gas to pay for relayer fee"));
+
+    pong.xReceive(
+      transferId, 
+      amount, 
+      asset, 
+      ping, 
+      GOERLI_DOMAIN_ID, 
+      abi.encode(pings, address(ping), relayerFee)
     );
-    vm.mockCall(address(connext), xcall, abi.encode(1));
-
-    uint256 pings = 0;
-
-    pong.xReceive(transferId, amount, address(token), ping, domain, abi.encode(pongs, address(ping), relayerFee));
-    assertEq(pong.pings(), pings + 1);
   }
 }

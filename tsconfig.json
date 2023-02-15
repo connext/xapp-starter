@@ -1,17 +1,18 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "module": "commonjs",
+    "outDir": "./dist",
+    "target": "es2017",
+    "module": "es2022",
     "strict": true,
     "esModuleInterop": true,
     "typeRoots": ["./node_modules/@types"],
-    "outDir": "dist",
-    "resolveJsonModule": true
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "sourceMap": true
   },
   "include": [
-    "./out",
-    "./scripts",
-    "./src"
+    "./src/**/*"
   ],
-  "files": ["./hardhat.config.ts"]
+  "files": ["hardhat.config.cts"],
+  "exclude": ["node_modules"]
 }

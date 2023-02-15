@@ -3,30 +3,38 @@ pragma solidity ^0.8.15;
 
 import {TestHelper} from "../utils/TestHelper.sol";
 import {ForkTestHelper} from "../utils/ForkTestHelper.sol";
-import {SimpleBridge} from "../../simple-bridge/SimpleBridge.sol";
+import {SourceGreeter} from "../../greeter/SourceGreeter.sol";
 import {IConnext} from "@connext/smart-contracts/contracts/core/connext/interfaces/IConnext.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 /**
- * @title SimpleBridgeTestUnit
- * @notice Unit tests for SimpleBridge.
+ * @title SourceGreeterTestUnit
+ * @notice Unit tests for SourceGreeter.
  */
-contract SimpleBridgeTestUnit is TestHelper {
-  SimpleBridge public bridge;
+contract SourceGreeterTestUnit is TestHelper {
+  SourceGreeter public source;
+  address public target = address(bytes20(keccak256("Mock DestinationGreeter")));
   bytes32 public transferId = keccak256("12345");
   uint256 public relayerFee = 1e16;
-  uint256 public slippage = 10000;
-  bytes public callData = bytes("");
+  uint256 public slippage;
 
   function setUp() public override {
     super.setUp();
+    
+    source = new SourceGreeter(MOCK_CONNEXT, MOCK_ERC20);
+    slippage = source.slippage();
 
-    bridge = new SimpleBridge(MOCK_CONNEXT);
-
-    vm.label(address(bridge), "SimpleBridge");
+    vm.label(address(source), "SourceGreeter");
+    vm.label(target, "Mock DestinationGreeter");
   }
 
-  function test_SimpleBridge__transfer_shouldWork(uint256 amount) public {
+  function test_SourceGreeter__updateGreeting_shouldWork(
+    uint256 amount,
+    string memory newGreeting
+  ) public {
+    amount = bound(amount, 0, 1e36);
+    bytes memory callData = abi.encode(newGreeting);
+
     // Give USER_CHAIN_A native gas to cover relayerFee
     vm.deal(USER_CHAIN_A, relayerFee);
 
@@ -45,7 +53,7 @@ contract SimpleBridgeTestUnit is TestHelper {
         IConnext.xcall, 
         (
           OPTIMISM_GOERLI_DOMAIN_ID,
-          USER_CHAIN_B,
+          target,
           MOCK_ERC20,
           USER_CHAIN_A,
           amount,
@@ -56,14 +64,14 @@ contract SimpleBridgeTestUnit is TestHelper {
       abi.encode(transferId)
     );
 
-    // Test that MOCK_ERC20s are sent from USER_CHAIN_A to SimpleBridge contract
+    // Test that MOCK_ERC20s are sent from USER_CHAIN_A to SourceGreeter contract
     vm.expectCall(
       MOCK_ERC20, 
       abi.encodeCall(
         IERC20.transferFrom, 
         (
           USER_CHAIN_A, 
-          address(bridge),
+          address(source),
           amount
         )
       )
@@ -77,7 +85,7 @@ contract SimpleBridgeTestUnit is TestHelper {
         IConnext.xcall, 
         (
           OPTIMISM_GOERLI_DOMAIN_ID,
-          USER_CHAIN_B,
+          target,
           MOCK_ERC20,
           USER_CHAIN_A,
           amount,
@@ -87,12 +95,11 @@ contract SimpleBridgeTestUnit is TestHelper {
       )
     );
 
-    bridge.xTransfer{value: relayerFee}(
-      MOCK_ERC20,
-      amount,
-      USER_CHAIN_B,
+    source.xUpdateGreeting{value: relayerFee}(
+      target,
       OPTIMISM_GOERLI_DOMAIN_ID,
-      slippage,
+      newGreeting,
+      amount,
       relayerFee
     );
 
@@ -101,28 +108,32 @@ contract SimpleBridgeTestUnit is TestHelper {
 }
 
 /**
- * @title SimpleBridgeTestForked
- * @notice Integration tests for SimpleBridge. Should be run with forked testnet.
+ * @title SourceGreeterTestForked
+ * @notice Integration tests for SourceGreeter. Should be run with forked testnet (Goerli).
  */
-contract SimpleBridgeTestForked is ForkTestHelper {
-  SimpleBridge private bridge;
+contract SourceGreeterTestForked is ForkTestHelper {
+  SourceGreeter public source;
+  address public target = address(bytes20(keccak256("Mock DestinationGreeter")));
   uint256 public relayerFee = 1e16;
   uint256 public slippage = 10000;
-  bytes public callData = bytes("");
 
   function setUp() public override {
     super.setUp();
+    
+    source = new SourceGreeter(address(CONNEXT_GOERLI), address(TEST_ERC20_GOERLI));
 
-    bridge = new SimpleBridge(address(CONNEXT_GOERLI));
-
-    vm.label(address(bridge), "SimpleBridge");
+    vm.label(address(source), "SourceGreeter");
+    vm.label(target, "Mock DestinationGreeter");
   }
 
-  function test_SimpleBridge__transfer_shouldWork(uint256 amount) public {
-    // Prevent underflow/overflow
+  function test_SourceGreeter__updateGreeting_shouldWork(
+    uint256 amount,
+    string memory newGreeting
+  ) public {
     amount = bound(amount, 0, 1e36);
-    
-    // Give USER_CHAIN_A native gas to cover relayerFee
+    bytes memory callData = abi.encode(newGreeting);
+
+    // Deal USER_CHAIN_A some native tokens to cover relayerFee
     vm.deal(USER_CHAIN_A, relayerFee);
 
     // Mint USER_CHAIN_A some TEST
@@ -130,16 +141,16 @@ contract SimpleBridgeTestForked is ForkTestHelper {
 
     vm.startPrank(USER_CHAIN_A);
 
-    TEST_ERC20_GOERLI.approve(address(bridge), amount);
+    TEST_ERC20_GOERLI.approve(address(source), amount);
 
-    // Test that ERC20s are sent from USER_CHAIN_A to SimpleBridge contract
+    // Test that tokens are sent from USER_CHAIN_A to SourceGreeter contract
     vm.expectCall(
       address(TEST_ERC20_GOERLI), 
       abi.encodeCall(
         IERC20.transferFrom, 
         (
           USER_CHAIN_A, 
-          address(bridge),
+          address(source),
           amount
         )
       )
@@ -153,7 +164,7 @@ contract SimpleBridgeTestForked is ForkTestHelper {
         IConnext.xcall, 
         (
           OPTIMISM_GOERLI_DOMAIN_ID,
-          USER_CHAIN_B,
+          target,
           address(TEST_ERC20_GOERLI),
           USER_CHAIN_A,
           amount,
@@ -163,12 +174,11 @@ contract SimpleBridgeTestForked is ForkTestHelper {
       )
     );
 
-    bridge.xTransfer{value: relayerFee}(
-      address(TEST_ERC20_GOERLI),
-      amount,
-      USER_CHAIN_B,
+    source.xUpdateGreeting{value: relayerFee}(
+      target,
       OPTIMISM_GOERLI_DOMAIN_ID,
-      slippage,
+      newGreeting,
+      amount,
       relayerFee
     );
 
