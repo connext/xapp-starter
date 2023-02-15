@@ -1,13 +1,14 @@
+import dotenv from "dotenv";
+import dotenvExpand from 'dotenv-expand';
+const envConfig = dotenv.config();
+dotenvExpand.expand(envConfig);
 
 import { HardhatUserConfig } from "hardhat/types";
-import { config as dotenvConfig } from "dotenv";
 
 import "./tasks/transfer";
 import "./tasks/updateGreeting";
 import "./tasks/updateGreetingAuthenticated";
 import "./tasks/startPingPong";
-
-dotenvConfig();
 
 const config: HardhatUserConfig = {
   solidity: {
