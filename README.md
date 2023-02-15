@@ -87,6 +87,7 @@ This project uses Foundry for testing, deploying, and interacting with contracts
 
 - See the official Foundry installation [instructions](https://github.com/gakonst/foundry/blob/master/README.md#installation).
 - Also, download [make](https://askubuntu.com/questions/161104/how-do-i-install-make) if you don't already have it.
+- Get some testnet tokens! The simplest method is to go to the testnet [Bridge UI](https://testnet.bridge.connext.network/) and mint yourself some TEST tokens. You can also call the `mint()` function directly in the TEST token contract.
 
 ## Blueprint
 
@@ -258,3 +259,45 @@ The core set of Connext contracts have already been deployed to testnet. For the
 ### Check Execution Results
 
 You can just check your wallet balance in the Simple Bridge example to see if the funds arrived at the destination address. To check calldata results, you can read the updated variables on the target contract on Etherscan or use tools like Foundry's `cast` command.
+
+# SDK Examples
+
+There is a simple NodeJS example of using the SDK in `/src/sdk-examples/`. This example demonstrates how to configure the SDK, construct the various params (like estimating relayer fee), and call `xcall`.
+
+The script fires off a cross-chain transfer that sends funds from your wallet on the source domain to the same address on the destination domain.
+
+For a more detailed step-by-step, check out the [SDK Guide](https://docs.connext.network/developers/guides/sdk-guides). 
+
+## Getting Started
+
+- Make sure dependencies are installed.
+
+  ```
+  yarn install
+  ```
+
+- Get some testnet tokens! The simplest method is to go to the testnet [Bridge UI](https://testnet.bridge.connext.network/) and mint yourself some TEST tokens. You can also call the `mint()` function directly in the TEST token contract.
+
+- Make sure you set your private key in `.env`
+
+  ```
+  PRIVATE_KEY = <PRIVATE_KEY>
+  ```
+
+  (Optionanal) The example uses sane defaults for a Goerli -> Optimism-Goerli transfer but feel free to change these (especially RPCs as they currently use public defaults):
+
+  ```
+  ORIGIN_RPC_URL
+  GOERLI_RPC_URL
+  OPTIMISM_GOERLI_RPC_URL
+  ORIGIN_TOKEN
+  AMOUNT
+  SLIPPAGE
+  ```
+
+## Run the Example
+
+
+```
+yarn xtransfer
+```

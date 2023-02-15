@@ -6,8 +6,6 @@ dotenvExpand.expand(envConfig);
 import { SdkConfig } from "@connext/sdk";
 import { ethers } from "ethers";
 
-console.log(process.env.ORIGIN_RPC_URL)
-
 // Create a Signer and connect it to a Provider on the sending chain
 const privateKey = process.env.PRIVATE_KEY;
 if (!privateKey) {
@@ -21,9 +19,11 @@ signer = signer.connect(provider);
 const signerAddress = await signer.getAddress();
 
 const sdkConfig: SdkConfig = {
-  logLevel: "info",
   signerAddress: signerAddress,
+  // Use `mainnet` when you're ready...
   network: "testnet",
+  // Add more chains here! Use mainnet domains if `network: mainnet`
+  // This information can be found at https://docs.connext.network/resources/supported-chains
   chains: {
     1735353714: {
       providers: [process.env.GOERLI_RPC_URL!],

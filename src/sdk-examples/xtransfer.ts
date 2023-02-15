@@ -16,7 +16,7 @@ const signerAddress = await signer.getAddress();
 const originDomain = process.env.ORIGIN_DOMAIN || "1735353714";
 const destinationDomain = process.env.DESTINATION_DOMAIN || "1735356532";
 const originAsset = process.env.ORIGIN_TOKEN || "0x7ea6eA49B0b0Ae9c5db7907d139D9Cd3439862a1";
-const amount = "1000000000000000000";
+const amount = process.env.AMOUNT || "1000000000000000000";
 const slippage = process.env.SLIPPAGE || "10000";
 
 // Estimate the relayer fee
@@ -35,7 +35,7 @@ const xcallParams = {
   asset: originAsset,             // address of the token contract
   delegate: signerAddress,        // address allowed to execute transaction on destination side in addition to relayers
   amount: amount,                 // amount of tokens to transfer
-  slippage: slippage,             // the maximum amount of slippage the user will accept in BPS, 0.3% in this case
+  slippage: slippage,             // the maximum amount of slippage the user will accept in BPS (e.g. 30 = 0.3%)
   callData: "0x",                 // empty calldata for a simple transfer (byte-encoded)
   relayerFee: relayerFee,         // fee paid to relayers 
 };

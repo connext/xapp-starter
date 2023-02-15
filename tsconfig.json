@@ -2,7 +2,7 @@
   "compilerOptions": {
     "outDir": "./dist",
     "target": "es2017",
-    "module": "es2022",
+    "module": "esnext",
     "strict": true,
     "esModuleInterop": true,
     "typeRoots": ["./node_modules/@types"],
