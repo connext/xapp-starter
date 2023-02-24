@@ -13,6 +13,22 @@ interface ISimpleBridge {
     uint256 slippage, 
     uint256 relayerFee
   ) external payable;
+
+  function xTransferEth (
+    address destinationUnwrapper,
+    address weth,
+    uint256 amount,
+    address recipient,
+    uint32 destinationDomain,
+    uint256 slippage,
+    uint256 relayerFee
+  ) external payable;
+
+}
+
+interface IWETH {
+  function deposit() external payable;
+  function approve(address guy, uint wad) external returns (bool);
 }
 
 /**
@@ -65,6 +81,36 @@ contract SimpleBridge {
       amount,            // _amount: amount of tokens to transfer
       slippage,          // _slippage: the maximum amount of slippage the user will accept in BPS (e.g. 30 = 0.3%)
       bytes("")          // _callData: empty bytes because we're only sending funds
+    );  
+  }
+
+  function xTransferEth(
+    address destinationUnwrapper,
+    address weth,
+    uint256 amount,
+    address recipient,
+    uint32 destinationDomain,
+    uint256 slippage,
+    uint256 relayerFee
+  ) external payable {
+    // Wrap ETH into WETH to send with the xcall
+    IWETH(weth).deposit{value: amount}();
+
+    // This contract approves transfer to Connext
+    IWETH(weth).approve(address(connext), amount);
+
+    // Encode the recipient address for calldata
+    bytes memory callData = abi.encode(recipient);
+
+    // xcall the Unwrapper contract to unwrap WETH into ETH on destination
+    connext.xcall{value: relayerFee}(
+      destinationDomain,    // _destination: Domain ID of the destination chain
+      destinationUnwrapper, // _to: Unwrapper contract
+      weth,                 // _asset: address of the WETH contract
+      msg.sender,           // _delegate: address that can revert or forceLocal on destination
+      amount,               // _amount: amount of tokens to transfer
+      slippage,             // _slippage: the maximum amount of slippage the user will accept in BPS (e.g. 30 = 0.3%)
+      callData              // _callData: calldata with encoded recipient address
     );  
   }
 }

@@ -131,6 +131,12 @@ transfer :; @forge script script/simple-bridge/Transfer.s.sol:Transfer \
 	--private-key ${PRIVATE_KEY} \
 	--broadcast
 
+transfer-eth :; @forge script script/simple-bridge/TransferEth.s.sol:TransferEth \
+	--sig "run(address,address,address,uint256,address,uint32,uint256,uint256)" "${SIMPLE_BRIDGE}" "${DESTINATION_UNWRAPPER}" "${ORIGIN_WETH}" "${AMOUNT}" "${RECIPIENT}"  "${DESTINATION_DOMAIN}" "${MAX_SLIPPAGE}" "${RELAYER_FEE}" \
+	--rpc-url ${ORIGIN_RPC_URL} \
+	--private-key ${PRIVATE_KEY} \
+	--broadcast
+
 # SourceGreeter.xUpdateGreeting()
 update-greeting :; @forge script script/greeter/UpdateGreeting.s.sol:UpdateGreeting \
 	--sig "run(address,address,uint256,address,uint32,string,uint256)" "${SOURCE_GREETER}" "${ORIGIN_TOKEN}" "${AMOUNT}" "${DESTINATION_GREETER}" "${DESTINATION_DOMAIN}" "${NEW_GREETING}" "${RELAYER_FEE}" \
