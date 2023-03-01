@@ -15,3 +15,7 @@
 	path = lib/openzeppelin-contracts-upgradeable
 	url = https://github.com/openzeppelin/openzeppelin-contracts-upgradeable
 	branch = v4.8.1
+[submodule "lib/interfaces"]
+	path = lib/interfaces
+	url = https://github.com/connext/interfaces
+	branch = v2.0.0
