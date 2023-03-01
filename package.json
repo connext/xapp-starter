@@ -30,7 +30,8 @@
     "xtransfer": "tsc && node dist/src/sdk-examples/xtransfer.js"
   },
   "dependencies": {
-    "@connext/sdk": "^0.2.6",
+    "@connext/interfaces": "^2.0.0",
+    "@connext/sdk": "^0.2.7",
     "@types/memoizee": "^0.4.8"
   }
 }

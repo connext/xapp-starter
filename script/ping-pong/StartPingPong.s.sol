@@ -2,7 +2,7 @@
 pragma solidity ^0.8.15;
 
 import "@std/Script.sol";
-import {IConnext} from "@connext/smart-contracts/contracts/core/connext/interfaces/IConnext.sol";
+import {IConnext} from "@connext/interfaces/core/IConnext.sol";
 import {ERC20PresetMinterPauser} from "@openzeppelin/contracts/token/ERC20/presets/ERC20PresetMinterPauser.sol";
 import {IPing, Ping} from "../../src/contract-examples/ping-pong/Ping.sol";
 

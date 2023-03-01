@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.15;
 
-import {IConnext} from "@connext/smart-contracts/contracts/core/connext/interfaces/IConnext.sol";
-import {IXReceiver} from "@connext/smart-contracts/contracts/core/connext/interfaces/IXReceiver.sol";
+import {IConnext} from "@connext/interfaces/core/IConnext.sol";
+import {IXReceiver} from "@connext/interfaces/core/IXReceiver.sol";
 
 interface IPong {
   function sendPong(

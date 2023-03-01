@@ -3,7 +3,7 @@ pragma solidity ^0.8.15;
 
 import "@std/Script.sol";
 import {ERC20PresetMinterPauser} from "@openzeppelin/contracts/token/ERC20/presets/ERC20PresetMinterPauser.sol";
-import {ISimpleBridge, SimpleBridge} from "../../src/contract-examples/simple-bridge/SimpleBridge.sol";
+import {ISimpleBridge} from "../../src/contract-examples/simple-bridge/SimpleBridge.sol";
 
 contract Transfer is Script {
   function run(

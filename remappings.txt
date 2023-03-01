@@ -4,5 +4,5 @@
 @clones=lib/clones-with-immutable-args/src/
 @openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/
 @openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/
-@connext/smart-contracts/contracts=lib/nxtp/packages/deployments/contracts/contracts/
+@connext/interfaces/=lib/interfaces/
 @hardhat/=lib/hardhat/

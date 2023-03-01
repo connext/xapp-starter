@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.15;
 
-import {IConnext} from "@connext/smart-contracts/contracts/core/connext/interfaces/IConnext.sol";
+import {IConnext} from "@connext/interfaces/core/IConnext.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 interface ISimpleBridge {
@@ -23,7 +23,6 @@ interface ISimpleBridge {
     uint256 slippage,
     uint256 relayerFee
   ) external payable;
-
 }
 
 interface IWETH {
@@ -44,7 +43,8 @@ contract SimpleBridge {
   }
 
   /**
-   * @notice Transfers funds from one chain to another.
+   * @notice Transfers non-native assets from one chain to another.
+   * @dev User should approve a spending allowance before calling this.
    * @param token Address of the token on this domain.
    * @param amount The amount to transfer.
    * @param recipient The destination address (e.g. a wallet).
@@ -84,6 +84,16 @@ contract SimpleBridge {
     );  
   }
 
+  /**
+   * @notice Transfers native assets from one chain to another.
+   * @param destinationUnwrapper Address of the Unwrapper contract on destination.
+   * @param weth Address of the WETH contract on this domain.
+   * @param amount The amount to transfer.
+   * @param recipient The destination address (e.g. a wallet).
+   * @param destinationDomain The destination domain ID.
+   * @param slippage The maximum amount of slippage the user will accept in BPS.
+   * @param relayerFee The fee offered to relayers.
+   */
   function xTransferEth(
     address destinationUnwrapper,
     address weth,

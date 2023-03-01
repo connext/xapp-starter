@@ -3,7 +3,7 @@ pragma solidity ^0.8.15;
 
 import {TestHelper} from "../utils/TestHelper.sol";
 import {Pong} from "../../ping-pong/Pong.sol";
-import {IConnext} from "@connext/smart-contracts/contracts/core/connext/interfaces/IConnext.sol";
+import {IConnext} from "@connext/interfaces/core/IConnext.sol";
 
 /**
  * @title PongTestUnit
